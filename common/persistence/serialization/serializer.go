@@ -73,6 +73,9 @@ type (
 		WorkflowExecutionStateToBlob(info *persistencespb.WorkflowExecutionState, encodingType enumspb.EncodingType) (*commonpb.DataBlob, error)
 		WorkflowExecutionStateFromBlob(data *commonpb.DataBlob) (*persistencespb.WorkflowExecutionState, error)
 
+		ASMExecutionToBlob(info *persistencespb.ASMExecution, encodingType enumspb.EncodingType) (*commonpb.DataBlob, error)
+		ASMExecutionFromBlob(data *commonpb.DataBlob) (*persistencespb.ASMExecution, error)
+
 		ActivityInfoToBlob(info *persistencespb.ActivityInfo, encodingType enumspb.EncodingType) (*commonpb.DataBlob, error)
 		ActivityInfoFromBlob(data *commonpb.DataBlob) (*persistencespb.ActivityInfo, error)
 
@@ -416,6 +419,15 @@ func (t *serializerImpl) WorkflowExecutionStateToBlob(info *persistencespb.Workf
 
 func (t *serializerImpl) WorkflowExecutionStateFromBlob(data *commonpb.DataBlob) (*persistencespb.WorkflowExecutionState, error) {
 	result := &persistencespb.WorkflowExecutionState{}
+	return result, ProtoDecodeBlob(data, result)
+}
+
+func (t *serializerImpl) ASMExecutionToBlob(info *persistencespb.ASMExecution, encodingType enumspb.EncodingType) (*commonpb.DataBlob, error) {
+	return ProtoEncodeBlob(info, encodingType)
+}
+
+func (t *serializerImpl) ASMExecutionFromBlob(data *commonpb.DataBlob) (*persistencespb.ASMExecution, error) {
+	result := &persistencespb.ASMExecution{}
 	return result, ProtoDecodeBlob(data, result)
 }
 

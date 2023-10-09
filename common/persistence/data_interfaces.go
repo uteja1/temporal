@@ -41,6 +41,7 @@ import (
 	historypb "go.temporal.io/api/history/v1"
 	enumsspb "go.temporal.io/server/api/enums/v1"
 	persistencespb "go.temporal.io/server/api/persistence/v1"
+	"go.temporal.io/server/common/definition"
 	"go.temporal.io/server/common/persistence/serialization"
 	"go.temporal.io/server/service/history/tasks"
 )
@@ -1035,6 +1036,45 @@ type (
 		AssertShardOwnership(ctx context.Context, request *AssertShardOwnershipRequest) error
 	}
 
+	ASMTransition struct {
+		ExecutionMetadata *persistencespb.WorkflowExecutionState
+		Execution         *persistencespb.ASMExecution
+		Tasks             map[tasks.Category][]tasks.Task
+		NewHistoryBatches []*WorkflowEvents
+
+		DBRecordVersion int64
+
+		// Checksum
+	}
+
+	CurrentASMTransition struct {
+		ASMKey            definition.WorkflowKey
+		ExecutionMetadata *persistencespb.WorkflowExecutionState
+		PreviousRunID     string // empty means create a new current record
+	}
+
+	UpsertASMRequest struct {
+		ShardID int32
+		RangeID int64
+
+		ASMTransitions       []ASMTransition
+		CurrentASMTransition *CurrentASMTransition
+	}
+
+	UpsertASMResponse struct{}
+
+	GetASMRequest struct {
+		ShardID int32
+		ASMKey  definition.WorkflowKey
+	}
+
+	GetASMResponse struct {
+		ExecutionMetadata *persistencespb.WorkflowExecutionState
+		Execution         *persistencespb.ASMExecution
+		DBRecordVersion   int64 // TODO: ASM do we need this?
+		// ASMStats ASMStatistics
+	}
+
 	// ExecutionManager is used to manage workflow executions
 	ExecutionManager interface {
 		Closeable
@@ -1049,6 +1089,9 @@ type (
 		GetCurrentExecution(ctx context.Context, request *GetCurrentExecutionRequest) (*GetCurrentExecutionResponse, error)
 		GetWorkflowExecution(ctx context.Context, request *GetWorkflowExecutionRequest) (*GetWorkflowExecutionResponse, error)
 		SetWorkflowExecution(ctx context.Context, request *SetWorkflowExecutionRequest) (*SetWorkflowExecutionResponse, error)
+
+		GetASM(ctx context.Context, request *GetASMRequest) (*GetASMResponse, error)
+		UpsertASM(ctx context.Context, request *UpsertASMRequest) (*UpsertASMResponse, error)
 
 		// Scan operations
 

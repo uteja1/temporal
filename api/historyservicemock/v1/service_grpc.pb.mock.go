@@ -101,6 +101,26 @@ func (mr *MockHistoryServiceClientMockRecorder) CloseShard(ctx, in interface{}, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseShard", reflect.TypeOf((*MockHistoryServiceClient)(nil).CloseShard), varargs...)
 }
 
+// CreateTopActivity mocks base method.
+func (m *MockHistoryServiceClient) CreateTopActivity(ctx context.Context, in *historyservice.CreateTopActivityRequest, opts ...grpc.CallOption) (*historyservice.CreateTopActivityResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTopActivity", varargs...)
+	ret0, _ := ret[0].(*historyservice.CreateTopActivityResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTopActivity indicates an expected call of CreateTopActivity.
+func (mr *MockHistoryServiceClientMockRecorder) CreateTopActivity(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopActivity", reflect.TypeOf((*MockHistoryServiceClient)(nil).CreateTopActivity), varargs...)
+}
+
 // DeleteDLQTasks mocks base method.
 func (m *MockHistoryServiceClient) DeleteDLQTasks(ctx context.Context, in *historyservice.DeleteDLQTasksRequest, opts ...grpc.CallOption) (*historyservice.DeleteDLQTasksResponse, error) {
 	m.ctrl.T.Helper()
@@ -199,6 +219,26 @@ func (mr *MockHistoryServiceClientMockRecorder) DescribeMutableState(ctx, in int
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, in}, opts...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeMutableState", reflect.TypeOf((*MockHistoryServiceClient)(nil).DescribeMutableState), varargs...)
+}
+
+// DescribeTopActivity mocks base method.
+func (m *MockHistoryServiceClient) DescribeTopActivity(ctx context.Context, in *historyservice.DescribeTopActivityRequest, opts ...grpc.CallOption) (*historyservice.DescribeTopActivityResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTopActivity", varargs...)
+	ret0, _ := ret[0].(*historyservice.DescribeTopActivityResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTopActivity indicates an expected call of DescribeTopActivity.
+func (mr *MockHistoryServiceClientMockRecorder) DescribeTopActivity(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTopActivity", reflect.TypeOf((*MockHistoryServiceClient)(nil).DescribeTopActivity), varargs...)
 }
 
 // DescribeWorkflowExecution mocks base method.
@@ -399,6 +439,46 @@ func (mr *MockHistoryServiceClientMockRecorder) GetShard(ctx, in interface{}, op
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, in}, opts...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShard", reflect.TypeOf((*MockHistoryServiceClient)(nil).GetShard), varargs...)
+}
+
+// GetTopActivityHistory mocks base method.
+func (m *MockHistoryServiceClient) GetTopActivityHistory(ctx context.Context, in *historyservice.GetTopActivityHistoryRequest, opts ...grpc.CallOption) (*historyservice.GetTopActivityHistoryResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTopActivityHistory", varargs...)
+	ret0, _ := ret[0].(*historyservice.GetTopActivityHistoryResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopActivityHistory indicates an expected call of GetTopActivityHistory.
+func (mr *MockHistoryServiceClientMockRecorder) GetTopActivityHistory(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopActivityHistory", reflect.TypeOf((*MockHistoryServiceClient)(nil).GetTopActivityHistory), varargs...)
+}
+
+// GetTopActivityTask mocks base method.
+func (m *MockHistoryServiceClient) GetTopActivityTask(ctx context.Context, in *historyservice.GetTopActivityTaskRequest, opts ...grpc.CallOption) (*historyservice.GetTopActivityTaskResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTopActivityTask", varargs...)
+	ret0, _ := ret[0].(*historyservice.GetTopActivityTaskResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopActivityTask indicates an expected call of GetTopActivityTask.
+func (mr *MockHistoryServiceClientMockRecorder) GetTopActivityTask(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopActivityTask", reflect.TypeOf((*MockHistoryServiceClient)(nil).GetTopActivityTask), varargs...)
 }
 
 // GetWorkflowExecutionHistory mocks base method.
@@ -1001,6 +1081,46 @@ func (mr *MockHistoryServiceClientMockRecorder) RespondActivityTaskFailed(ctx, i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondActivityTaskFailed", reflect.TypeOf((*MockHistoryServiceClient)(nil).RespondActivityTaskFailed), varargs...)
 }
 
+// RespondTopActivityCompleted mocks base method.
+func (m *MockHistoryServiceClient) RespondTopActivityCompleted(ctx context.Context, in *historyservice.RespondTopActivityCompletedRequest, opts ...grpc.CallOption) (*historyservice.RespondTopActivityCompletedResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RespondTopActivityCompleted", varargs...)
+	ret0, _ := ret[0].(*historyservice.RespondTopActivityCompletedResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RespondTopActivityCompleted indicates an expected call of RespondTopActivityCompleted.
+func (mr *MockHistoryServiceClientMockRecorder) RespondTopActivityCompleted(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondTopActivityCompleted", reflect.TypeOf((*MockHistoryServiceClient)(nil).RespondTopActivityCompleted), varargs...)
+}
+
+// RespondTopActivityFailed mocks base method.
+func (m *MockHistoryServiceClient) RespondTopActivityFailed(ctx context.Context, in *historyservice.RespondTopActivityFailedRequest, opts ...grpc.CallOption) (*historyservice.RespondTopActivityFailedResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RespondTopActivityFailed", varargs...)
+	ret0, _ := ret[0].(*historyservice.RespondTopActivityFailedResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RespondTopActivityFailed indicates an expected call of RespondTopActivityFailed.
+func (mr *MockHistoryServiceClientMockRecorder) RespondTopActivityFailed(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondTopActivityFailed", reflect.TypeOf((*MockHistoryServiceClient)(nil).RespondTopActivityFailed), varargs...)
+}
+
 // RespondWorkflowTaskCompleted mocks base method.
 func (m *MockHistoryServiceClient) RespondWorkflowTaskCompleted(ctx context.Context, in *historyservice.RespondWorkflowTaskCompletedRequest, opts ...grpc.CallOption) (*historyservice.RespondWorkflowTaskCompletedResponse, error) {
 	m.ctrl.T.Helper()
@@ -1451,6 +1571,21 @@ func (mr *MockHistoryServiceServerMockRecorder) CloseShard(arg0, arg1 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseShard", reflect.TypeOf((*MockHistoryServiceServer)(nil).CloseShard), arg0, arg1)
 }
 
+// CreateTopActivity mocks base method.
+func (m *MockHistoryServiceServer) CreateTopActivity(arg0 context.Context, arg1 *historyservice.CreateTopActivityRequest) (*historyservice.CreateTopActivityResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTopActivity", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.CreateTopActivityResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTopActivity indicates an expected call of CreateTopActivity.
+func (mr *MockHistoryServiceServerMockRecorder) CreateTopActivity(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTopActivity", reflect.TypeOf((*MockHistoryServiceServer)(nil).CreateTopActivity), arg0, arg1)
+}
+
 // DeleteDLQTasks mocks base method.
 func (m *MockHistoryServiceServer) DeleteDLQTasks(arg0 context.Context, arg1 *historyservice.DeleteDLQTasksRequest) (*historyservice.DeleteDLQTasksResponse, error) {
 	m.ctrl.T.Helper()
@@ -1524,6 +1659,21 @@ func (m *MockHistoryServiceServer) DescribeMutableState(arg0 context.Context, ar
 func (mr *MockHistoryServiceServerMockRecorder) DescribeMutableState(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeMutableState", reflect.TypeOf((*MockHistoryServiceServer)(nil).DescribeMutableState), arg0, arg1)
+}
+
+// DescribeTopActivity mocks base method.
+func (m *MockHistoryServiceServer) DescribeTopActivity(arg0 context.Context, arg1 *historyservice.DescribeTopActivityRequest) (*historyservice.DescribeTopActivityResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeTopActivity", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.DescribeTopActivityResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTopActivity indicates an expected call of DescribeTopActivity.
+func (mr *MockHistoryServiceServerMockRecorder) DescribeTopActivity(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTopActivity", reflect.TypeOf((*MockHistoryServiceServer)(nil).DescribeTopActivity), arg0, arg1)
 }
 
 // DescribeWorkflowExecution mocks base method.
@@ -1674,6 +1824,36 @@ func (m *MockHistoryServiceServer) GetShard(arg0 context.Context, arg1 *historys
 func (mr *MockHistoryServiceServerMockRecorder) GetShard(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShard", reflect.TypeOf((*MockHistoryServiceServer)(nil).GetShard), arg0, arg1)
+}
+
+// GetTopActivityHistory mocks base method.
+func (m *MockHistoryServiceServer) GetTopActivityHistory(arg0 context.Context, arg1 *historyservice.GetTopActivityHistoryRequest) (*historyservice.GetTopActivityHistoryResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTopActivityHistory", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.GetTopActivityHistoryResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopActivityHistory indicates an expected call of GetTopActivityHistory.
+func (mr *MockHistoryServiceServerMockRecorder) GetTopActivityHistory(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopActivityHistory", reflect.TypeOf((*MockHistoryServiceServer)(nil).GetTopActivityHistory), arg0, arg1)
+}
+
+// GetTopActivityTask mocks base method.
+func (m *MockHistoryServiceServer) GetTopActivityTask(arg0 context.Context, arg1 *historyservice.GetTopActivityTaskRequest) (*historyservice.GetTopActivityTaskResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTopActivityTask", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.GetTopActivityTaskResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTopActivityTask indicates an expected call of GetTopActivityTask.
+func (mr *MockHistoryServiceServerMockRecorder) GetTopActivityTask(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTopActivityTask", reflect.TypeOf((*MockHistoryServiceServer)(nil).GetTopActivityTask), arg0, arg1)
 }
 
 // GetWorkflowExecutionHistory mocks base method.
@@ -2124,6 +2304,36 @@ func (m *MockHistoryServiceServer) RespondActivityTaskFailed(arg0 context.Contex
 func (mr *MockHistoryServiceServerMockRecorder) RespondActivityTaskFailed(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondActivityTaskFailed", reflect.TypeOf((*MockHistoryServiceServer)(nil).RespondActivityTaskFailed), arg0, arg1)
+}
+
+// RespondTopActivityCompleted mocks base method.
+func (m *MockHistoryServiceServer) RespondTopActivityCompleted(arg0 context.Context, arg1 *historyservice.RespondTopActivityCompletedRequest) (*historyservice.RespondTopActivityCompletedResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RespondTopActivityCompleted", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.RespondTopActivityCompletedResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RespondTopActivityCompleted indicates an expected call of RespondTopActivityCompleted.
+func (mr *MockHistoryServiceServerMockRecorder) RespondTopActivityCompleted(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondTopActivityCompleted", reflect.TypeOf((*MockHistoryServiceServer)(nil).RespondTopActivityCompleted), arg0, arg1)
+}
+
+// RespondTopActivityFailed mocks base method.
+func (m *MockHistoryServiceServer) RespondTopActivityFailed(arg0 context.Context, arg1 *historyservice.RespondTopActivityFailedRequest) (*historyservice.RespondTopActivityFailedResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RespondTopActivityFailed", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.RespondTopActivityFailedResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RespondTopActivityFailed indicates an expected call of RespondTopActivityFailed.
+func (mr *MockHistoryServiceServerMockRecorder) RespondTopActivityFailed(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RespondTopActivityFailed", reflect.TypeOf((*MockHistoryServiceServer)(nil).RespondTopActivityFailed), arg0, arg1)
 }
 
 // RespondWorkflowTaskCompleted mocks base method.

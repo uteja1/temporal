@@ -15,7 +15,7 @@ ci-build-misc: print-go-version ci-update-tools proto bins shell-check copyright
 clean: clean-bins clean-test-results
 
 # Recompile proto files.
-proto: clean-proto buf-lint api-linter protoc service-clients goimports-proto proto-mocks copyright-proto
+proto: clean-proto buf-lint protoc service-clients goimports-proto proto-mocks copyright-proto
 
 # Update proto submodule from remote and recompile proto files.
 update-proto: update-proto-submodule proto gomodtidy

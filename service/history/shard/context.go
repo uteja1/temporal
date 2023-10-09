@@ -117,6 +117,15 @@ type (
 		// If branchToken != nil, then delete history also, otherwise leave history.
 		DeleteWorkflowExecution(ctx context.Context, workflowKey definition.WorkflowKey, branchToken []byte, closeExecutionVisibilityTaskID int64, stage *tasks.DeleteWorkflowExecutionStage) error
 
+		GetASM(
+			ctx context.Context,
+			request *persistence.GetASMRequest,
+		) (*persistence.GetASMResponse, error)
+		UpsertASM(
+			ctx context.Context,
+			request *persistence.UpsertASMRequest,
+		) (*persistence.UpsertASMResponse, error)
+
 		UnloadForOwnershipLost()
 	}
 

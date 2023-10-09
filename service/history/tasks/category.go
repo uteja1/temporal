@@ -102,6 +102,10 @@ var (
 	}
 )
 
+func IsBuiltInCategory(id int) bool {
+	return id <= CategoryIDMemoryTimer
+}
+
 func NewCategory(id int, cType CategoryType, name string) Category {
 	return Category{
 		id:    id,

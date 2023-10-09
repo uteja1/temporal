@@ -418,6 +418,33 @@ func (m *executionManagerImpl) GetWorkflowExecution(
 	return newResponse, respErr
 }
 
+func (m *executionManagerImpl) GetASM(
+	ctx context.Context,
+	request *GetASMRequest,
+) (*GetASMResponse, error) {
+	response, err := m.persistence.GetASM(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+
+	executionMetadata, err := m.serializer.WorkflowExecutionStateFromBlob(
+		response.ExecutionMetadata,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	execution, err := m.serializer.ASMExecutionFromBlob(
+		response.Execution,
+	)
+
+	return &GetASMResponse{
+		ExecutionMetadata: executionMetadata,
+		Execution:         execution,
+		DBRecordVersion:   response.DBRecordVersion,
+	}, nil
+}
+
 func (m *executionManagerImpl) SetWorkflowExecution(
 	ctx context.Context,
 	request *SetWorkflowExecutionRequest,
@@ -439,6 +466,82 @@ func (m *executionManagerImpl) SetWorkflowExecution(
 		return nil, err
 	}
 	return &SetWorkflowExecutionResponse{}, nil
+}
+
+func (m *executionManagerImpl) UpsertASM(
+	ctx context.Context,
+	request *UpsertASMRequest,
+) (*UpsertASMResponse, error) {
+
+	internalUpsertASMRequest := &InternalUpsertASMRequest{
+		ShardID: request.ShardID,
+		RangeID: request.RangeID,
+	}
+
+	internalTransitions := make([]InternalASMTransition, 0, len(request.ASMTransitions))
+	for _, transition := range request.ASMTransitions {
+		internalTransition := InternalASMTransition{
+			ASMKey: definition.NewWorkflowKey(
+				transition.Execution.NamespaceId,
+				transition.Execution.AsmId,
+				transition.ExecutionMetadata.RunId,
+			),
+			DBRecordVersion: transition.DBRecordVersion,
+		}
+
+		executionMetadataBlob, err := m.serializer.WorkflowExecutionStateToBlob(transition.ExecutionMetadata, enumspb.ENCODING_TYPE_PROTO3)
+		if err != nil {
+			return nil, err
+		}
+		internalTransition.ExecutionMetadataBlob = executionMetadataBlob
+
+		executionBlob, err := m.serializer.ASMExecutionToBlob(transition.Execution, enumspb.ENCODING_TYPE_PROTO3)
+		if err != nil {
+			return nil, err
+		}
+		internalTransition.ExecutionBlob = executionBlob
+
+		serializedTasks, err := serializeTasks(m.serializer, transition.Tasks)
+		if err != nil {
+			return nil, err
+		}
+		internalTransition.Tasks = serializedTasks
+
+		for _, newHistoryBatch := range transition.NewHistoryBatches {
+			internalHistoryNodeRequest, err := m.serializeWorkflowEvents(
+				request.ShardID,
+				newHistoryBatch,
+			)
+			if err != nil {
+				return nil, err
+			}
+			internalTransition.NewHistoryBatches = append(internalTransition.NewHistoryBatches, internalHistoryNodeRequest)
+		}
+
+		internalTransitions = append(internalTransitions, internalTransition)
+	}
+	internalUpsertASMRequest.ASMTransitions = internalTransitions
+
+	if request.CurrentASMTransition != nil {
+		executionMetadataBlob, err := m.serializer.WorkflowExecutionStateToBlob(request.CurrentASMTransition.ExecutionMetadata, enumspb.ENCODING_TYPE_PROTO3)
+		if err != nil {
+			return nil, err
+		}
+
+		internalCurrentASM := &InternalCurrentASMTransition{
+			ASMKey:                request.CurrentASMTransition.ASMKey,
+			ExecutionMetadataBlob: executionMetadataBlob,
+		}
+		internalUpsertASMRequest.CurrentASMTransition = internalCurrentASM
+
+	}
+
+	_, err := m.persistence.UpsertASM(ctx, internalUpsertASMRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	return &UpsertASMResponse{}, nil
 }
 
 func (m *executionManagerImpl) serializeWorkflowEventBatches(

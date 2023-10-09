@@ -71,6 +71,8 @@ import (
 	"go.temporal.io/server/common/telemetry"
 	"go.temporal.io/server/service/frontend"
 	"go.temporal.io/server/service/history"
+	"go.temporal.io/server/service/history/asm"
+	"go.temporal.io/server/service/history/asm/plugin/topactivity"
 	"go.temporal.io/server/service/history/replication"
 	"go.temporal.io/server/service/history/tasks"
 	"go.temporal.io/server/service/history/workflow"
@@ -142,11 +144,14 @@ type (
 
 var (
 	TopLevelModule = fx.Options(
+		topactivity.Module,
+
 		fx.Provide(
 			NewServerFxImpl,
 			ServerOptionsProvider,
 			dynamicconfig.NewCollection,
 			resource.ArchivalMetadataProvider,
+			asm.RegistryProvider,
 			TaskCategoryRegistryProvider,
 			PersistenceFactoryProvider,
 			HistoryServiceProvider,
@@ -360,6 +365,7 @@ type (
 		SpanExporters              []otelsdktrace.SpanExporter
 		InstanceID                 resource.InstanceID `optional:"true"`
 		TaskCategoryRegistry       tasks.TaskCategoryRegistry
+		ASMPluginRegistry          asm.Registry
 	}
 )
 
@@ -428,6 +434,9 @@ func (params ServiceProviderParamsCommon) GetCommonServiceOptions(serviceName pr
 			func() tasks.TaskCategoryRegistry {
 				return params.TaskCategoryRegistry
 			},
+			func() asm.Registry {
+				return params.ASMPluginRegistry
+			},
 		),
 		ServiceTracingModule,
 		resource.DefaultOptions,
@@ -441,13 +450,23 @@ func (params ServiceProviderParamsCommon) GetCommonServiceOptions(serviceName pr
 // it, we also do validation on request task categories in the frontend service. As a result, we need to initialize the
 // registry in the server graph, and then propagate it to the service graphs. Otherwise, it would be isolated to the
 // history service's graph.
-func TaskCategoryRegistryProvider(archivalMetadata archiver.ArchivalMetadata) tasks.TaskCategoryRegistry {
+func TaskCategoryRegistryProvider(
+	archivalMetadata archiver.ArchivalMetadata,
+	asmPluginRegistry asm.Registry,
+) tasks.TaskCategoryRegistry {
 	registry := tasks.NewDefaultTaskCategoryRegistry()
 	if archivalMetadata.GetHistoryConfig().StaticClusterState() != archiver.ArchivalEnabled &&
 		archivalMetadata.GetVisibilityConfig().StaticClusterState() != archiver.ArchivalEnabled {
 		return registry
 	}
 	registry.AddCategory(tasks.CategoryArchival)
+
+	for _, plugin := range asmPluginRegistry.List() {
+		for _, category := range plugin.TaskCategories() {
+			registry.AddCategory(category)
+		}
+	}
+
 	return registry
 }
 

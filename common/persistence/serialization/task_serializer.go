@@ -64,6 +64,10 @@ func (s *TaskSerializer) SerializeTask(
 	case tasks.CategoryIDArchival:
 		return s.serializeArchivalTask(task)
 	default:
+		if asmTask, ok := task.(*tasks.ASMTask); ok {
+			return s.serializeASMTask(asmTask)
+		}
+
 		return nil, serviceerror.NewInternal(fmt.Sprintf("Unknown task category: %v", category))
 	}
 }
@@ -84,8 +88,48 @@ func (s *TaskSerializer) DeserializeTask(
 	case tasks.CategoryIDArchival:
 		return s.deserializeArchivalTasks(blob)
 	default:
-		return nil, serviceerror.NewInternal(fmt.Sprintf("Unknown task category: %v", category))
+		return s.deserializeASMTask(category, blob)
+		// return nil, serviceerror.NewInternal(fmt.Sprintf("Unknown task category: %v", category))
 	}
+}
+
+func (s *TaskSerializer) serializeASMTask(
+	task *tasks.ASMTask,
+) (*commonpb.DataBlob, error) {
+	return proto3Encode(&persistencespb.ASMTaskInfo{
+		NamespaceId:    task.NamespaceID,
+		AsmId:          task.WorkflowID,
+		RunId:          task.RunID,
+		VisibilityTime: timestamppb.New(task.VisibilityTimestamp),
+		TaskId:         task.TaskID,
+		AsmToken:       task.ASMToken,
+		TaskBody:       task.Body,
+	})
+}
+
+func (s *TaskSerializer) deserializeASMTask(
+	category tasks.Category,
+	blob *commonpb.DataBlob,
+) (tasks.Task, error) {
+	asmTaskInfo := &persistencespb.ASMTaskInfo{}
+
+	err := proto3Decode(blob.Data, blob.EncodingType.String(), asmTaskInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &tasks.ASMTask{
+		WorkflowKey: definition.NewWorkflowKey(
+			asmTaskInfo.NamespaceId,
+			asmTaskInfo.AsmId,
+			asmTaskInfo.RunId,
+		),
+		Category:            category,
+		VisibilityTimestamp: asmTaskInfo.VisibilityTime.AsTime(),
+		TaskID:              asmTaskInfo.TaskId,
+		ASMToken:            asmTaskInfo.AsmToken,
+		Body:                asmTaskInfo.TaskBody,
+	}, nil
 }
 
 func (s *TaskSerializer) serializeTransferTask(

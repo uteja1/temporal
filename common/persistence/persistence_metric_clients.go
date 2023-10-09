@@ -26,7 +26,6 @@ package persistence
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	commonpb "go.temporal.io/api/common/v1"
@@ -242,6 +241,19 @@ func (p *executionPersistenceClient) GetWorkflowExecution(
 	return p.persistence.GetWorkflowExecution(ctx, request)
 }
 
+func (p *executionPersistenceClient) GetASM(
+	ctx context.Context,
+	request *GetASMRequest,
+) (_ *GetASMResponse, retErr error) {
+	caller := headers.GetCallerInfo(ctx).CallerName
+	startTime := time.Now().UTC()
+	defer func() {
+		p.healthSignals.Record(request.ShardID, caller, time.Since(startTime), retErr)
+		p.recordRequestMetrics(metrics.PersistenceGetASMScope, caller, time.Since(startTime), retErr)
+	}()
+	return p.persistence.GetASM(ctx, request)
+}
+
 func (p *executionPersistenceClient) SetWorkflowExecution(
 	ctx context.Context,
 	request *SetWorkflowExecutionRequest,
@@ -253,6 +265,19 @@ func (p *executionPersistenceClient) SetWorkflowExecution(
 		p.recordRequestMetrics(metrics.PersistenceSetWorkflowExecutionScope, caller, time.Since(startTime), retErr)
 	}()
 	return p.persistence.SetWorkflowExecution(ctx, request)
+}
+
+func (p *executionPersistenceClient) UpsertASM(
+	ctx context.Context,
+	request *UpsertASMRequest,
+) (_ *UpsertASMResponse, retErr error) {
+	caller := headers.GetCallerInfo(ctx).CallerName
+	startTime := time.Now().UTC()
+	defer func() {
+		p.healthSignals.Record(request.ShardID, caller, time.Since(startTime), retErr)
+		p.recordRequestMetrics(metrics.PersistenceUpsertASMScope, caller, time.Since(startTime), retErr)
+	}()
+	return p.persistence.UpsertASM(ctx, request)
 }
 
 func (p *executionPersistenceClient) UpdateWorkflowExecution(
@@ -363,7 +388,8 @@ func (p *executionPersistenceClient) GetHistoryTasks(
 	case tasks.CategoryIDArchival:
 		operation = metrics.PersistenceGetArchivalTasksScope
 	default:
-		return nil, serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
+		operation = "Get" + request.TaskCategory.Name() + "Tasks"
+		// return nil, serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
 	}
 
 	caller := headers.GetCallerInfo(ctx).CallerName
@@ -392,7 +418,8 @@ func (p *executionPersistenceClient) CompleteHistoryTask(
 	case tasks.CategoryIDArchival:
 		operation = metrics.PersistenceCompleteArchivalTaskScope
 	default:
-		return serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
+		operation = "Complete" + request.TaskCategory.Name() + "Task"
+		// return serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
 	}
 
 	caller := headers.GetCallerInfo(ctx).CallerName
@@ -421,7 +448,8 @@ func (p *executionPersistenceClient) RangeCompleteHistoryTasks(
 	case tasks.CategoryIDArchival:
 		operation = metrics.PersistenceRangeCompleteArchivalTasksScope
 	default:
-		return serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
+		operation = "RangeComplete" + request.TaskCategory.Name() + "Tasks"
+		// return serviceerror.NewInternal(fmt.Sprintf("unknown task category type: %v", request.TaskCategory))
 	}
 
 	caller := headers.GetCallerInfo(ctx).CallerName

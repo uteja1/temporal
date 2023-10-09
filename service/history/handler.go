@@ -65,6 +65,8 @@ import (
 	"go.temporal.io/server/service/history/api/forcedeleteworkflowexecution"
 	"go.temporal.io/server/service/history/api/getdlqtasks"
 	"go.temporal.io/server/service/history/api/listqueues"
+	"go.temporal.io/server/service/history/asm"
+	"go.temporal.io/server/service/history/asm/plugin/topactivity"
 	"go.temporal.io/server/service/history/configs"
 	"go.temporal.io/server/service/history/events"
 	"go.temporal.io/server/service/history/replication"
@@ -106,6 +108,8 @@ type (
 		replicationTaskFetcherFactory    replication.TaskFetcherFactory
 		replicationTaskConverterProvider replication.SourceTaskConverterProvider
 		streamReceiverMonitor            replication.StreamReceiverMonitor
+
+		asmEngine asm.Engine
 	}
 
 	NewHandlerArgs struct {
@@ -135,6 +139,8 @@ type (
 		ReplicationTaskFetcherFactory   replication.TaskFetcherFactory
 		ReplicationTaskConverterFactory replication.SourceTaskConverterProvider
 		StreamReceiverMonitor           replication.StreamReceiverMonitor
+
+		ASMEngine asm.Engine
 	}
 )
 
@@ -2191,6 +2197,148 @@ func (h *Handler) AddTasks(
 		return nil, h.convertError(err)
 	}
 	return engine.AddTasks(ctx, request)
+}
+
+func (h *Handler) CreateTopActivity(
+	ctx context.Context,
+	request *historyservice.CreateTopActivityRequest,
+) (*historyservice.CreateTopActivityResponse, error) {
+	resp, err := h.asmEngine.Start(ctx, asm.StartRequest{
+		ASMType:         topactivity.Type,
+		NamespaceID:     request.GetNamespaceId(),
+		ID:              request.GetStartRequest().GetId(),
+		IDReusePolicy:   asm.IDReusePolicyRejectDuplicate,
+		RequestID:       request.GetStartRequest().GetRequestId(),
+		ASMStartRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ASMStartResponse.(*topactivity.StartResponse), nil
+}
+
+func (h *Handler) GetTopActivityTask(
+	ctx context.Context,
+	request *historyservice.GetTopActivityTaskRequest,
+) (*historyservice.GetTopActivityTaskResponse, error) {
+	getRequest := request.GetGetTaskRequest()
+	resp, err := h.asmEngine.Transit(ctx, asm.TransitRequest{
+		ASMToken: nil,
+		ASMRef: asm.ASMRef{
+			NamespaceID: request.GetNamespaceId(),
+			ID:          getRequest.Id,
+			RunID:       getRequest.RunId,
+		},
+		ASMTransitRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	getTaskResponse := resp.ASMTransitResponse.(*topactivity.GetTaskResponse)
+
+	taskToken := &topactivity.TaskToken{
+		ASMToken: resp.ASMToken,
+		Attempt:  getTaskResponse.GetTaskResponse.Attempt,
+	}
+	encodedToken, err := taskToken.Serialize()
+	if err != nil {
+		return nil, err
+	}
+
+	getTaskResponse.GetTaskResponse.Token = encodedToken
+	return getTaskResponse, nil
+}
+
+func (h *Handler) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityCompletedRequest,
+) (*historyservice.RespondTopActivityCompletedResponse, error) {
+	var taskToken topactivity.TaskToken
+	if err := taskToken.Deserialize(request.CompletionRequest.Token); err != nil {
+		return nil, err
+	}
+
+	resp, err := h.asmEngine.Transit(ctx, asm.TransitRequest{
+		ASMToken: taskToken.ASMToken,
+		ASMRef: asm.ASMRef{
+			NamespaceID: request.GetNamespaceId(),
+			ID:          request.CompletionRequest.Id,
+			RunID:       request.CompletionRequest.RunId,
+		},
+		ASMTransitRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ASMTransitResponse.(*topactivity.RespondCompletedResponse), nil
+}
+
+func (h *Handler) RespondTopActivityFailed(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityFailedRequest,
+) (*historyservice.RespondTopActivityFailedResponse, error) {
+	var taskToken topactivity.TaskToken
+	if err := taskToken.Deserialize(request.FailedRequest.Token); err != nil {
+		return nil, err
+	}
+
+	resp, err := h.asmEngine.Transit(ctx, asm.TransitRequest{
+		ASMToken: taskToken.ASMToken,
+		ASMRef: asm.ASMRef{
+			NamespaceID: request.GetNamespaceId(),
+			ID:          request.FailedRequest.Id,
+			RunID:       request.FailedRequest.RunId,
+		},
+		ASMTransitRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ASMTransitResponse.(*topactivity.RespondFailedResponse), nil
+}
+
+func (h *Handler) DescribeTopActivity(
+	ctx context.Context,
+	request *historyservice.DescribeTopActivityRequest,
+) (*historyservice.DescribeTopActivityResponse, error) {
+	resp, err := h.asmEngine.Transit(ctx, asm.TransitRequest{
+		ASMToken: nil,
+		ASMRef: asm.ASMRef{
+			NamespaceID: request.GetNamespaceId(),
+			ID:          request.GetDescRequest().Id,
+			RunID:       request.GetDescRequest().RunId,
+		},
+		ASMTransitRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ASMTransitResponse.(*topactivity.DescribeResponse), nil
+}
+
+func (h *Handler) GetTopActivityHistory(
+	ctx context.Context,
+	request *historyservice.GetTopActivityHistoryRequest,
+) (*historyservice.GetTopActivityHistoryResponse, error) {
+	resp, err := h.asmEngine.Transit(ctx, asm.TransitRequest{
+		ASMToken: nil,
+		ASMRef: asm.ASMRef{
+			NamespaceID: request.GetNamespaceId(),
+			ID:          request.GetHistoryRequest.GetId(),
+			RunID:       request.GetHistoryRequest.GetRunId(),
+		},
+		ASMTransitRequest: request,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.ASMTransitResponse.(*topactivity.GetHistoryResponse), nil
 }
 
 func (h *Handler) ListQueues(

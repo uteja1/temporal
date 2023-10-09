@@ -1,0 +1,68 @@
+// The MIT License
+//
+// Copyright (c) 2020 Temporal Technologies, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+syntax = "proto3";
+
+package temporal.server.api.topactivity.v1;
+option go_package = "go.temporal.io/server/api/topactivity/v1;topactivity";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+import "temporal/api/common/v1/message.proto";
+
+message State {
+    temporal.api.common.v1.ActivityType activity_type = 1;
+    string task_queue = 2;
+    int32 attempt = 3;
+    string started_identity = 4;
+    string request_id = 5;
+    string asm_id = 6;
+    string run_id = 7;
+
+    google.protobuf.Timestamp started_time = 8;
+    google.protobuf.Timestamp scheduled_time = 9;
+    google.protobuf.Timestamp closed_time = 10;
+
+    string state = 11; // "running", "closed"
+    // (-- api-linter: core::0140::prepositions=disabled
+    //     aip.dev/not-precedent: "to" is used to indicate interval. --)
+    google.protobuf.Duration start_to_close_timeout = 12;
+
+    bytes created_event_token = 13;
+}
+
+message TopActivityTask {
+    oneof attributes {
+        TopActivityTimeoutTaskAttributes top_activity_timeout_task_attributes = 1;
+        TopActivityRetryTaskAttributes top_activity_retry_task_attributes = 2;
+    }
+}
+
+message TopActivityTimeoutTaskAttributes {
+    int32 attempt = 1;
+}
+
+message TopActivityRetryTaskAttributes {
+    int32 attempt = 1;
+}
+

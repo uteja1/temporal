@@ -238,6 +238,21 @@ func (p *executionRetryablePersistenceClient) GetWorkflowExecution(
 	return response, err
 }
 
+func (p *executionRetryablePersistenceClient) GetASM(
+	ctx context.Context,
+	request *GetASMRequest,
+) (_ *GetASMResponse, retErr error) {
+	var response *GetASMResponse
+	op := func(ctx context.Context) error {
+		var err error
+		response, err = p.persistence.GetASM(ctx, request)
+		return err
+	}
+
+	err := backoff.ThrottleRetryContext(ctx, op, p.policy, p.isRetryable)
+	return response, err
+}
+
 func (p *executionRetryablePersistenceClient) SetWorkflowExecution(
 	ctx context.Context,
 	request *SetWorkflowExecutionRequest,
@@ -246,6 +261,21 @@ func (p *executionRetryablePersistenceClient) SetWorkflowExecution(
 	op := func(ctx context.Context) error {
 		var err error
 		response, err = p.persistence.SetWorkflowExecution(ctx, request)
+		return err
+	}
+
+	err := backoff.ThrottleRetryContext(ctx, op, p.policy, p.isRetryable)
+	return response, err
+}
+
+func (p *executionRetryablePersistenceClient) UpsertASM(
+	ctx context.Context,
+	request *UpsertASMRequest,
+) (_ *UpsertASMResponse, retErr error) {
+	var response *UpsertASMResponse
+	op := func(ctx context.Context) error {
+		var err error
+		response, err = p.persistence.UpsertASM(ctx, request)
 		return err
 	}
 

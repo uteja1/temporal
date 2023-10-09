@@ -93,6 +93,11 @@ func getCommands(
 			Usage:       "Decode payload",
 			Subcommands: newDecodeCommands(taskBlobEncoder, writer),
 		},
+		{
+			Name:        "topactivity",
+			Usage:       "Run top level activities",
+			Subcommands: newTopActivityCommands(clientFactory),
+		},
 	}
 }
 

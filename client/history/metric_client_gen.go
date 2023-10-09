@@ -61,6 +61,20 @@ func (c *metricClient) CloseShard(
 	return c.client.CloseShard(ctx, request, opts...)
 }
 
+func (c *metricClient) CreateTopActivity(
+	ctx context.Context,
+	request *historyservice.CreateTopActivityRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.CreateTopActivityResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientCreateTopActivity")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.CreateTopActivity(ctx, request, opts...)
+}
+
 func (c *metricClient) DeleteDLQTasks(
 	ctx context.Context,
 	request *historyservice.DeleteDLQTasksRequest,
@@ -129,6 +143,20 @@ func (c *metricClient) DescribeMutableState(
 	}()
 
 	return c.client.DescribeMutableState(ctx, request, opts...)
+}
+
+func (c *metricClient) DescribeTopActivity(
+	ctx context.Context,
+	request *historyservice.DescribeTopActivityRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.DescribeTopActivityResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientDescribeTopActivity")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.DescribeTopActivity(ctx, request, opts...)
 }
 
 func (c *metricClient) DescribeWorkflowExecution(
@@ -269,6 +297,34 @@ func (c *metricClient) GetShard(
 	}()
 
 	return c.client.GetShard(ctx, request, opts...)
+}
+
+func (c *metricClient) GetTopActivityHistory(
+	ctx context.Context,
+	request *historyservice.GetTopActivityHistoryRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.GetTopActivityHistoryResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientGetTopActivityHistory")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.GetTopActivityHistory(ctx, request, opts...)
+}
+
+func (c *metricClient) GetTopActivityTask(
+	ctx context.Context,
+	request *historyservice.GetTopActivityTaskRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.GetTopActivityTaskResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientGetTopActivityTask")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.GetTopActivityTask(ctx, request, opts...)
 }
 
 func (c *metricClient) GetWorkflowExecutionHistory(
@@ -689,6 +745,34 @@ func (c *metricClient) RespondActivityTaskFailed(
 	}()
 
 	return c.client.RespondActivityTaskFailed(ctx, request, opts...)
+}
+
+func (c *metricClient) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityCompletedRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.RespondTopActivityCompletedResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientRespondTopActivityCompleted")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.RespondTopActivityCompleted(ctx, request, opts...)
+}
+
+func (c *metricClient) RespondTopActivityFailed(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityFailedRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.RespondTopActivityFailedResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientRespondTopActivityFailed")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.RespondTopActivityFailed(ctx, request, opts...)
 }
 
 func (c *metricClient) RespondWorkflowTaskCompleted(

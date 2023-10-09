@@ -66,6 +66,43 @@ func (this *ShardInfo) Equal(that interface{}) bool {
 	return proto.Equal(this, that1)
 }
 
+// Marshal an object of type ASMExecution to the protobuf v3 wire format
+func (val *ASMExecution) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type ASMExecution from the protobuf v3 wire format
+func (val *ASMExecution) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *ASMExecution) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two ASMExecution values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *ASMExecution) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *ASMExecution
+	switch t := that.(type) {
+	case *ASMExecution:
+		that1 = t
+	case ASMExecution:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
+
 // Marshal an object of type WorkflowExecutionInfo to the protobuf v3 wire format
 func (val *WorkflowExecutionInfo) Marshal() ([]byte, error) {
 	return proto.Marshal(val)
@@ -169,6 +206,43 @@ func (this *WorkflowExecutionState) Equal(that interface{}) bool {
 	case *WorkflowExecutionState:
 		that1 = t
 	case WorkflowExecutionState:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
+
+// Marshal an object of type ASMTaskInfo to the protobuf v3 wire format
+func (val *ASMTaskInfo) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type ASMTaskInfo from the protobuf v3 wire format
+func (val *ASMTaskInfo) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *ASMTaskInfo) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two ASMTaskInfo values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *ASMTaskInfo) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *ASMTaskInfo
+	switch t := that.(type) {
+	case *ASMTaskInfo:
+		that1 = t
+	case ASMTaskInfo:
 		that1 = &t
 	default:
 		return false

@@ -65,6 +65,21 @@ func (c *retryableClient) CloseShard(
 	return resp, err
 }
 
+func (c *retryableClient) CreateTopActivity(
+	ctx context.Context,
+	request *historyservice.CreateTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.CreateTopActivityResponse, error) {
+	var resp *historyservice.CreateTopActivityResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.CreateTopActivity(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
 func (c *retryableClient) DeleteDLQTasks(
 	ctx context.Context,
 	request *historyservice.DeleteDLQTasksRequest,
@@ -134,6 +149,21 @@ func (c *retryableClient) DescribeMutableState(
 	op := func(ctx context.Context) error {
 		var err error
 		resp, err = c.client.DescribeMutableState(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) DescribeTopActivity(
+	ctx context.Context,
+	request *historyservice.DescribeTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.DescribeTopActivityResponse, error) {
+	var resp *historyservice.DescribeTopActivityResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.DescribeTopActivity(ctx, request, opts...)
 		return err
 	}
 	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
@@ -284,6 +314,36 @@ func (c *retryableClient) GetShard(
 	op := func(ctx context.Context) error {
 		var err error
 		resp, err = c.client.GetShard(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) GetTopActivityHistory(
+	ctx context.Context,
+	request *historyservice.GetTopActivityHistoryRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetTopActivityHistoryResponse, error) {
+	var resp *historyservice.GetTopActivityHistoryResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.GetTopActivityHistory(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) GetTopActivityTask(
+	ctx context.Context,
+	request *historyservice.GetTopActivityTaskRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetTopActivityTaskResponse, error) {
+	var resp *historyservice.GetTopActivityTaskResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.GetTopActivityTask(ctx, request, opts...)
 		return err
 	}
 	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
@@ -734,6 +794,36 @@ func (c *retryableClient) RespondActivityTaskFailed(
 	op := func(ctx context.Context) error {
 		var err error
 		resp, err = c.client.RespondActivityTaskFailed(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityCompletedRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.RespondTopActivityCompletedResponse, error) {
+	var resp *historyservice.RespondTopActivityCompletedResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.RespondTopActivityCompleted(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) RespondTopActivityFailed(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityFailedRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.RespondTopActivityFailedResponse, error) {
+	var resp *historyservice.RespondTopActivityFailedResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.RespondTopActivityFailed(ctx, request, opts...)
 		return err
 	}
 	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)

@@ -36,6 +36,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	persistencespb "go.temporal.io/server/api/persistence/v1"
+	"go.temporal.io/server/common/definition"
 	"go.temporal.io/server/service/history/tasks"
 )
 
@@ -110,6 +111,47 @@ type (
 		PruneClusterMembership(ctx context.Context, request *PruneClusterMembershipRequest) error
 	}
 
+	InternalASMTransition struct {
+		ASMKey definition.WorkflowKey
+
+		ExecutionMetadataBlob *commonpb.DataBlob
+		ExecutionBlob         *commonpb.DataBlob
+
+		// TODO: ASM
+		// StartVersion, LastWriteVersion, etc ???
+
+		Tasks             map[tasks.Category][]InternalHistoryTask
+		NewHistoryBatches []*InternalAppendHistoryNodesRequest
+
+		DBRecordVersion int64
+		// Checksum *commonpb.DataBlob
+	}
+
+	InternalCurrentASMTransition struct {
+		ASMKey                definition.WorkflowKey
+		ExecutionMetadataBlob *commonpb.DataBlob
+		PreviousRunID         string // empty means create a new current record
+	}
+
+	InternalUpsertASMRequest struct {
+		ShardID int32
+		RangeID int64
+
+		ASMTransitions       []InternalASMTransition
+		CurrentASMTransition *InternalCurrentASMTransition
+	}
+
+	InternalUpsertASMResponse struct{}
+
+	InternalGetASMRequest = GetASMRequest
+
+	InternalGetASMResponse struct {
+		ExecutionMetadata *commonpb.DataBlob // WorkflowExecutionState
+		Execution         *commonpb.DataBlob // ASMExecution
+		Checksum          *commonpb.DataBlob // persistencespb.Checksum
+		DBRecordVersion   int64
+	}
+
 	// ExecutionStore is used to manage workflow execution including mutable states / history / tasks.
 	ExecutionStore interface {
 		Closeable
@@ -126,6 +168,9 @@ type (
 		GetCurrentExecution(ctx context.Context, request *GetCurrentExecutionRequest) (*InternalGetCurrentExecutionResponse, error)
 		GetWorkflowExecution(ctx context.Context, request *GetWorkflowExecutionRequest) (*InternalGetWorkflowExecutionResponse, error)
 		SetWorkflowExecution(ctx context.Context, request *InternalSetWorkflowExecutionRequest) error
+
+		GetASM(ctx context.Context, request *InternalGetASMRequest) (*InternalGetASMResponse, error)
+		UpsertASM(ctx context.Context, request *InternalUpsertASMRequest) (*InternalUpsertASMResponse, error)
 
 		// Scan related methods
 		ListConcreteExecutions(ctx context.Context, request *ListConcreteExecutionsRequest) (*InternalListConcreteExecutionsResponse, error)

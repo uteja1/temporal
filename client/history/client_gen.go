@@ -74,6 +74,26 @@ func (c *clientImpl) CloseShard(
 	return response, nil
 }
 
+func (c *clientImpl) CreateTopActivity(
+	ctx context.Context,
+	request *historyservice.CreateTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.CreateTopActivityResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetStartRequest().GetId())
+	var response *historyservice.CreateTopActivityResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.CreateTopActivity(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *clientImpl) DeleteWorkflowExecution(
 	ctx context.Context,
 	request *historyservice.DeleteWorkflowExecutionRequest,
@@ -126,6 +146,26 @@ func (c *clientImpl) DescribeMutableState(
 		ctx, cancel := c.createContext(ctx)
 		defer cancel()
 		response, err = client.DescribeMutableState(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *clientImpl) DescribeTopActivity(
+	ctx context.Context,
+	request *historyservice.DescribeTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.DescribeTopActivityResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetDescRequest().GetId())
+	var response *historyservice.DescribeTopActivityResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.DescribeTopActivity(ctx, request, opts...)
 		return err
 	}
 	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
@@ -270,6 +310,46 @@ func (c *clientImpl) GetShard(
 		ctx, cancel := c.createContext(ctx)
 		defer cancel()
 		response, err = client.GetShard(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *clientImpl) GetTopActivityHistory(
+	ctx context.Context,
+	request *historyservice.GetTopActivityHistoryRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetTopActivityHistoryResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetGetHistoryRequest().GetId())
+	var response *historyservice.GetTopActivityHistoryResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.GetTopActivityHistory(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *clientImpl) GetTopActivityTask(
+	ctx context.Context,
+	request *historyservice.GetTopActivityTaskRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetTopActivityTaskResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetGetTaskRequest().GetId())
+	var response *historyservice.GetTopActivityTaskResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.GetTopActivityTask(ctx, request, opts...)
 		return err
 	}
 	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
@@ -870,6 +950,46 @@ func (c *clientImpl) RespondActivityTaskFailed(
 		ctx, cancel := c.createContext(ctx)
 		defer cancel()
 		response, err = client.RespondActivityTaskFailed(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *clientImpl) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityCompletedRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.RespondTopActivityCompletedResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetCompletionRequest().GetId())
+	var response *historyservice.RespondTopActivityCompletedResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.RespondTopActivityCompleted(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *clientImpl) RespondTopActivityFailed(
+	ctx context.Context,
+	request *historyservice.RespondTopActivityFailedRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.RespondTopActivityFailedResponse, error) {
+	shardID := c.shardIDFromWorkflowID(request.NamespaceId, request.GetFailedRequest().GetId())
+	var response *historyservice.RespondTopActivityFailedResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.RespondTopActivityFailed(ctx, request, opts...)
 		return err
 	}
 	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {

@@ -66,6 +66,23 @@ message ShardInfo {
     map<int32, QueueState> queue_states = 17;
 }
 
+message ASMExecution {
+    string asm_type = 1;
+    string namespace_id = 2;
+    string asm_id = 3;
+    google.protobuf.Timestamp start_time = 4;
+    google.protobuf.Timestamp close_time = 5;
+    google.protobuf.Timestamp last_update_time = 6;
+    temporal.server.api.history.v1.VersionHistories version_histories = 7;
+    // string first_execution_run_id = 8;
+    // google.protobuf.Timestamp asm_run_expiration_time = 9;
+    int64 last_first_event_txn_id = 10;
+    int64 state_transition_count = 11;
+    int64 next_event_id = 12;
+
+    temporal.api.common.v1.DataBlob body = 100;
+}
+
 // execution column
 message WorkflowExecutionInfo {
     string namespace_id = 1;
@@ -173,6 +190,16 @@ message WorkflowExecutionState {
     string run_id = 2;
     temporal.server.api.enums.v1.WorkflowExecutionState state = 3;
     temporal.api.enums.v1.WorkflowExecutionStatus status = 4;
+}
+
+message ASMTaskInfo {
+    string namespace_id = 1;
+    string asm_id = 2;
+    string run_id = 3;
+    google.protobuf.Timestamp visibility_time = 4;
+    int64 task_id = 5;
+    bytes asm_token = 6;
+    temporal.api.common.v1.DataBlob task_body = 7;
 }
 
 // transfer column

@@ -1137,6 +1137,21 @@ func (mr *MockExecutionStoreMockRecorder) UpdateWorkflowExecution(ctx, request i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateWorkflowExecution", reflect.TypeOf((*MockExecutionStore)(nil).UpdateWorkflowExecution), ctx, request)
 }
 
+// UpsertASM mocks base method.
+func (m *MockExecutionStore) UpsertASM(ctx context.Context, request *persistence.InternalUpsertASMRequest) (*persistence.InternalUpsertASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertASM", ctx, request)
+	ret0, _ := ret[0].(*persistence.InternalUpsertASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertASM indicates an expected call of UpsertASM.
+func (mr *MockExecutionStoreMockRecorder) UpsertASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertASM", reflect.TypeOf((*MockExecutionStore)(nil).UpsertASM), ctx, request)
+}
+
 // MockQueue is a mock of Queue interface.
 type MockQueue struct {
 	ctrl     *gomock.Controller

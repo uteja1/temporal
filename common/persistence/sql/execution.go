@@ -751,6 +751,20 @@ func (m *sqlExecutionStore) setWorkflowExecutionTx(
 	)
 }
 
+func (m *sqlExecutionStore) GetASM(
+	ctx context.Context,
+	request *p.InternalGetASMRequest,
+) (*p.InternalGetASMResponse, error) {
+	return nil, serviceerror.NewUnimplemented("GetASM is not implemented for sql execution store")
+}
+
+func (m *sqlExecutionStore) UpsertASM(
+	ctx context.Context,
+	request *p.InternalUpsertASMRequest,
+) (*p.InternalUpsertASMResponse, error) {
+	return nil, serviceerror.NewUnimplemented("UpsertASM is not implemented for sql execution store")
+}
+
 func (m *sqlExecutionStore) ListConcreteExecutions(
 	_ context.Context,
 	_ *p.ListConcreteExecutionsRequest,

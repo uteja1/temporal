@@ -183,15 +183,16 @@ func makeGetHistoryClient(reqType reflect.Type) string {
 
 	shardIdField := findNestedField(t, "ShardId", "request", 1)
 	workflowIdField := findNestedField(t, "WorkflowId", "request", 4)
+	idField := findNestedField(t, "Id", "request", 2)
 	taskTokenField := findNestedField(t, "TaskToken", "request", 2)
 	taskInfosField := findNestedField(t, "TaskInfos", "request", 1)
 
-	found := len(shardIdField) + len(workflowIdField) + len(taskTokenField) + len(taskInfosField)
+	found := len(shardIdField) + len(workflowIdField) + len(idField) + len(taskTokenField) + len(taskInfosField)
 	if found < 1 {
 		panic(fmt.Sprintf("Found no routing fields in %s", t))
 	} else if found > 1 {
 		panic(fmt.Sprintf("Found more than one routing field in %s (%v, %v, %v, %v)",
-			t, shardIdField, workflowIdField, taskTokenField, taskInfosField))
+			t, shardIdField, workflowIdField, idField, taskTokenField, taskInfosField))
 	}
 
 	switch {
@@ -199,6 +200,8 @@ func makeGetHistoryClient(reqType reflect.Type) string {
 		return fmt.Sprintf("shardID := %s", shardIdField[0].path)
 	case len(workflowIdField) == 1:
 		return fmt.Sprintf("shardID := c.shardIDFromWorkflowID(request.NamespaceId, %s)", workflowIdField[0].path)
+	case len(idField) == 1:
+		return fmt.Sprintf("shardID := c.shardIDFromWorkflowID(request.NamespaceId, %s)", idField[0].path)
 	case len(taskTokenField) == 1:
 		return fmt.Sprintf(`taskToken, err := c.tokenSerializer.Deserialize(%s)
 	if err != nil {

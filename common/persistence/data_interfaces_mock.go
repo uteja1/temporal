@@ -356,6 +356,21 @@ func (mr *MockExecutionManagerMockRecorder) ForkHistoryBranch(ctx, request inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForkHistoryBranch", reflect.TypeOf((*MockExecutionManager)(nil).ForkHistoryBranch), ctx, request)
 }
 
+// GetASM mocks base method.
+func (m *MockExecutionManager) GetASM(ctx context.Context, request *GetASMRequest) (*GetASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetASM", ctx, request)
+	ret0, _ := ret[0].(*GetASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetASM indicates an expected call of GetASM.
+func (mr *MockExecutionManagerMockRecorder) GetASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetASM", reflect.TypeOf((*MockExecutionManager)(nil).GetASM), ctx, request)
+}
+
 // GetAllHistoryTreeBranches mocks base method.
 func (m *MockExecutionManager) GetAllHistoryTreeBranches(ctx context.Context, request *GetAllHistoryTreeBranchesRequest) (*GetAllHistoryTreeBranchesResponse, error) {
 	m.ctrl.T.Helper()
@@ -634,6 +649,21 @@ func (m *MockExecutionManager) UpdateWorkflowExecution(ctx context.Context, requ
 func (mr *MockExecutionManagerMockRecorder) UpdateWorkflowExecution(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateWorkflowExecution", reflect.TypeOf((*MockExecutionManager)(nil).UpdateWorkflowExecution), ctx, request)
+}
+
+// UpsertASM mocks base method.
+func (m *MockExecutionManager) UpsertASM(ctx context.Context, request *UpsertASMRequest) (*UpsertASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertASM", ctx, request)
+	ret0, _ := ret[0].(*UpsertASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertASM indicates an expected call of UpsertASM.
+func (mr *MockExecutionManagerMockRecorder) UpsertASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertASM", reflect.TypeOf((*MockExecutionManager)(nil).UpsertASM), ctx, request)
 }
 
 // MockTaskManager is a mock of TaskManager interface.

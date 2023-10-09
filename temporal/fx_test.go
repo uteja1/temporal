@@ -37,6 +37,7 @@ import (
 	"go.temporal.io/server/common/config"
 	"go.temporal.io/server/common/log"
 	"go.temporal.io/server/common/persistence"
+	"go.temporal.io/server/service/history/asm"
 	"go.temporal.io/server/service/history/tasks"
 	"go.temporal.io/server/tests/testutils"
 )
@@ -167,7 +168,7 @@ func TestTaskCategoryRegistryProvider(t *testing.T) {
 			visibilityArchivalConfig := archiver.NewMockArchivalConfig(ctrl)
 			visibilityArchivalConfig.EXPECT().StaticClusterState().Return(tc.visibilityState).AnyTimes()
 			archivalMetadata.EXPECT().GetVisibilityConfig().Return(visibilityArchivalConfig).AnyTimes()
-			registry := TaskCategoryRegistryProvider(archivalMetadata)
+			registry := TaskCategoryRegistryProvider(archivalMetadata, asm.NewRegistry())
 			_, ok := registry.GetCategoryByID(tasks.CategoryIDArchival)
 			if tc.expectArchivalCategory {
 				require.True(t, ok)

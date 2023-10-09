@@ -220,6 +220,18 @@ func (p *executionRateLimitedPersistenceClient) GetWorkflowExecution(
 	return response, err
 }
 
+func (p *executionRateLimitedPersistenceClient) GetASM(
+	ctx context.Context,
+	request *GetASMRequest,
+) (_ *GetASMResponse, retErr error) {
+	if ok := allow(ctx, "GetASM", request.ShardID, p.rateLimiter); !ok {
+		return nil, ErrPersistenceLimitExceeded
+	}
+
+	response, err := p.persistence.GetASM(ctx, request)
+	return response, err
+}
+
 func (p *executionRateLimitedPersistenceClient) SetWorkflowExecution(
 	ctx context.Context,
 	request *SetWorkflowExecutionRequest,
@@ -229,6 +241,18 @@ func (p *executionRateLimitedPersistenceClient) SetWorkflowExecution(
 	}
 
 	response, err := p.persistence.SetWorkflowExecution(ctx, request)
+	return response, err
+}
+
+func (p *executionRateLimitedPersistenceClient) UpsertASM(
+	ctx context.Context,
+	request *UpsertASMRequest,
+) (_ *UpsertASMResponse, retErr error) {
+	if ok := allow(ctx, "UpsertASM", request.ShardID, p.rateLimiter); !ok {
+		return nil, ErrPersistenceLimitExceeded
+	}
+
+	response, err := p.persistence.UpsertASM(ctx, request)
 	return response, err
 }
 

@@ -52,6 +52,7 @@ import (
 	"go.temporal.io/server/service"
 	"go.temporal.io/server/service/history/api"
 	"go.temporal.io/server/service/history/archival"
+	"go.temporal.io/server/service/history/asm"
 	"go.temporal.io/server/service/history/configs"
 	"go.temporal.io/server/service/history/consts"
 	"go.temporal.io/server/service/history/events"
@@ -67,6 +68,7 @@ var Module = fx.Options(
 	events.Module,
 	cache.Module,
 	archival.Module,
+	asm.Module,
 	fx.Provide(dynamicconfig.NewCollection),
 	fx.Provide(ConfigProvider), // might be worth just using provider for configs.Config directly
 	fx.Provide(RetryableInterceptorProvider),
@@ -146,6 +148,8 @@ func HandlerProvider(args NewHandlerArgs) *Handler {
 		replicationTaskFetcherFactory:    args.ReplicationTaskFetcherFactory,
 		replicationTaskConverterProvider: args.ReplicationTaskConverterFactory,
 		streamReceiverMonitor:            args.StreamReceiverMonitor,
+
+		asmEngine: args.ASMEngine,
 	}
 
 	// prevent us from trying to serve requests before shard controller is started and ready

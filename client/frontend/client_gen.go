@@ -53,6 +53,16 @@ func (c *clientImpl) CreateSchedule(
 	return c.client.CreateSchedule(ctx, request, opts...)
 }
 
+func (c *clientImpl) CreateTopActivity(
+	ctx context.Context,
+	request *workflowservice.CreateTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.CreateTopActivityResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.CreateTopActivity(ctx, request, opts...)
+}
+
 func (c *clientImpl) DeleteSchedule(
 	ctx context.Context,
 	request *workflowservice.DeleteScheduleRequest,
@@ -123,6 +133,16 @@ func (c *clientImpl) DescribeTaskQueue(
 	return c.client.DescribeTaskQueue(ctx, request, opts...)
 }
 
+func (c *clientImpl) DescribeTopActivity(
+	ctx context.Context,
+	request *workflowservice.DescribeTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.DescribeTopActivityResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.DescribeTopActivity(ctx, request, opts...)
+}
+
 func (c *clientImpl) DescribeWorkflowExecution(
 	ctx context.Context,
 	request *workflowservice.DescribeWorkflowExecutionRequest,
@@ -161,6 +181,26 @@ func (c *clientImpl) GetSystemInfo(
 	ctx, cancel := c.createContext(ctx)
 	defer cancel()
 	return c.client.GetSystemInfo(ctx, request, opts...)
+}
+
+func (c *clientImpl) GetTopActivityHistory(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityHistoryRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.GetTopActivityHistoryResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.GetTopActivityHistory(ctx, request, opts...)
+}
+
+func (c *clientImpl) GetTopActivityTask(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityTaskRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.GetTopActivityTaskResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.GetTopActivityTask(ctx, request, opts...)
 }
 
 func (c *clientImpl) GetWorkerBuildIdCompatibility(
@@ -501,6 +541,26 @@ func (c *clientImpl) RespondQueryTaskCompleted(
 	ctx, cancel := c.createContext(ctx)
 	defer cancel()
 	return c.client.RespondQueryTaskCompleted(ctx, request, opts...)
+}
+
+func (c *clientImpl) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityCompletedRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.RespondTopActivityCompletedResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.RespondTopActivityCompleted(ctx, request, opts...)
+}
+
+func (c *clientImpl) RespondTopActivityFailed(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityFailedRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.RespondTopActivityFailedResponse, error) {
+	ctx, cancel := c.createContext(ctx)
+	defer cancel()
+	return c.client.RespondTopActivityFailed(ctx, request, opts...)
 }
 
 func (c *clientImpl) RespondWorkflowTaskCompleted(

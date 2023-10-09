@@ -102,6 +102,12 @@ const (
 	HistoryService_DeleteDLQTasks_FullMethodName                         = "/temporal.server.api.historyservice.v1.HistoryService/DeleteDLQTasks"
 	HistoryService_ListQueues_FullMethodName                             = "/temporal.server.api.historyservice.v1.HistoryService/ListQueues"
 	HistoryService_AddTasks_FullMethodName                               = "/temporal.server.api.historyservice.v1.HistoryService/AddTasks"
+	HistoryService_CreateTopActivity_FullMethodName                      = "/temporal.server.api.historyservice.v1.HistoryService/CreateTopActivity"
+	HistoryService_GetTopActivityTask_FullMethodName                     = "/temporal.server.api.historyservice.v1.HistoryService/GetTopActivityTask"
+	HistoryService_RespondTopActivityCompleted_FullMethodName            = "/temporal.server.api.historyservice.v1.HistoryService/RespondTopActivityCompleted"
+	HistoryService_RespondTopActivityFailed_FullMethodName               = "/temporal.server.api.historyservice.v1.HistoryService/RespondTopActivityFailed"
+	HistoryService_DescribeTopActivity_FullMethodName                    = "/temporal.server.api.historyservice.v1.HistoryService/DescribeTopActivity"
+	HistoryService_GetTopActivityHistory_FullMethodName                  = "/temporal.server.api.historyservice.v1.HistoryService/GetTopActivityHistory"
 )
 
 // HistoryServiceClient is the client API for HistoryService service.
@@ -306,6 +312,12 @@ type HistoryServiceClient interface {
 	// will fail with an InvalidArgument error. It is ok to have tasks for different workflow runs as long as they are
 	// in the same shard. Calls to the persistence API will be batched by workflow run.
 	AddTasks(ctx context.Context, in *AddTasksRequest, opts ...grpc.CallOption) (*AddTasksResponse, error)
+	CreateTopActivity(ctx context.Context, in *CreateTopActivityRequest, opts ...grpc.CallOption) (*CreateTopActivityResponse, error)
+	GetTopActivityTask(ctx context.Context, in *GetTopActivityTaskRequest, opts ...grpc.CallOption) (*GetTopActivityTaskResponse, error)
+	RespondTopActivityCompleted(ctx context.Context, in *RespondTopActivityCompletedRequest, opts ...grpc.CallOption) (*RespondTopActivityCompletedResponse, error)
+	RespondTopActivityFailed(ctx context.Context, in *RespondTopActivityFailedRequest, opts ...grpc.CallOption) (*RespondTopActivityFailedResponse, error)
+	DescribeTopActivity(ctx context.Context, in *DescribeTopActivityRequest, opts ...grpc.CallOption) (*DescribeTopActivityResponse, error)
+	GetTopActivityHistory(ctx context.Context, in *GetTopActivityHistoryRequest, opts ...grpc.CallOption) (*GetTopActivityHistoryResponse, error)
 }
 
 type historyServiceClient struct {
@@ -878,6 +890,60 @@ func (c *historyServiceClient) AddTasks(ctx context.Context, in *AddTasksRequest
 	return out, nil
 }
 
+func (c *historyServiceClient) CreateTopActivity(ctx context.Context, in *CreateTopActivityRequest, opts ...grpc.CallOption) (*CreateTopActivityResponse, error) {
+	out := new(CreateTopActivityResponse)
+	err := c.cc.Invoke(ctx, HistoryService_CreateTopActivity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *historyServiceClient) GetTopActivityTask(ctx context.Context, in *GetTopActivityTaskRequest, opts ...grpc.CallOption) (*GetTopActivityTaskResponse, error) {
+	out := new(GetTopActivityTaskResponse)
+	err := c.cc.Invoke(ctx, HistoryService_GetTopActivityTask_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *historyServiceClient) RespondTopActivityCompleted(ctx context.Context, in *RespondTopActivityCompletedRequest, opts ...grpc.CallOption) (*RespondTopActivityCompletedResponse, error) {
+	out := new(RespondTopActivityCompletedResponse)
+	err := c.cc.Invoke(ctx, HistoryService_RespondTopActivityCompleted_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *historyServiceClient) RespondTopActivityFailed(ctx context.Context, in *RespondTopActivityFailedRequest, opts ...grpc.CallOption) (*RespondTopActivityFailedResponse, error) {
+	out := new(RespondTopActivityFailedResponse)
+	err := c.cc.Invoke(ctx, HistoryService_RespondTopActivityFailed_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *historyServiceClient) DescribeTopActivity(ctx context.Context, in *DescribeTopActivityRequest, opts ...grpc.CallOption) (*DescribeTopActivityResponse, error) {
+	out := new(DescribeTopActivityResponse)
+	err := c.cc.Invoke(ctx, HistoryService_DescribeTopActivity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *historyServiceClient) GetTopActivityHistory(ctx context.Context, in *GetTopActivityHistoryRequest, opts ...grpc.CallOption) (*GetTopActivityHistoryResponse, error) {
+	out := new(GetTopActivityHistoryResponse)
+	err := c.cc.Invoke(ctx, HistoryService_GetTopActivityHistory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HistoryServiceServer is the server API for HistoryService service.
 // All implementations must embed UnimplementedHistoryServiceServer
 // for forward compatibility
@@ -1080,6 +1146,12 @@ type HistoryServiceServer interface {
 	// will fail with an InvalidArgument error. It is ok to have tasks for different workflow runs as long as they are
 	// in the same shard. Calls to the persistence API will be batched by workflow run.
 	AddTasks(context.Context, *AddTasksRequest) (*AddTasksResponse, error)
+	CreateTopActivity(context.Context, *CreateTopActivityRequest) (*CreateTopActivityResponse, error)
+	GetTopActivityTask(context.Context, *GetTopActivityTaskRequest) (*GetTopActivityTaskResponse, error)
+	RespondTopActivityCompleted(context.Context, *RespondTopActivityCompletedRequest) (*RespondTopActivityCompletedResponse, error)
+	RespondTopActivityFailed(context.Context, *RespondTopActivityFailedRequest) (*RespondTopActivityFailedResponse, error)
+	DescribeTopActivity(context.Context, *DescribeTopActivityRequest) (*DescribeTopActivityResponse, error)
+	GetTopActivityHistory(context.Context, *GetTopActivityHistoryRequest) (*GetTopActivityHistoryResponse, error)
 	mustEmbedUnimplementedHistoryServiceServer()
 }
 
@@ -1266,6 +1338,24 @@ func (UnimplementedHistoryServiceServer) ListQueues(context.Context, *ListQueues
 }
 func (UnimplementedHistoryServiceServer) AddTasks(context.Context, *AddTasksRequest) (*AddTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTasks not implemented")
+}
+func (UnimplementedHistoryServiceServer) CreateTopActivity(context.Context, *CreateTopActivityRequest) (*CreateTopActivityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTopActivity not implemented")
+}
+func (UnimplementedHistoryServiceServer) GetTopActivityTask(context.Context, *GetTopActivityTaskRequest) (*GetTopActivityTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTopActivityTask not implemented")
+}
+func (UnimplementedHistoryServiceServer) RespondTopActivityCompleted(context.Context, *RespondTopActivityCompletedRequest) (*RespondTopActivityCompletedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RespondTopActivityCompleted not implemented")
+}
+func (UnimplementedHistoryServiceServer) RespondTopActivityFailed(context.Context, *RespondTopActivityFailedRequest) (*RespondTopActivityFailedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RespondTopActivityFailed not implemented")
+}
+func (UnimplementedHistoryServiceServer) DescribeTopActivity(context.Context, *DescribeTopActivityRequest) (*DescribeTopActivityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribeTopActivity not implemented")
+}
+func (UnimplementedHistoryServiceServer) GetTopActivityHistory(context.Context, *GetTopActivityHistoryRequest) (*GetTopActivityHistoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTopActivityHistory not implemented")
 }
 func (UnimplementedHistoryServiceServer) mustEmbedUnimplementedHistoryServiceServer() {}
 
@@ -2368,6 +2458,114 @@ func _HistoryService_AddTasks_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HistoryService_CreateTopActivity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTopActivityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).CreateTopActivity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_CreateTopActivity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).CreateTopActivity(ctx, req.(*CreateTopActivityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HistoryService_GetTopActivityTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTopActivityTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).GetTopActivityTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_GetTopActivityTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).GetTopActivityTask(ctx, req.(*GetTopActivityTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HistoryService_RespondTopActivityCompleted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespondTopActivityCompletedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).RespondTopActivityCompleted(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_RespondTopActivityCompleted_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).RespondTopActivityCompleted(ctx, req.(*RespondTopActivityCompletedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HistoryService_RespondTopActivityFailed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespondTopActivityFailedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).RespondTopActivityFailed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_RespondTopActivityFailed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).RespondTopActivityFailed(ctx, req.(*RespondTopActivityFailedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HistoryService_DescribeTopActivity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribeTopActivityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).DescribeTopActivity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_DescribeTopActivity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).DescribeTopActivity(ctx, req.(*DescribeTopActivityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HistoryService_GetTopActivityHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTopActivityHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HistoryServiceServer).GetTopActivityHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HistoryService_GetTopActivityHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HistoryServiceServer).GetTopActivityHistory(ctx, req.(*GetTopActivityHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HistoryService_ServiceDesc is the grpc.ServiceDesc for HistoryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2610,6 +2808,30 @@ var HistoryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddTasks",
 			Handler:    _HistoryService_AddTasks_Handler,
+		},
+		{
+			MethodName: "CreateTopActivity",
+			Handler:    _HistoryService_CreateTopActivity_Handler,
+		},
+		{
+			MethodName: "GetTopActivityTask",
+			Handler:    _HistoryService_GetTopActivityTask_Handler,
+		},
+		{
+			MethodName: "RespondTopActivityCompleted",
+			Handler:    _HistoryService_RespondTopActivityCompleted_Handler,
+		},
+		{
+			MethodName: "RespondTopActivityFailed",
+			Handler:    _HistoryService_RespondTopActivityFailed_Handler,
+		},
+		{
+			MethodName: "DescribeTopActivity",
+			Handler:    _HistoryService_DescribeTopActivity_Handler,
+		},
+		{
+			MethodName: "GetTopActivityHistory",
+			Handler:    _HistoryService_GetTopActivityHistory_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

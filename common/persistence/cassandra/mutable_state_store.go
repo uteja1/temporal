@@ -34,6 +34,7 @@ import (
 
 	enumsspb "go.temporal.io/server/api/enums/v1"
 	persistencespb "go.temporal.io/server/api/persistence/v1"
+	"go.temporal.io/server/common"
 	"go.temporal.io/server/common/log"
 	p "go.temporal.io/server/common/persistence"
 	"go.temporal.io/server/common/persistence/nosql/nosqlplugin/cassandra/gocql"
@@ -81,6 +82,17 @@ const (
 
 	templateGetWorkflowExecutionQuery = `SELECT execution, execution_encoding, execution_state, execution_state_encoding, next_event_id, activity_map, activity_map_encoding, timer_map, timer_map_encoding, ` +
 		`child_executions_map, child_executions_map_encoding, request_cancel_map, request_cancel_map_encoding, signal_map, signal_map_encoding, signal_requested, buffered_events_list, ` +
+		`checksum, checksum_encoding, db_record_version ` +
+		`FROM executions ` +
+		`WHERE shard_id = ? ` +
+		`and type = ? ` +
+		`and namespace_id = ? ` +
+		`and workflow_id = ? ` +
+		`and run_id = ? ` +
+		`and visibility_ts = ? ` +
+		`and task_id = ?`
+
+	templateGetASMQuery = `SELECT execution, execution_encoding, execution_state, execution_state_encoding, ` +
 		`checksum, checksum_encoding, db_record_version ` +
 		`FROM executions ` +
 		`WHERE shard_id = ? ` +
@@ -1025,6 +1037,194 @@ func (d *MutableStateStore) SetWorkflowExecution(
 		)
 	}
 	return nil
+}
+
+func (d *MutableStateStore) GetASM(
+	ctx context.Context,
+	request *p.InternalGetASMRequest,
+) (*p.InternalGetASMResponse, error) {
+	query := d.Session.Query(templateGetASMQuery,
+		request.ShardID,
+		rowTypeExecution,
+		request.ASMKey.NamespaceID,
+		request.ASMKey.WorkflowID,
+		request.ASMKey.RunID,
+		defaultVisibilityTimestamp,
+		rowTypeExecutionTaskID,
+	).WithContext(ctx)
+
+	result := make(map[string]interface{})
+	if err := query.MapScan(result); err != nil {
+		return nil, gocql.ConvertError("GetASM", err)
+	}
+
+	eiBytes, ok := result["execution"].([]byte)
+	if !ok {
+		return nil, newPersistedTypeMismatchError("execution", "", eiBytes, result)
+	}
+
+	eiEncoding, ok := result["execution_encoding"].(string)
+	if !ok {
+		return nil, newPersistedTypeMismatchError("execution_encoding", "", eiEncoding, result)
+	}
+
+	executionState, err := executionStateBlobFromRow(result)
+	if err != nil {
+		return nil, serviceerror.NewUnavailable(fmt.Sprintf("GetASM operation failed. Error: %v", err))
+	}
+
+	return &p.InternalGetASMResponse{
+		Execution:         p.NewDataBlob(eiBytes, eiEncoding),
+		ExecutionMetadata: executionState,
+		Checksum:          p.NewDataBlob(result["checksum"].([]byte), result["checksum_encoding"].(string)),
+		DBRecordVersion:   result["db_record_version"].(int64),
+	}, nil
+}
+
+func (d *MutableStateStore) UpsertASM(
+	ctx context.Context,
+	request *p.InternalUpsertASMRequest,
+) (*p.InternalUpsertASMResponse, error) {
+	batch := d.Session.NewBatch(gocql.LoggedBatch).WithContext(ctx)
+
+	requestCurrentRunID := ""
+	if request.CurrentASMTransition != nil {
+		if len(request.CurrentASMTransition.PreviousRunID) == 0 {
+			batch.Query(templateCreateCurrentWorkflowExecutionQuery,
+				request.ShardID,
+				rowTypeExecution,
+				request.CurrentASMTransition.ASMKey.NamespaceID,
+				request.CurrentASMTransition.ASMKey.WorkflowID,
+				permanentRunID,
+				defaultVisibilityTimestamp,
+				rowTypeExecutionTaskID,
+				request.CurrentASMTransition.ASMKey.RunID,
+				request.CurrentASMTransition.ExecutionMetadataBlob.Data,
+				request.CurrentASMTransition.ExecutionMetadataBlob.EncodingType.String(),
+				common.EmptyVersion,                           // TODO: ASM xdc
+				enumsspb.WORKFLOW_EXECUTION_STATE_UNSPECIFIED, // TODO: ASM not used?
+			)
+		} else {
+			batch.Query(templateUpdateCurrentWorkflowExecutionQuery,
+				request.CurrentASMTransition.ASMKey.RunID,
+				request.CurrentASMTransition.ExecutionMetadataBlob.Data,
+				request.CurrentASMTransition.ExecutionMetadataBlob.EncodingType.String(),
+				common.EmptyVersion,                           // TODO: ASM xdc
+				enumsspb.WORKFLOW_EXECUTION_STATE_UNSPECIFIED, // TODO: ASM not used?
+				request.ShardID,
+				rowTypeExecution,
+				request.CurrentASMTransition.ASMKey.NamespaceID,
+				request.CurrentASMTransition.ASMKey.WorkflowID,
+				permanentRunID,
+				defaultVisibilityTimestamp,
+				rowTypeExecutionTaskID,
+				request.CurrentASMTransition.PreviousRunID,
+			)
+			requestCurrentRunID = request.CurrentASMTransition.PreviousRunID
+		}
+	}
+
+	var casCondition []executionCASCondition
+	for _, transition := range request.ASMTransitions {
+		if transition.DBRecordVersion == 0 {
+			panic("DBRecordVersion cannot be 0")
+		}
+
+		if transition.ExecutionMetadataBlob == nil {
+			panic("ExecutionMetadataBlob cannot be nil")
+		}
+
+		if transition.ExecutionBlob == nil {
+			panic("ExecutionBlob cannot be nil")
+		}
+
+		if transition.DBRecordVersion == 1 {
+			batch.Query(templateCreateWorkflowExecutionQuery,
+				request.ShardID,
+				transition.ASMKey.NamespaceID,
+				transition.ASMKey.WorkflowID,
+				transition.ASMKey.RunID,
+				rowTypeExecution,
+				transition.ExecutionBlob.Data,
+				transition.ExecutionBlob.EncodingType.String(),
+				transition.ExecutionMetadataBlob.Data,
+				transition.ExecutionMetadataBlob.EncodingType.String(),
+				common.EmptyEventID, // TODO: ASM not used?
+				transition.DBRecordVersion,
+				defaultVisibilityTimestamp,
+				rowTypeExecutionTaskID,
+				[]byte{}, // TODO: ASM checksum
+				"",       // TODO: ASM checksum
+			)
+			// TODO: ASM is this correct?
+			casCondition = append(casCondition, executionCASCondition{
+				runID:       transition.ASMKey.RunID,
+				dbVersion:   transition.DBRecordVersion - 1,
+				nextEventID: common.EmptyEventID,
+			})
+		} else {
+			batch.Query(templateUpdateWorkflowExecutionQuery,
+				transition.ExecutionBlob.Data,
+				transition.ExecutionBlob.EncodingType.String(),
+				transition.ExecutionMetadataBlob.Data,
+				transition.ExecutionMetadataBlob.EncodingType.String(),
+				common.EmptyEventID, // TODO: ASM not used?
+				transition.DBRecordVersion,
+				[]byte{}, // TODO: ASM checksum
+				"",       // TODO: ASM checksum
+				request.ShardID,
+				rowTypeExecution,
+				transition.ASMKey.NamespaceID,
+				transition.ASMKey.WorkflowID,
+				transition.ASMKey.RunID,
+				defaultVisibilityTimestamp,
+				rowTypeExecutionTaskID,
+				transition.DBRecordVersion-1,
+			)
+			casCondition = append(casCondition, executionCASCondition{
+				runID:       transition.ASMKey.RunID,
+				dbVersion:   transition.DBRecordVersion - 1,
+				nextEventID: common.EmptyEventID,
+			})
+		}
+
+		if err := applyTasks(batch, request.ShardID, transition.Tasks); err != nil {
+			return nil, err
+		}
+	}
+
+	batch.Query(templateUpdateLeaseQuery,
+		request.RangeID,
+		request.ShardID,
+		rowTypeShard,
+		rowTypeShardNamespaceID,
+		rowTypeShardWorkflowID,
+		rowTypeShardRunID,
+		defaultVisibilityTimestamp,
+		rowTypeShardTaskID,
+		request.RangeID,
+	)
+
+	conflictRecord := newConflictRecord()
+	applied, conflictIter, err := d.Session.MapExecuteBatchCAS(batch, conflictRecord)
+	if err != nil {
+		return nil, gocql.ConvertError("UpsertASM", err)
+	}
+	defer func() {
+		_ = conflictIter.Close()
+	}()
+
+	if !applied {
+		return nil, convertErrors(
+			conflictRecord,
+			conflictIter,
+			request.ShardID,
+			request.RangeID,
+			requestCurrentRunID,
+			casCondition,
+		)
+	}
+	return &p.InternalUpsertASMResponse{}, nil
 }
 
 func (d *MutableStateStore) ListConcreteExecutions(

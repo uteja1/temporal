@@ -64,6 +64,7 @@ import (
 	"go.temporal.io/server/common/primitives"
 	"go.temporal.io/server/common/rpc/encryption"
 	"go.temporal.io/server/common/searchattribute"
+	"go.temporal.io/server/service/history/asm"
 	"go.temporal.io/server/temporal"
 	"go.temporal.io/server/tests/testutils"
 )
@@ -290,7 +291,7 @@ func NewClusterWithPersistenceTestBaseFactory(t *testing.T, options *TestCluster
 		}
 	}
 
-	taskCategoryRegistry := temporal.TaskCategoryRegistryProvider(archiverBase.metadata)
+	taskCategoryRegistry := temporal.TaskCategoryRegistryProvider(archiverBase.metadata, asm.NewRegistry())
 
 	temporalParams := &TemporalParams{
 		ClusterMetadataConfig:            clusterMetadataConfig,

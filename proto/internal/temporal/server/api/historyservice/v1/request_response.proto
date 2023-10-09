@@ -163,22 +163,22 @@ message RecordWorkflowTaskStartedRequest {
 
 message RecordWorkflowTaskStartedResponse {
     temporal.api.common.v1.WorkflowType workflow_type = 1;
-    int64 previous_started_event_id = 2;
-    int64 scheduled_event_id = 3;
-    int64 started_event_id = 4;
-    int64 next_event_id = 5;
+    int64 previous_started_event_id = 2; // needed by sdk
+    int64 scheduled_event_id = 3; // task token
+    int64 started_event_id = 4; // needed by sdk
+    int64 next_event_id = 5; // for get history
     int32 attempt = 6;
-    bool sticky_execution_enabled = 7;
+    bool sticky_execution_enabled = 7; //  for get history
     temporal.server.api.history.v1.TransientWorkflowTaskInfo transient_workflow_task = 8;
     temporal.api.taskqueue.v1.TaskQueue workflow_execution_task_queue = 9;
     reserved 10;
-    bytes branch_token = 11;
+    bytes branch_token = 11; // for load hisory and next page token
     google.protobuf.Timestamp scheduled_time = 12;
     google.protobuf.Timestamp started_time = 13;
     map<string, temporal.api.query.v1.WorkflowQuery> queries = 14;
     temporal.server.api.clock.v1.VectorClock clock = 15;
     repeated temporal.api.protocol.v1.Message messages = 16;
-    int64 version = 17;
+    int64 version = 17; // task token
     temporal.api.history.v1.History history = 18;
     bytes next_page_token = 19;
 }
@@ -186,7 +186,7 @@ message RecordWorkflowTaskStartedResponse {
 message RecordActivityTaskStartedRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution workflow_execution = 2;
-    int64 scheduled_event_id = 3;
+    int64 scheduled_event_id = 3; // key
     reserved 4;
     // Unique id of each poll request. Used to ensure at most once delivery of tasks.
     string request_id = 5;
@@ -202,8 +202,8 @@ message RecordActivityTaskStartedResponse {
     temporal.api.common.v1.Payloads heartbeat_details = 5;
     temporal.api.common.v1.WorkflowType workflow_type = 6;
     string workflow_namespace = 7;
-    temporal.server.api.clock.v1.VectorClock clock = 8;
-    int64 version = 9;
+    temporal.server.api.clock.v1.VectorClock clock = 8; // task token
+    int64 version = 9; // task token
 }
 
 message RespondWorkflowTaskCompletedRequest {
@@ -229,8 +229,8 @@ message RespondWorkflowTaskFailedResponse {
 message IsWorkflowTaskValidRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution execution = 2;
-    temporal.server.api.clock.v1.VectorClock clock = 3;
-    int64 scheduled_event_id = 4;
+    temporal.server.api.clock.v1.VectorClock clock = 3; // for consistency
+    int64 scheduled_event_id = 4; // key
 }
 
 message IsWorkflowTaskValidResponse {
@@ -274,8 +274,8 @@ message RespondActivityTaskCanceledResponse {
 message IsActivityTaskValidRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution execution = 2;
-    temporal.server.api.clock.v1.VectorClock clock = 3;
-    int64 scheduled_event_id = 4;
+    temporal.server.api.clock.v1.VectorClock clock = 3; // for consistency
+    int64 scheduled_event_id = 4; // key
 }
 
 message IsActivityTaskValidResponse {
@@ -326,7 +326,7 @@ message TerminateWorkflowExecutionResponse {
 message DeleteWorkflowExecutionRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution workflow_execution = 2;
-    int64 workflow_version = 3;
+    int64 workflow_version = 3; //  not really used?
     bool closed_workflow_only = 4;
 }
 
@@ -357,8 +357,8 @@ message ScheduleWorkflowTaskRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution workflow_execution = 2;
     bool is_first_workflow_task = 3;
-    temporal.server.api.clock.v1.VectorClock child_clock = 4;
-    temporal.server.api.clock.v1.VectorClock parent_clock = 5;
+    temporal.server.api.clock.v1.VectorClock child_clock = 4; // for consistency
+    temporal.server.api.clock.v1.VectorClock parent_clock = 5; // stored in ms for respond back
 }
 
 message ScheduleWorkflowTaskResponse {
@@ -383,11 +383,11 @@ message VerifyFirstWorkflowTaskScheduledResponse {
 message RecordChildExecutionCompletedRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution parent_execution = 2;
-    int64 parent_initiated_id = 3;
+    int64 parent_initiated_id = 3; // key for the child in parent
     temporal.api.common.v1.WorkflowExecution child_execution = 4;
     temporal.api.history.v1.HistoryEvent completion_event = 5;
-    temporal.server.api.clock.v1.VectorClock clock = 6;
-    int64 parent_initiated_version = 7;
+    temporal.server.api.clock.v1.VectorClock clock = 6; // for consistency
+    int64 parent_initiated_version = 7; // version, also part of key
 }
 
 message RecordChildExecutionCompletedResponse {
@@ -397,9 +397,9 @@ message VerifyChildExecutionCompletionRecordedRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution parent_execution = 2;
     temporal.api.common.v1.WorkflowExecution child_execution = 3;
-    int64 parent_initiated_id = 4;
-    int64 parent_initiated_version = 5;
-    temporal.server.api.clock.v1.VectorClock clock = 6;
+    int64 parent_initiated_id = 4; // key
+    int64 parent_initiated_version = 5; // key
+    temporal.server.api.clock.v1.VectorClock clock = 6; // consistency
 }
 
 message VerifyChildExecutionCompletionRecordedResponse {
@@ -490,6 +490,7 @@ message ActivitySyncInfo {
 message SyncActivityResponse {
 }
 
+// this is admin request, should return plugin + frameworkf info for debugging
 message DescribeMutableStateRequest {
     string namespace_id = 1;
     temporal.api.common.v1.WorkflowExecution execution = 2;
@@ -840,3 +841,57 @@ message AddTasksRequest {
 }
 
 message AddTasksResponse {}
+
+message CreateTopActivityRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.CreateTopActivityRequest start_request = 2;
+}
+
+message CreateTopActivityResponse {
+    temporal.api.workflowservice.v1.CreateTopActivityResponse start_response = 1;
+}
+
+message GetTopActivityTaskRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.GetTopActivityTaskRequest get_task_request = 2;
+}
+
+message GetTopActivityTaskResponse {
+    temporal.api.workflowservice.v1.GetTopActivityTaskResponse get_task_response = 1;
+}
+
+message RespondTopActivityCompletedRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.RespondTopActivityCompletedRequest completion_request = 2;
+}
+
+message RespondTopActivityCompletedResponse {
+    temporal.api.workflowservice.v1.RespondTopActivityCompletedResponse completion_response = 1;
+}
+
+message RespondTopActivityFailedRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.RespondTopActivityFailedRequest failed_request = 2;
+}
+
+message RespondTopActivityFailedResponse {
+    temporal.api.workflowservice.v1.RespondTopActivityFailedResponse failed_response = 1;
+}
+
+message DescribeTopActivityRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.DescribeTopActivityRequest desc_request = 2;
+}
+
+message DescribeTopActivityResponse {
+    temporal.api.workflowservice.v1.DescribeTopActivityResponse desc_response = 1;
+}
+
+message GetTopActivityHistoryRequest {
+    string namespace_id = 1;
+    temporal.api.workflowservice.v1.GetTopActivityHistoryRequest get_history_request = 2;
+}
+
+message GetTopActivityHistoryResponse {
+    temporal.api.workflowservice.v1.GetTopActivityHistoryResponse get_history_response = 1;
+}

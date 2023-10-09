@@ -65,6 +65,21 @@ func (c *retryableClient) CreateSchedule(
 	return resp, err
 }
 
+func (c *retryableClient) CreateTopActivity(
+	ctx context.Context,
+	request *workflowservice.CreateTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.CreateTopActivityResponse, error) {
+	var resp *workflowservice.CreateTopActivityResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.CreateTopActivity(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
 func (c *retryableClient) DeleteSchedule(
 	ctx context.Context,
 	request *workflowservice.DeleteScheduleRequest,
@@ -170,6 +185,21 @@ func (c *retryableClient) DescribeTaskQueue(
 	return resp, err
 }
 
+func (c *retryableClient) DescribeTopActivity(
+	ctx context.Context,
+	request *workflowservice.DescribeTopActivityRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.DescribeTopActivityResponse, error) {
+	var resp *workflowservice.DescribeTopActivityResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.DescribeTopActivity(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
 func (c *retryableClient) DescribeWorkflowExecution(
 	ctx context.Context,
 	request *workflowservice.DescribeWorkflowExecutionRequest,
@@ -224,6 +254,36 @@ func (c *retryableClient) GetSystemInfo(
 	op := func(ctx context.Context) error {
 		var err error
 		resp, err = c.client.GetSystemInfo(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) GetTopActivityHistory(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityHistoryRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.GetTopActivityHistoryResponse, error) {
+	var resp *workflowservice.GetTopActivityHistoryResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.GetTopActivityHistory(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) GetTopActivityTask(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityTaskRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.GetTopActivityTaskResponse, error) {
+	var resp *workflowservice.GetTopActivityTaskResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.GetTopActivityTask(ctx, request, opts...)
 		return err
 	}
 	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
@@ -734,6 +794,36 @@ func (c *retryableClient) RespondQueryTaskCompleted(
 	op := func(ctx context.Context) error {
 		var err error
 		resp, err = c.client.RespondQueryTaskCompleted(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityCompletedRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.RespondTopActivityCompletedResponse, error) {
+	var resp *workflowservice.RespondTopActivityCompletedResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.RespondTopActivityCompleted(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
+func (c *retryableClient) RespondTopActivityFailed(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityFailedRequest,
+	opts ...grpc.CallOption,
+) (*workflowservice.RespondTopActivityFailedResponse, error) {
+	var resp *workflowservice.RespondTopActivityFailedResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.RespondTopActivityFailed(ctx, request, opts...)
 		return err
 	}
 	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)

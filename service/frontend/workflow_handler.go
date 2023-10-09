@@ -3814,6 +3814,144 @@ func (wh *WorkflowHandler) ListBatchOperations(
 	}, nil
 }
 
+func (wh *WorkflowHandler) CreateTopActivity(
+	ctx context.Context,
+	request *workflowservice.CreateTopActivityRequest,
+) (*workflowservice.CreateTopActivityResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.CreateTopActivity(
+		ctx,
+		&historyservice.CreateTopActivityRequest{
+			NamespaceId:  namespaceID.String(),
+			StartRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetStartResponse(), nil
+}
+
+func (wh *WorkflowHandler) GetTopActivityTask(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityTaskRequest,
+) (*workflowservice.GetTopActivityTaskResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.GetTopActivityTask(
+		ctx,
+		&historyservice.GetTopActivityTaskRequest{
+			NamespaceId:    namespaceID.String(),
+			GetTaskRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetGetTaskResponse(), nil
+}
+
+func (wh *WorkflowHandler) RespondTopActivityCompleted(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityCompletedRequest,
+) (*workflowservice.RespondTopActivityCompletedResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.RespondTopActivityCompleted(
+		ctx,
+		&historyservice.RespondTopActivityCompletedRequest{
+			NamespaceId:       namespaceID.String(),
+			CompletionRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetCompletionResponse(), nil
+}
+
+func (wh *WorkflowHandler) RespondTopActivityFailed(
+	ctx context.Context,
+	request *workflowservice.RespondTopActivityFailedRequest,
+) (*workflowservice.RespondTopActivityFailedResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.RespondTopActivityFailed(
+		ctx,
+		&historyservice.RespondTopActivityFailedRequest{
+			NamespaceId:   namespaceID.String(),
+			FailedRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetFailedResponse(), nil
+}
+
+func (wh *WorkflowHandler) DescribeTopActivity(
+	ctx context.Context,
+	request *workflowservice.DescribeTopActivityRequest,
+) (*workflowservice.DescribeTopActivityResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.DescribeTopActivity(
+		ctx,
+		&historyservice.DescribeTopActivityRequest{
+			NamespaceId: namespaceID.String(),
+			DescRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetDescResponse(), nil
+}
+
+func (wh *WorkflowHandler) GetTopActivityHistory(
+	ctx context.Context,
+	request *workflowservice.GetTopActivityHistoryRequest,
+) (*workflowservice.GetTopActivityHistoryResponse, error) {
+	namespaceID, err := wh.namespaceRegistry.GetNamespaceID(namespace.Name(request.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := wh.historyClient.GetTopActivityHistory(
+		ctx,
+		&historyservice.GetTopActivityHistoryRequest{
+			NamespaceId:       namespaceID.String(),
+			GetHistoryRequest: request,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetGetHistoryResponse(), nil
+}
+
 func (wh *WorkflowHandler) validateSearchAttributes(searchAttributes *commonpb.SearchAttributes, namespaceName namespace.Name) error {
 	if err := wh.saValidator.Validate(searchAttributes, namespaceName.String()); err != nil {
 		return err

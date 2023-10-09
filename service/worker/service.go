@@ -234,7 +234,7 @@ func NewConfig(
 			Persistence: persistenceConfig,
 			TaskQueueScannerEnabled: dc.GetBoolProperty(
 				dynamicconfig.TaskQueueScannerEnabled,
-				true,
+				false,
 			),
 			BuildIdScavengerEnabled: dc.GetBoolProperty(
 				dynamicconfig.BuildIdScavengerEnabled,
@@ -242,7 +242,7 @@ func NewConfig(
 			),
 			HistoryScannerEnabled: dc.GetBoolProperty(
 				dynamicconfig.HistoryScannerEnabled,
-				true,
+				false,
 			),
 			ExecutionsScannerEnabled: dc.GetBoolProperty(
 				dynamicconfig.ExecutionsScannerEnabled,

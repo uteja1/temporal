@@ -223,6 +223,21 @@ func (mr *MockContextMockRecorder) GenerateTaskIDs(number interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTaskIDs", reflect.TypeOf((*MockContext)(nil).GenerateTaskIDs), number)
 }
 
+// GetASM mocks base method.
+func (m *MockContext) GetASM(ctx context.Context, request *persistence.GetASMRequest) (*persistence.GetASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetASM", ctx, request)
+	ret0, _ := ret[0].(*persistence.GetASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetASM indicates an expected call of GetASM.
+func (mr *MockContextMockRecorder) GetASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetASM", reflect.TypeOf((*MockContext)(nil).GetASM), ctx, request)
+}
+
 // GetArchivalMetadata mocks base method.
 func (m *MockContext) GetArchivalMetadata() archiver.ArchivalMetadata {
 	m.ctrl.T.Helper()
@@ -743,6 +758,21 @@ func (mr *MockContextMockRecorder) UpdateWorkflowExecution(ctx, request interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateWorkflowExecution", reflect.TypeOf((*MockContext)(nil).UpdateWorkflowExecution), ctx, request)
 }
 
+// UpsertASM mocks base method.
+func (m *MockContext) UpsertASM(ctx context.Context, request *persistence.UpsertASMRequest) (*persistence.UpsertASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertASM", ctx, request)
+	ret0, _ := ret[0].(*persistence.UpsertASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertASM indicates an expected call of UpsertASM.
+func (mr *MockContextMockRecorder) UpsertASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertASM", reflect.TypeOf((*MockContext)(nil).UpsertASM), ctx, request)
+}
+
 // MockControllableContext is a mock of ControllableContext interface.
 type MockControllableContext struct {
 	ctrl     *gomock.Controller
@@ -921,6 +951,21 @@ func (m *MockControllableContext) GenerateTaskIDs(number int) ([]int64, error) {
 func (mr *MockControllableContextMockRecorder) GenerateTaskIDs(number interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTaskIDs", reflect.TypeOf((*MockControllableContext)(nil).GenerateTaskIDs), number)
+}
+
+// GetASM mocks base method.
+func (m *MockControllableContext) GetASM(ctx context.Context, request *persistence.GetASMRequest) (*persistence.GetASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetASM", ctx, request)
+	ret0, _ := ret[0].(*persistence.GetASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetASM indicates an expected call of GetASM.
+func (mr *MockControllableContextMockRecorder) GetASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetASM", reflect.TypeOf((*MockControllableContext)(nil).GetASM), ctx, request)
 }
 
 // GetArchivalMetadata mocks base method.
@@ -1469,4 +1514,19 @@ func (m *MockControllableContext) UpdateWorkflowExecution(ctx context.Context, r
 func (mr *MockControllableContextMockRecorder) UpdateWorkflowExecution(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateWorkflowExecution", reflect.TypeOf((*MockControllableContext)(nil).UpdateWorkflowExecution), ctx, request)
+}
+
+// UpsertASM mocks base method.
+func (m *MockControllableContext) UpsertASM(ctx context.Context, request *persistence.UpsertASMRequest) (*persistence.UpsertASMResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertASM", ctx, request)
+	ret0, _ := ret[0].(*persistence.UpsertASMResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpsertASM indicates an expected call of UpsertASM.
+func (mr *MockControllableContextMockRecorder) UpsertASM(ctx, request interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertASM", reflect.TypeOf((*MockControllableContext)(nil).UpsertASM), ctx, request)
 }

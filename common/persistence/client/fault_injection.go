@@ -551,6 +551,26 @@ func (e *FaultInjectionExecutionStore) SetWorkflowExecution(
 	return e.baseExecutionStore.SetWorkflowExecution(ctx, request)
 }
 
+func (e *FaultInjectionExecutionStore) GetASM(
+	ctx context.Context,
+	request *persistence.InternalGetASMRequest,
+) (*persistence.InternalGetASMResponse, error) {
+	if err := e.ErrorGenerator.Generate(); err != nil {
+		return nil, err
+	}
+	return e.baseExecutionStore.GetASM(ctx, request)
+}
+
+func (e *FaultInjectionExecutionStore) UpsertASM(
+	ctx context.Context,
+	request *persistence.InternalUpsertASMRequest,
+) (*persistence.InternalUpsertASMResponse, error) {
+	if err := e.ErrorGenerator.Generate(); err != nil {
+		return nil, err
+	}
+	return e.baseExecutionStore.UpsertASM(ctx, request)
+}
+
 func (e *FaultInjectionExecutionStore) UpdateWorkflowExecution(
 	ctx context.Context,
 	request *persistence.InternalUpdateWorkflowExecutionRequest,

@@ -183,6 +183,8 @@ const (
 	PersistenceUpdateWorkflowExecutionScope = "UpdateWorkflowExecution"
 	// PersistenceConflictResolveWorkflowExecutionScope tracks ConflictResolveWorkflowExecution calls made by service to persistence layer
 	PersistenceConflictResolveWorkflowExecutionScope = "ConflictResolveWorkflowExecution"
+	PersistenceGetASMScope                           = "GetASM"
+	PersistenceUpsertASMScope                        = "UpsertASM"
 	// PersistenceDeleteWorkflowExecutionScope tracks DeleteWorkflowExecution calls made by service to persistence layer
 	PersistenceDeleteWorkflowExecutionScope = "DeleteWorkflowExecution"
 	// PersistenceDeleteCurrentWorkflowExecutionScope tracks DeleteCurrentWorkflowExecution calls made by service to persistence layer

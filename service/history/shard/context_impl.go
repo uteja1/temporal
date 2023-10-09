@@ -625,6 +625,92 @@ func (s *ContextImpl) CreateWorkflowExecution(
 	return resp, nil
 }
 
+func (s *ContextImpl) GetASM(
+	ctx context.Context,
+	request *persistence.GetASMRequest,
+) (*persistence.GetASMResponse, error) {
+	if err := s.errorByState(); err != nil {
+		return nil, err
+	}
+
+	resp, err := s.executionManager.GetASM(ctx, request)
+	if err = s.handleReadError(err); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (s *ContextImpl) UpsertASM(
+	ctx context.Context,
+	request *persistence.UpsertASMRequest,
+) (*persistence.UpsertASMResponse, error) {
+	// TODO: validate
+
+	// do not try to get namespace cache within shard lock
+	namespaceID := namespace.ID(request.ASMTransitions[0].Execution.NamespaceId)
+	namespaceEntry, err := s.GetNamespaceRegistry().GetNamespaceByID(namespaceID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.ioSemaphoreAcquire(ctx); err != nil {
+		return nil, err
+	}
+	defer s.ioSemaphoreRelease()
+
+	s.wLock()
+
+	// timeout check should be done within the shard lock, in case of shard lock contention
+	ctx, cancel, err := s.newDetachedContext(ctx)
+	if err != nil {
+		s.wUnlock()
+		return nil, err
+	}
+	defer cancel()
+
+	if err := s.errorByState(); err != nil {
+		s.wUnlock()
+		return nil, err
+	}
+
+	if err := s.errorByNamespaceStateLocked(namespaceEntry.Name()); err != nil {
+		s.wUnlock()
+		return nil, err
+	}
+
+	taskMaps := make([]map[tasks.Category][]tasks.Task, 0, len(request.ASMTransitions))
+	for _, transition := range request.ASMTransitions {
+		taskMaps = append(taskMaps, transition.Tasks)
+	}
+	requestCompletionFn, err := s.taskKeyManager.setAndTrackTaskKeys(taskMaps...)
+	if err != nil {
+		s.wUnlock()
+		return nil, err
+	}
+
+	request.RangeID = s.getRangeIDLocked()
+	s.wUnlock()
+
+	resp, err := s.executionManager.UpsertASM(ctx, request)
+	requestCompletionFn(err)
+	if err = s.handleWriteError(request.RangeID, err); err != nil {
+		return nil, err
+	}
+
+	engine, err := s.GetEngine(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if OperationPossiblySucceeded(err) {
+		for _, newTasks := range taskMaps {
+			engine.NotifyNewTasks(newTasks)
+		}
+	}
+
+	return resp, nil
+}
+
 func (s *ContextImpl) UpdateWorkflowExecution(
 	ctx context.Context,
 	request *persistence.UpdateWorkflowExecutionRequest,

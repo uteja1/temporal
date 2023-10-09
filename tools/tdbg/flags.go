@@ -32,6 +32,7 @@ var (
 	FlagNamespace                  = "namespace"
 	FlagNamespaceAlias             = []string{"n"}
 	FlagShardID                    = "shard-id"
+	FlagID                         = "id"
 	FlagWorkflowID                 = "workflow-id"
 	FlagWorkflowIDAlias            = []string{"wid"}
 	FlagRunID                      = "run-id"
@@ -50,6 +51,9 @@ var (
 	FlagPrintFullyDetail           = "print-full"
 	FlagPrintJSON                  = "print-json"
 	FlagHeartbeatedWithin          = "heartbeated-within"
+	FlagPayloads                   = "payloads"
+	FlagMessage                    = "message"
+	FlagTaskToken                  = "task-token"
 	FlagInputFilename              = "input-filename"
 	FlagOutputFilename             = "output-filename"
 	FlagClusterMembershipRole      = "role"
@@ -86,4 +90,6 @@ var (
 	FlagBase64File                 = "base64-file"
 	FlagTaskCategoryID             = "task-category-id"
 	FlagEncoding                   = "encoding"
+	FlagActivityType               = "activity-type"
+	FlagActivityTypeAlias          = []string{"at"}
 )

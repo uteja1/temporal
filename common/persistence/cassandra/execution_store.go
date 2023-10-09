@@ -157,6 +157,22 @@ func (d *ExecutionStore) UpdateWorkflowExecution(
 	return d.MutableStateStore.UpdateWorkflowExecution(ctx, request)
 }
 
+func (d *ExecutionStore) UpsertASM(
+	ctx context.Context,
+	request *p.InternalUpsertASMRequest,
+) (*p.InternalUpsertASMResponse, error) {
+
+	for _, transition := range request.ASMTransitions {
+		for _, req := range transition.NewHistoryBatches {
+			if err := d.AppendHistoryNodes(ctx, req); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return d.MutableStateStore.UpsertASM(ctx, request)
+}
+
 func (d *ExecutionStore) ConflictResolveWorkflowExecution(
 	ctx context.Context,
 	request *p.InternalConflictResolveWorkflowExecutionRequest,
