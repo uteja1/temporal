@@ -476,12 +476,15 @@ func (ms *MutableStateImpl) SetHistoryTree(
 	// NOTE: Unfortunately execution timeout and run timeout are not yet initialized into ms.executionInfo at this point.
 	// TODO: Consider explicitly initializing mutable state with these timeout parameters instead of passing them in.
 
+	workflowKey := ms.GetWorkflowKey()
 	var retentionDuration *time.Duration
 	if duration := ms.namespaceEntry.Retention(); duration > 0 {
 		retentionDuration = &duration
 	}
 	initialBranchToken, err := ms.shard.GetExecutionManager().GetHistoryBranchUtil().NewHistoryBranch(
-		ms.namespaceEntry.ID().String(),
+		workflowKey.NamespaceID,
+		workflowKey.WorkflowID,
+		workflowKey.RunID,
 		treeID,
 		nil,
 		[]*persistencespb.HistoryBranchRange{},
