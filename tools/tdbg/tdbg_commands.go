@@ -93,6 +93,12 @@ func getCommands(
 			Usage:       "Decode payload",
 			Subcommands: newDecodeCommands(taskBlobEncoder, writer),
 		},
+		{
+			Name:        "dynamic-config",
+			Aliases:     []string{"dc"},
+			Usage:       "Run admin operation on dynamic config",
+			Subcommands: newDynamicConfigCommands(clientFactory),
+		},
 	}
 }
 
@@ -782,6 +788,25 @@ func newDecodeCommands(
 				}
 				return nil
 			},
+		},
+	}
+}
+
+func newDynamicConfigCommands(clientFactory ClientFactory) []*cli.Command {
+	return []*cli.Command{
+		{
+			Name:  "dump",
+			Usage: "Dump the entire dynamic config",
+			//Flags: []cli.Flag{
+			//	&cli.StringFlag{
+			//		Name:  FlagClusterMembershipRole,
+			//		Value: "all",
+			//		Usage: "Membership role filter: all (default), frontend, history, matching, worker",
+			//	},
+			//},
+			//Action: func(c *cli.Context) error {
+			//	return AdminListGossipMembers(c, clientFactory)
+			//},
 		},
 	}
 }
