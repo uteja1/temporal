@@ -35,6 +35,8 @@ system.enableEagerWorkflowStart:
 limit.maxIDLength:
   - value: 255
     constraints: {}
+frontend.workerVersioningRuleAPIs:
+  - value: true
 frontend.workerVersioningDataAPIs:
   - value: true
 frontend.workerVersioningWorkflowAPIs:
