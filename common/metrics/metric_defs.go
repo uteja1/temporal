@@ -969,6 +969,10 @@ var (
 	DDShardIOSemaphoreLatency            = NewTimerDef("dd_shard_io_semaphore_latency")
 	DDNamespaceRegistryLockLatency       = NewTimerDef("dd_namespace_registry_lock_latency")
 
+	// Rate limiter
+	RLCapacityRequested = NewGaugeDef("rl_capacity_requested")
+	RLCapacityAllocated = NewGaugeDef("rl_capacity_allocated")
+
 	// Matching
 	MatchingClientForwardedCounter            = NewCounterDef("forwarded")
 	MatchingClientInvalidTaskQueueName        = NewCounterDef("invalid_task_queue_name")

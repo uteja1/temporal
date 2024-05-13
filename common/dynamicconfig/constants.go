@@ -1062,5 +1062,5 @@ const (
 	// WorkerDeleteNamespaceActivityLimitsConfig is a map that contains a copy of relevant sdkworker.Options
 	// settings for controlling remote activity concurrency for delete namespace workflows.
 	WorkerDeleteNamespaceActivityLimitsConfig = "worker.deleteNamespaceActivityLimitsConfig"
-	NamespaceAPS                              = "test.namespaceAPS"
+	NamespaceAPS                              = "saas.namespaceAPS"
 )

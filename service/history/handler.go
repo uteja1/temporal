@@ -2267,6 +2267,7 @@ func validateTaskToken(taskToken *tokenspb.Task) error {
 
 func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *historyservice.ReserveRateLimiterTokensRequest) (
 	_ *historyservice.ReserveRateLimiterTokensResponse, retError error) {
+	metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Requester))).Record(float64(request.Tokens))
 	limiter := h.rateLimiterController.GetNamespaceRateLimiter(request.Requester)
 	allowed := limiter.Allow(time.Now(), quotas.Request{
 		API:           "",
@@ -2277,9 +2278,9 @@ func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *history
 		Initiation:    "",
 	})
 	if allowed {
-		h.logger.Info(fmt.Sprintf("PPV: Allowing %v tokens for namespace %v", request.Tokens, request.Requester))
+		metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Requester))).Record(float64(request.Tokens))
 		return &historyservice.ReserveRateLimiterTokensResponse{Tokenss: request.Tokens}, nil
 	}
-	h.logger.Info(fmt.Sprintf("PPV: Allowing 0 tokens for namespace %v", request.Requester))
+	metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Requester))).Record(float64(0))
 	return &historyservice.ReserveRateLimiterTokensResponse{Tokenss: 0}, nil
 }
