@@ -635,6 +635,20 @@ func (c *metricClient) RequestCancelWorkflowExecution(
 	return c.client.RequestCancelWorkflowExecution(ctx, request, opts...)
 }
 
+func (c *metricClient) ReserveRateLimiterTokens(
+	ctx context.Context,
+	request *historyservice.ReserveRateLimiterTokensRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.ReserveRateLimiterTokensResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientReserveRateLimiterTokens")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.ReserveRateLimiterTokens(ctx, request, opts...)
+}
+
 func (c *metricClient) ResetStickyTaskQueue(
 	ctx context.Context,
 	request *historyservice.ResetStickyTaskQueueRequest,

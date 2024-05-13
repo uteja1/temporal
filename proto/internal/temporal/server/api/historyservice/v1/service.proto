@@ -345,4 +345,6 @@ service HistoryService {
 
     rpc ListTasks (ListTasksRequest) returns (ListTasksResponse) {     
     }
+
+    rpc ReserveRateLimiterTokens (ReserveRateLimiterTokensRequest) returns (ReserveRateLimiterTokensResponse) {}
 }

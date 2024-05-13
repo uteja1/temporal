@@ -763,6 +763,26 @@ func (c *clientImpl) RequestCancelWorkflowExecution(
 	return response, nil
 }
 
+func (c *clientImpl) ReserveRateLimiterTokens(
+	ctx context.Context,
+	request *historyservice.ReserveRateLimiterTokensRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.ReserveRateLimiterTokensResponse, error) {
+	shardID := request.GetShardId()
+	var response *historyservice.ReserveRateLimiterTokensResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.ReserveRateLimiterTokens(ctx, request, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *clientImpl) ResetStickyTaskQueue(
 	ctx context.Context,
 	request *historyservice.ResetStickyTaskQueueRequest,

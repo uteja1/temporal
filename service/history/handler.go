@@ -30,12 +30,15 @@ import (
 	"math"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/pborman/uuid"
 	"go.opentelemetry.io/otel/trace"
 	commonpb "go.temporal.io/api/common/v1"
 	enumspb "go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/serviceerror"
+	"go.temporal.io/server/common/quotas"
+	"go.temporal.io/server/service/history/globalratelimiter"
 	"go.uber.org/fx"
 	"google.golang.org/grpc/metadata"
 
@@ -102,6 +105,7 @@ type (
 		tracer                       trace.Tracer
 		taskQueueManager             persistence.HistoryTaskQueueManager
 		taskCategoryRegistry         tasks.TaskCategoryRegistry
+		rateLimiterController        globalratelimiter.Controller
 
 		replicationTaskFetcherFactory    replication.TaskFetcherFactory
 		replicationTaskConverterProvider replication.SourceTaskConverterProvider
@@ -131,6 +135,7 @@ type (
 		TracerProvider               trace.TracerProvider
 		TaskQueueManager             persistence.HistoryTaskQueueManager
 		TaskCategoryRegistry         tasks.TaskCategoryRegistry
+		RateLimiterController        globalratelimiter.Controller
 
 		ReplicationTaskFetcherFactory   replication.TaskFetcherFactory
 		ReplicationTaskConverterFactory replication.SourceTaskConverterProvider
@@ -2258,4 +2263,23 @@ func validateTaskToken(taskToken *tokenspb.Task) error {
 		return errWorkflowIDNotSet
 	}
 	return nil
+}
+
+func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *historyservice.ReserveRateLimiterTokensRequest) (
+	_ *historyservice.ReserveRateLimiterTokensResponse, retError error) {
+	limiter := h.rateLimiterController.GetNamespaceRateLimiter(request.Requester)
+	allowed := limiter.Allow(time.Now(), quotas.Request{
+		API:           "",
+		Token:         int(request.Tokens),
+		Caller:        request.Requester,
+		CallerType:    "",
+		CallerSegment: 0,
+		Initiation:    "",
+	})
+	if allowed {
+		h.logger.Info(fmt.Sprintf("PPV: Allowing %v tokens for namespace %v", request.Tokens, request.Requester))
+		return &historyservice.ReserveRateLimiterTokensResponse{Tokenss: request.Tokens}, nil
+	}
+	h.logger.Info(fmt.Sprintf("PPV: Allowing 0 tokens for namespace %v", request.Requester))
+	return &historyservice.ReserveRateLimiterTokensResponse{Tokenss: 0}, nil
 }

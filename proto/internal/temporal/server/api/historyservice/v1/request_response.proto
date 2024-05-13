@@ -852,3 +852,14 @@ message ListTasksRequest {
 message ListTasksResponse {
     temporal.server.api.adminservice.v1.ListHistoryTasksResponse response = 1;
 }
+
+message ReserveRateLimiterTokensRequest {
+    string requester = 1;
+    int32 tokens = 2;
+    int32 shard_id = 3;
+
+}
+
+message ReserveRateLimiterTokensResponse {
+    int32 tokenss = 1;
+}

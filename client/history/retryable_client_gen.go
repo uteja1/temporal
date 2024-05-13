@@ -680,6 +680,21 @@ func (c *retryableClient) RequestCancelWorkflowExecution(
 	return resp, err
 }
 
+func (c *retryableClient) ReserveRateLimiterTokens(
+	ctx context.Context,
+	request *historyservice.ReserveRateLimiterTokensRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.ReserveRateLimiterTokensResponse, error) {
+	var resp *historyservice.ReserveRateLimiterTokensResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.ReserveRateLimiterTokens(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
 func (c *retryableClient) ResetStickyTaskQueue(
 	ctx context.Context,
 	request *historyservice.ResetStickyTaskQueueRequest,

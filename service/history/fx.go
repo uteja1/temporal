@@ -27,6 +27,7 @@ package history
 import (
 	"net"
 
+	"go.temporal.io/server/service/history/globalratelimiter"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -70,6 +71,7 @@ var Module = fx.Options(
 	fx.Provide(hsm.NewRegistry),
 	workflow.Module,
 	shard.Module,
+	globalratelimiter.Module,
 	events.Module,
 	cache.Module,
 	archival.Module,
@@ -150,6 +152,7 @@ func HandlerProvider(args NewHandlerArgs) *Handler {
 		tracer:                       args.TracerProvider.Tracer(consts.LibraryName),
 		taskQueueManager:             args.TaskQueueManager,
 		taskCategoryRegistry:         args.TaskCategoryRegistry,
+		rateLimiterController:        args.RateLimiterController,
 
 		replicationTaskFetcherFactory:    args.ReplicationTaskFetcherFactory,
 		replicationTaskConverterProvider: args.ReplicationTaskConverterFactory,

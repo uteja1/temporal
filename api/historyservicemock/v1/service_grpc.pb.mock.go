@@ -921,6 +921,26 @@ func (mr *MockHistoryServiceClientMockRecorder) RequestCancelWorkflowExecution(c
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestCancelWorkflowExecution", reflect.TypeOf((*MockHistoryServiceClient)(nil).RequestCancelWorkflowExecution), varargs...)
 }
 
+// ReserveRateLimiterTokens mocks base method.
+func (m *MockHistoryServiceClient) ReserveRateLimiterTokens(ctx context.Context, in *historyservice.ReserveRateLimiterTokensRequest, opts ...grpc.CallOption) (*historyservice.ReserveRateLimiterTokensResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ReserveRateLimiterTokens", varargs...)
+	ret0, _ := ret[0].(*historyservice.ReserveRateLimiterTokensResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReserveRateLimiterTokens indicates an expected call of ReserveRateLimiterTokens.
+func (mr *MockHistoryServiceClientMockRecorder) ReserveRateLimiterTokens(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReserveRateLimiterTokens", reflect.TypeOf((*MockHistoryServiceClient)(nil).ReserveRateLimiterTokens), varargs...)
+}
+
 // ResetStickyTaskQueue mocks base method.
 func (m *MockHistoryServiceClient) ResetStickyTaskQueue(ctx context.Context, in *historyservice.ResetStickyTaskQueueRequest, opts ...grpc.CallOption) (*historyservice.ResetStickyTaskQueueResponse, error) {
 	m.ctrl.T.Helper()
@@ -2084,6 +2104,21 @@ func (m *MockHistoryServiceServer) RequestCancelWorkflowExecution(arg0 context.C
 func (mr *MockHistoryServiceServerMockRecorder) RequestCancelWorkflowExecution(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestCancelWorkflowExecution", reflect.TypeOf((*MockHistoryServiceServer)(nil).RequestCancelWorkflowExecution), arg0, arg1)
+}
+
+// ReserveRateLimiterTokens mocks base method.
+func (m *MockHistoryServiceServer) ReserveRateLimiterTokens(arg0 context.Context, arg1 *historyservice.ReserveRateLimiterTokensRequest) (*historyservice.ReserveRateLimiterTokensResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReserveRateLimiterTokens", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.ReserveRateLimiterTokensResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReserveRateLimiterTokens indicates an expected call of ReserveRateLimiterTokens.
+func (mr *MockHistoryServiceServerMockRecorder) ReserveRateLimiterTokens(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReserveRateLimiterTokens", reflect.TypeOf((*MockHistoryServiceServer)(nil).ReserveRateLimiterTokens), arg0, arg1)
 }
 
 // ResetStickyTaskQueue mocks base method.

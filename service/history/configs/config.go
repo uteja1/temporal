@@ -338,6 +338,9 @@ type Config struct {
 
 	// FrontendAccessHistoryFraction is an interim flag across 2 minor releases and will be removed once fully enabled.
 	FrontendAccessHistoryFraction dynamicconfig.FloatPropertyFn
+
+	// This should not be here.
+	NamespaceAPS dynamicconfig.IntPropertyFnWithNamespaceFilter
 }
 
 const (
@@ -615,6 +618,7 @@ func NewConfig(
 		SendRawWorkflowHistory: dc.GetBoolPropertyFnWithNamespaceFilter(dynamicconfig.SendRawWorkflowHistory, false),
 
 		FrontendAccessHistoryFraction: dc.GetFloat64Property(dynamicconfig.FrontendAccessHistoryFraction, 0.0),
+		NamespaceAPS:                  dc.GetIntPropertyFilteredByNamespace(dynamicconfig.NamespaceAPS, 10),
 	}
 
 	return cfg

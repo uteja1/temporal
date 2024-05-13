@@ -4727,3 +4727,77 @@ func (this *ListTasksResponse) Equal(that interface{}) bool {
 
 	return proto.Equal(this, that1)
 }
+
+// Marshal an object of type ReserveRateLimiterTokensRequest to the protobuf v3 wire format
+func (val *ReserveRateLimiterTokensRequest) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type ReserveRateLimiterTokensRequest from the protobuf v3 wire format
+func (val *ReserveRateLimiterTokensRequest) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *ReserveRateLimiterTokensRequest) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two ReserveRateLimiterTokensRequest values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *ReserveRateLimiterTokensRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *ReserveRateLimiterTokensRequest
+	switch t := that.(type) {
+	case *ReserveRateLimiterTokensRequest:
+		that1 = t
+	case ReserveRateLimiterTokensRequest:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
+
+// Marshal an object of type ReserveRateLimiterTokensResponse to the protobuf v3 wire format
+func (val *ReserveRateLimiterTokensResponse) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type ReserveRateLimiterTokensResponse from the protobuf v3 wire format
+func (val *ReserveRateLimiterTokensResponse) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *ReserveRateLimiterTokensResponse) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two ReserveRateLimiterTokensResponse values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *ReserveRateLimiterTokensResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *ReserveRateLimiterTokensResponse
+	switch t := that.(type) {
+	case *ReserveRateLimiterTokensResponse:
+		that1 = t
+	case ReserveRateLimiterTokensResponse:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
