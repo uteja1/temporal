@@ -972,7 +972,7 @@ var (
 	// Rate limiter
 	RLCapacityRequested = NewGaugeDef("rl_capacity_requested")
 	RLCapacityAllocated = NewGaugeDef("rl_capacity_allocated")
-	RLRequests          = NewGaugeDef("rl_requests")
+	RLRequests          = NewCounterDef("rl_requests")
 
 	// Matching
 	MatchingClientForwardedCounter            = NewCounterDef("forwarded")
