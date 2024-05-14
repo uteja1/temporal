@@ -43,7 +43,7 @@ func (d *DistributedRateLimiter) Allow(now time.Time, request Request) bool {
 			// LOG ERROR
 			return false
 		}
-		d.tokens += int(resp.GetTokenss())
+		d.tokens += int(resp.GetTokens())
 		d.expiryTime = time.Now()
 	}
 	if d.tokens >= request.Token {
@@ -72,7 +72,7 @@ func (d *DistributedRateLimiter) Reserve(now time.Time, request Request) Reserva
 			// Just allowing this request for now.
 			return NoopReservation
 		}
-		d.tokens += int(resp.GetTokenss())
+		d.tokens += int(resp.GetTokens())
 		d.expiryTime = time.Now().Add(time.Second)
 	}
 	if d.tokens >= request.Token {

@@ -861,5 +861,5 @@ message ReserveRateLimiterTokensRequest {
 }
 
 message ReserveRateLimiterTokensResponse {
-    int32 tokenss = 1;
+    int32 tokens = 1;
 }
