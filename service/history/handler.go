@@ -2267,8 +2267,8 @@ func validateTaskToken(taskToken *tokenspb.Task) error {
 
 func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *historyservice.ReserveRateLimiterTokensRequest) (
 	_ *historyservice.ReserveRateLimiterTokensResponse, retError error) {
-	metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
-	metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(1)
+	//metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
+	//metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(1)
 	limiter := h.rateLimiterController.GetNamespaceRateLimiter(request.Namespace)
 	allowed := limiter.Allow(time.Now(), quotas.Request{
 		API:           "",
@@ -2279,9 +2279,9 @@ func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *history
 		Initiation:    "",
 	})
 	if allowed {
-		metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
+		//metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
 		return &historyservice.ReserveRateLimiterTokensResponse{Tokens: request.Tokens}, nil
 	}
-	metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(0))
+	//metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(0))
 	return &historyservice.ReserveRateLimiterTokensResponse{Tokens: 0}, nil
 }
