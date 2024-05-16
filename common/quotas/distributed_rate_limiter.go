@@ -33,7 +33,7 @@ func (d *DistributedRateLimiter) Allow(now time.Time, request Request) bool {
 	}
 	if d.tokens < request.Token {
 		resp, err := d.historyClient.ReserveRateLimiterTokens(context.Background(), &historyservice.ReserveRateLimiterTokensRequest{
-			Requester: request.Caller,
+			Namespace: request.Caller,
 			Tokens:    100,
 			ShardId:   int32(hashStringTo2048(request.Caller)),
 		})
@@ -63,7 +63,7 @@ func (d *DistributedRateLimiter) Reserve(now time.Time, request Request) Reserva
 
 	if d.tokens < request.Token {
 		resp, err := d.historyClient.ReserveRateLimiterTokens(context.Background(), &historyservice.ReserveRateLimiterTokensRequest{
-			Requester: request.Caller,
+			Namespace: request.Caller,
 			Tokens:    100,
 			ShardId:   int32(hashStringTo2048(request.Caller)),
 		})

@@ -854,7 +854,7 @@ message ListTasksResponse {
 }
 
 message ReserveRateLimiterTokensRequest {
-    string requester = 1;
+    string namespace = 1;
     int32 tokens = 2;
     int32 shard_id = 3;
 
