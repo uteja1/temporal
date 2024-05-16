@@ -16,7 +16,7 @@ type (
 
 	ControllerImpl struct {
 		mutex          sync.Mutex
-		rateLimiters   map[string]quotas.RequestRateLimiter
+		rateLimiters   sync.Map
 		logger         log.Logger
 		metricsHandler metrics.Handler
 		config         *configs.Config
@@ -30,7 +30,7 @@ func ControllerProvider(
 ) Controller {
 	return &ControllerImpl{
 		mutex:          sync.Mutex{},
-		rateLimiters:   map[string]quotas.RequestRateLimiter{},
+		rateLimiters:   sync.Map{},
 		logger:         logger,
 		metricsHandler: metricsHandler,
 		config:         config,
@@ -40,13 +40,16 @@ func ControllerProvider(
 func (c *ControllerImpl) GetNamespaceRateLimiter(ns string) quotas.RequestRateLimiter {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	if limiter, ok := c.rateLimiters[ns]; ok {
-		return limiter
+	if limiter, ok := c.rateLimiters.Load(ns); ok {
+		return limiter.(quotas.RequestRateLimiter)
 	}
-	c.rateLimiters[ns] = quotas.NewRequestRateLimiterAdapter(
-		quotas.NewDefaultIncomingRateLimiter(func() float64 {
-			return float64(c.config.NamespaceAPS(ns))
-		}),
-	)
-	return c.rateLimiters[ns]
+	c.rateLimiters.Store(
+		ns,
+		quotas.NewRequestRateLimiterAdapter(
+			quotas.NewDefaultIncomingRateLimiter(func() float64 {
+				return float64(c.config.NamespaceAPS(ns))
+			}),
+		))
+	rl, _ := c.rateLimiters.Load(ns)
+	return rl.(quotas.RequestRateLimiter)
 }
