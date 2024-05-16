@@ -1,7 +1,6 @@
 package globalratelimiter
 
 import (
-	"fmt"
 	"sync"
 
 	"go.temporal.io/server/common/log"
@@ -41,11 +40,9 @@ func ControllerProvider(
 func (c *ControllerImpl) GetNamespaceRateLimiter(ns string) quotas.RequestRateLimiter {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	c.logger.Info(fmt.Sprintf("PPV: Returning rate limiter for namespace %v", ns))
 	if limiter, ok := c.rateLimiters[ns]; ok {
 		return limiter
 	}
-	c.logger.Info(fmt.Sprintf("PPV: Creating rate limiter for namespace %v", ns))
 	c.rateLimiters[ns] = quotas.NewRequestRateLimiterAdapter(
 		quotas.NewDefaultIncomingRateLimiter(func() float64 {
 			return float64(c.config.NamespaceAPS(ns))
