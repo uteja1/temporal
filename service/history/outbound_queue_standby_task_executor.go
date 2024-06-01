@@ -76,6 +76,10 @@ func (e *outboundQueueStandbyTaskExecutor) Execute(
 	}
 
 	if err == nil {
+		err = validateTaskByClock(e.shardContext, task)
+	}
+
+	if err == nil {
 		smRegistry := e.shardContext.StateMachineRegistry()
 		err = smRegistry.ExecuteStandbyTask(ctx, e, ref, smt)
 	}

@@ -200,7 +200,7 @@ func TestValidateStateMachineTask(t *testing.T) {
 				StateMachineRef: cbt.Info.Ref,
 			}
 			tc.mutateRef(&ref)
-			err = exec.validateStateMachineRef(mutableState, ref)
+			err = exec.validateStateMachineRef(mutableState, ref, true)
 			tc.assertOutcome(t, err)
 		})
 	}

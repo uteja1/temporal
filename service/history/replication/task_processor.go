@@ -468,8 +468,8 @@ func (p *taskProcessorImpl) convertTaskToDLQTask(
 				VisibilityTime: replicationTask.GetVisibilityTime(),
 			},
 		}, nil
-
 	default:
+		// old code path, not handling sync HSM task right now
 		return nil, fmt.Errorf("unknown replication task type: %v", replicationTask.TaskType)
 	}
 }

@@ -675,6 +675,8 @@ func (b *MutableStateRebuilderImpl) applyEvents(
 			enumspb.EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED_EXTERNALLY:
 			return nil, serviceerror.NewUnimplemented("Workflow/activity property modification not implemented")
 
+		// TODO: handle nexus event types
+
 		default:
 			return nil, serviceerror.NewInvalidArgument(fmt.Sprintf("Unknown event type: %v", event.GetEventType()))
 		}

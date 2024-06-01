@@ -97,6 +97,10 @@ func (e *outboundQueueActiveTaskExecutor) Execute(
 	}
 
 	if err == nil {
+		err = validateTaskByClock(e.shardContext, task)
+	}
+
+	if err == nil {
 		smRegistry := e.shardContext.StateMachineRegistry()
 		err = smRegistry.ExecuteActiveTask(ctx, e, ref, smt)
 	}

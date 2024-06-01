@@ -340,6 +340,7 @@ func (r *dlqHandlerImpl) readMessagesWithAckLevel(
 				ScheduledEventId: 0,
 			})
 		default:
+			// old code path, not handling sync HSM task right now
 			panic(fmt.Sprintf("Unknown repication task type: %v", task))
 		}
 	}

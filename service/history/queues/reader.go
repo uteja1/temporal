@@ -481,6 +481,7 @@ func (r *ReaderImpl) loadAndSubmitTasks() {
 	r.retrier.Reset()
 
 	if len(tasks) != 0 {
+
 		for _, task := range tasks {
 			r.submit(task)
 		}

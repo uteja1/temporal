@@ -68,6 +68,7 @@ func (t TimeoutTask) Kind() hsm.TaskKind {
 }
 
 func (TimeoutTask) Concurrent() bool {
+	// TODO: make sure task processing logic of this task can handle newer mutable state.
 	return true
 }
 

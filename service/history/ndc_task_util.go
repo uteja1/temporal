@@ -192,6 +192,9 @@ func loadMutableStateForTask(
 	return mutableState, nil
 }
 
+// TODO: move this check to upper layer e.g. executable.Execute() or taskReader.
+// Note though this check needs to be done on a per task basis, since loaded taskID is
+// not ordered for scheduled tasks (they are ordered by their scheduled time).
 func validateTaskByClock(
 	shardContext shard.Context,
 	task tasks.Task,

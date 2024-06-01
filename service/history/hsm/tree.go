@@ -70,6 +70,7 @@ type StateMachineDefinition interface {
 	Serialize(any) ([]byte, error)
 	// Deserialize a state machine from bytes.
 	Deserialize([]byte) (any, error)
+	Compare(any, any) (int, error)
 }
 
 // cachedMachine contains deserialized data and state for a state machine in a [Node].
@@ -93,6 +94,7 @@ type NodeBackend interface {
 	AddHistoryEvent(t enumspb.EventType, setAttributes func(*historypb.HistoryEvent)) *historypb.HistoryEvent
 	// Load a history event by token generated via [GenerateEventLoadToken].
 	LoadHistoryEvent(ctx context.Context, token []byte) (*historypb.HistoryEvent, error)
+	GetCurrentVersion() int64
 }
 
 // EventIDFromToken gets the event ID associated with an event load token.
@@ -122,7 +124,13 @@ type Node struct {
 // NewRoot creates a new root [Node].
 // Children may be provided from persistence to rehydrate the tree.
 // Returns [ErrNotRegistered] if the key's type is not registered in the given registry or serialization errors.
-func NewRoot(registry *Registry, t int32, data any, children map[int32]*persistencespb.StateMachineMap, backend NodeBackend) (*Node, error) {
+func NewRoot(
+	registry *Registry,
+	t int32,
+	data any,
+	children map[int32]*persistencespb.StateMachineMap,
+	backend NodeBackend,
+) (*Node, error) {
 	def, ok := registry.Machine(t)
 	if !ok {
 		return nil, fmt.Errorf("%w: state machine for type: %v", ErrNotRegistered, t)
@@ -137,6 +145,10 @@ func NewRoot(registry *Registry, t int32, data any, children map[int32]*persiste
 		persistence: &persistencespb.StateMachineNode{
 			Children: children,
 			Data:     serialized,
+			// we don't actually care about the value here,
+			// this is in memoery and not used.
+			InitialNamespaceFailoverVersion: backend.GetCurrentVersion(),
+			CurrentNamespaceFailoverVersion: backend.GetCurrentVersion(),
 		},
 		cache: &cachedMachine{
 			dataLoaded: true,
@@ -218,6 +230,40 @@ func (n *Node) Walk(fn func(*Node) error) error {
 	return nil
 }
 
+// TODO: consider merging this with Sync()
+func (n *Node) CompareData(incomingNode *Node) (int, error) {
+	currentState, err := MachineData[any](n)
+	if err != nil {
+		return 0, err
+	}
+	incomingState, err := MachineData[any](incomingNode)
+	if err != nil {
+		return 0, err
+	}
+
+	return n.definition.Compare(currentState, incomingState)
+}
+
+func (n *Node) Sync(incomingNode *Node) error {
+	// TODO: add some sanity check re. path, state machine type, initial version etc.
+
+	n.persistence.CurrentNamespaceFailoverVersion = incomingNode.CurrentNamespaceFailoverVersion()
+	n.persistence.Data = incomingNode.persistence.GetData()
+	// initial vesrion should always be the same
+	// do not sync children, we are just syncing the current node
+	// do not sync transitionCount, that is cluster local information
+
+	// force reload data
+	n.cache.dataLoaded = false
+
+	return MachineTransition(n, func(taskRegenerator TaskRegenerator) (TransitionOutput, error) {
+		tasks, err := taskRegenerator.RegenerateTasks(n)
+		return TransitionOutput{
+			Tasks: tasks,
+		}, err
+	})
+}
+
 // Child recursively gets a child for the given path.
 func (n *Node) Child(path []Key) (*Node, error) {
 	if len(path) == 0 {
@@ -282,6 +328,9 @@ func (n *Node) AddChild(key Key, data any) (*Node, error) {
 		persistence: &persistencespb.StateMachineNode{
 			Children: make(map[int32]*persistencespb.StateMachineMap),
 			Data:     serialized,
+			// TODO: when AddChild due to apply event, we should use the version from the event
+			InitialNamespaceFailoverVersion: n.backend.GetCurrentVersion(),
+			CurrentNamespaceFailoverVersion: n.backend.GetCurrentVersion(),
 		},
 		cache: &cachedMachine{
 			dataLoaded: true,
@@ -345,6 +394,18 @@ func (n *Node) TransitionCount() int64 {
 	return n.persistence.TransitionCount
 }
 
+func (n *Node) InitialNamespaceFailoverVersion() int64 {
+	return n.persistence.InitialNamespaceFailoverVersion
+}
+
+func (n *Node) CurrentNamespaceFailoverVersion() int64 {
+	return n.persistence.CurrentNamespaceFailoverVersion
+}
+
+func (n *Node) PersistenceRepr() *persistencespb.StateMachineNode {
+	return n.persistence
+}
+
 // MachineTransition runs the given transitionFn on a machine's data for the given key.
 // It updates the state machine's metadata and marks the entry as dirty in the node's cache.
 // If the transition fails, the changes are rolled back and no state is mutated.
@@ -353,11 +414,10 @@ func MachineTransition[T any](n *Node, transitionFn func(T) (TransitionOutput, e
 	if err != nil {
 		return err
 	}
-	n.persistence.TransitionCount++
+
 	// Rollback on error
 	defer func() {
 		if retErr != nil {
-			n.persistence.TransitionCount--
 			// Force reloading data.
 			n.cache.dataLoaded = false
 		}
@@ -371,6 +431,13 @@ func MachineTransition[T any](n *Node, transitionFn func(T) (TransitionOutput, e
 		return err
 	}
 	n.persistence.Data = serialized
+	n.persistence.TransitionCount++
+	// it's possible that during sync, we got a higher version that's
+	// unknown to the namespace registry in the current cluster yet.
+	n.persistence.CurrentNamespaceFailoverVersion = max(
+		n.persistence.CurrentNamespaceFailoverVersion,
+		n.backend.GetCurrentVersion(),
+	)
 	n.cache.dirty = true
 	n.cache.outputs = append(n.cache.outputs, output)
 	return nil
