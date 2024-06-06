@@ -38,8 +38,8 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-// Requires gRPC-Go v1.32.0 or later.
-const _ = grpc.SupportPackageIsVersion7
+// Requires gRPC-Go v1.62.0 or later.
+const _ = grpc.SupportPackageIsVersion8
 
 const (
 	AdminService_RebuildMutableState_FullMethodName               = "/temporal.server.api.adminservice.v1.AdminService/RebuildMutableState"
@@ -85,6 +85,8 @@ const (
 // AdminServiceClient is the client API for AdminService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// AdminService provides advanced APIs for debugging and analysis with admin privilege
 type AdminServiceClient interface {
 	// RebuildMutableState attempts to rebuild mutable state according to persisted history events.
 	// NOTE: this is experimental API
@@ -176,8 +178,9 @@ func NewAdminServiceClient(cc grpc.ClientConnInterface) AdminServiceClient {
 }
 
 func (c *adminServiceClient) RebuildMutableState(ctx context.Context, in *RebuildMutableStateRequest, opts ...grpc.CallOption) (*RebuildMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RebuildMutableStateResponse)
-	err := c.cc.Invoke(ctx, AdminService_RebuildMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_RebuildMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,8 +188,9 @@ func (c *adminServiceClient) RebuildMutableState(ctx context.Context, in *Rebuil
 }
 
 func (c *adminServiceClient) ImportWorkflowExecution(ctx context.Context, in *ImportWorkflowExecutionRequest, opts ...grpc.CallOption) (*ImportWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ImportWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, AdminService_ImportWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ImportWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +198,9 @@ func (c *adminServiceClient) ImportWorkflowExecution(ctx context.Context, in *Im
 }
 
 func (c *adminServiceClient) DescribeMutableState(ctx context.Context, in *DescribeMutableStateRequest, opts ...grpc.CallOption) (*DescribeMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeMutableStateResponse)
-	err := c.cc.Invoke(ctx, AdminService_DescribeMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_DescribeMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -203,8 +208,9 @@ func (c *adminServiceClient) DescribeMutableState(ctx context.Context, in *Descr
 }
 
 func (c *adminServiceClient) DescribeHistoryHost(ctx context.Context, in *DescribeHistoryHostRequest, opts ...grpc.CallOption) (*DescribeHistoryHostResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeHistoryHostResponse)
-	err := c.cc.Invoke(ctx, AdminService_DescribeHistoryHost_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_DescribeHistoryHost_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -212,8 +218,9 @@ func (c *adminServiceClient) DescribeHistoryHost(ctx context.Context, in *Descri
 }
 
 func (c *adminServiceClient) GetShard(ctx context.Context, in *GetShardRequest, opts ...grpc.CallOption) (*GetShardResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetShardResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetShard_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -221,8 +228,9 @@ func (c *adminServiceClient) GetShard(ctx context.Context, in *GetShardRequest, 
 }
 
 func (c *adminServiceClient) CloseShard(ctx context.Context, in *CloseShardRequest, opts ...grpc.CallOption) (*CloseShardResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CloseShardResponse)
-	err := c.cc.Invoke(ctx, AdminService_CloseShard_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_CloseShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -230,8 +238,9 @@ func (c *adminServiceClient) CloseShard(ctx context.Context, in *CloseShardReque
 }
 
 func (c *adminServiceClient) ListHistoryTasks(ctx context.Context, in *ListHistoryTasksRequest, opts ...grpc.CallOption) (*ListHistoryTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListHistoryTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_ListHistoryTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ListHistoryTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -239,8 +248,9 @@ func (c *adminServiceClient) ListHistoryTasks(ctx context.Context, in *ListHisto
 }
 
 func (c *adminServiceClient) RemoveTask(ctx context.Context, in *RemoveTaskRequest, opts ...grpc.CallOption) (*RemoveTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveTaskResponse)
-	err := c.cc.Invoke(ctx, AdminService_RemoveTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_RemoveTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -248,8 +258,9 @@ func (c *adminServiceClient) RemoveTask(ctx context.Context, in *RemoveTaskReque
 }
 
 func (c *adminServiceClient) GetWorkflowExecutionRawHistoryV2(ctx context.Context, in *GetWorkflowExecutionRawHistoryV2Request, opts ...grpc.CallOption) (*GetWorkflowExecutionRawHistoryV2Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionRawHistoryV2Response)
-	err := c.cc.Invoke(ctx, AdminService_GetWorkflowExecutionRawHistoryV2_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetWorkflowExecutionRawHistoryV2_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -257,8 +268,9 @@ func (c *adminServiceClient) GetWorkflowExecutionRawHistoryV2(ctx context.Contex
 }
 
 func (c *adminServiceClient) GetWorkflowExecutionRawHistory(ctx context.Context, in *GetWorkflowExecutionRawHistoryRequest, opts ...grpc.CallOption) (*GetWorkflowExecutionRawHistoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionRawHistoryResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetWorkflowExecutionRawHistory_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetWorkflowExecutionRawHistory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -266,8 +278,9 @@ func (c *adminServiceClient) GetWorkflowExecutionRawHistory(ctx context.Context,
 }
 
 func (c *adminServiceClient) GetReplicationMessages(ctx context.Context, in *GetReplicationMessagesRequest, opts ...grpc.CallOption) (*GetReplicationMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetReplicationMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetReplicationMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetReplicationMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -275,8 +288,9 @@ func (c *adminServiceClient) GetReplicationMessages(ctx context.Context, in *Get
 }
 
 func (c *adminServiceClient) GetNamespaceReplicationMessages(ctx context.Context, in *GetNamespaceReplicationMessagesRequest, opts ...grpc.CallOption) (*GetNamespaceReplicationMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetNamespaceReplicationMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetNamespaceReplicationMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetNamespaceReplicationMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -284,8 +298,9 @@ func (c *adminServiceClient) GetNamespaceReplicationMessages(ctx context.Context
 }
 
 func (c *adminServiceClient) GetDLQReplicationMessages(ctx context.Context, in *GetDLQReplicationMessagesRequest, opts ...grpc.CallOption) (*GetDLQReplicationMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQReplicationMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetDLQReplicationMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetDLQReplicationMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -293,8 +308,9 @@ func (c *adminServiceClient) GetDLQReplicationMessages(ctx context.Context, in *
 }
 
 func (c *adminServiceClient) ReapplyEvents(ctx context.Context, in *ReapplyEventsRequest, opts ...grpc.CallOption) (*ReapplyEventsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReapplyEventsResponse)
-	err := c.cc.Invoke(ctx, AdminService_ReapplyEvents_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ReapplyEvents_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -302,8 +318,9 @@ func (c *adminServiceClient) ReapplyEvents(ctx context.Context, in *ReapplyEvent
 }
 
 func (c *adminServiceClient) AddSearchAttributes(ctx context.Context, in *AddSearchAttributesRequest, opts ...grpc.CallOption) (*AddSearchAttributesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddSearchAttributesResponse)
-	err := c.cc.Invoke(ctx, AdminService_AddSearchAttributes_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_AddSearchAttributes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -311,8 +328,9 @@ func (c *adminServiceClient) AddSearchAttributes(ctx context.Context, in *AddSea
 }
 
 func (c *adminServiceClient) RemoveSearchAttributes(ctx context.Context, in *RemoveSearchAttributesRequest, opts ...grpc.CallOption) (*RemoveSearchAttributesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveSearchAttributesResponse)
-	err := c.cc.Invoke(ctx, AdminService_RemoveSearchAttributes_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_RemoveSearchAttributes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -320,8 +338,9 @@ func (c *adminServiceClient) RemoveSearchAttributes(ctx context.Context, in *Rem
 }
 
 func (c *adminServiceClient) GetSearchAttributes(ctx context.Context, in *GetSearchAttributesRequest, opts ...grpc.CallOption) (*GetSearchAttributesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetSearchAttributesResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetSearchAttributes_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetSearchAttributes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -329,8 +348,9 @@ func (c *adminServiceClient) GetSearchAttributes(ctx context.Context, in *GetSea
 }
 
 func (c *adminServiceClient) DescribeCluster(ctx context.Context, in *DescribeClusterRequest, opts ...grpc.CallOption) (*DescribeClusterResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeClusterResponse)
-	err := c.cc.Invoke(ctx, AdminService_DescribeCluster_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_DescribeCluster_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -338,8 +358,9 @@ func (c *adminServiceClient) DescribeCluster(ctx context.Context, in *DescribeCl
 }
 
 func (c *adminServiceClient) ListClusters(ctx context.Context, in *ListClustersRequest, opts ...grpc.CallOption) (*ListClustersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListClustersResponse)
-	err := c.cc.Invoke(ctx, AdminService_ListClusters_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ListClusters_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -347,8 +368,9 @@ func (c *adminServiceClient) ListClusters(ctx context.Context, in *ListClustersR
 }
 
 func (c *adminServiceClient) ListClusterMembers(ctx context.Context, in *ListClusterMembersRequest, opts ...grpc.CallOption) (*ListClusterMembersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListClusterMembersResponse)
-	err := c.cc.Invoke(ctx, AdminService_ListClusterMembers_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ListClusterMembers_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -356,8 +378,9 @@ func (c *adminServiceClient) ListClusterMembers(ctx context.Context, in *ListClu
 }
 
 func (c *adminServiceClient) AddOrUpdateRemoteCluster(ctx context.Context, in *AddOrUpdateRemoteClusterRequest, opts ...grpc.CallOption) (*AddOrUpdateRemoteClusterResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddOrUpdateRemoteClusterResponse)
-	err := c.cc.Invoke(ctx, AdminService_AddOrUpdateRemoteCluster_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_AddOrUpdateRemoteCluster_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -365,8 +388,9 @@ func (c *adminServiceClient) AddOrUpdateRemoteCluster(ctx context.Context, in *A
 }
 
 func (c *adminServiceClient) RemoveRemoteCluster(ctx context.Context, in *RemoveRemoteClusterRequest, opts ...grpc.CallOption) (*RemoveRemoteClusterResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveRemoteClusterResponse)
-	err := c.cc.Invoke(ctx, AdminService_RemoveRemoteCluster_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_RemoveRemoteCluster_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -374,8 +398,9 @@ func (c *adminServiceClient) RemoveRemoteCluster(ctx context.Context, in *Remove
 }
 
 func (c *adminServiceClient) GetDLQMessages(ctx context.Context, in *GetDLQMessagesRequest, opts ...grpc.CallOption) (*GetDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -383,8 +408,9 @@ func (c *adminServiceClient) GetDLQMessages(ctx context.Context, in *GetDLQMessa
 }
 
 func (c *adminServiceClient) PurgeDLQMessages(ctx context.Context, in *PurgeDLQMessagesRequest, opts ...grpc.CallOption) (*PurgeDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PurgeDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_PurgeDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_PurgeDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -392,8 +418,9 @@ func (c *adminServiceClient) PurgeDLQMessages(ctx context.Context, in *PurgeDLQM
 }
 
 func (c *adminServiceClient) MergeDLQMessages(ctx context.Context, in *MergeDLQMessagesRequest, opts ...grpc.CallOption) (*MergeDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MergeDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, AdminService_MergeDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_MergeDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -401,8 +428,9 @@ func (c *adminServiceClient) MergeDLQMessages(ctx context.Context, in *MergeDLQM
 }
 
 func (c *adminServiceClient) RefreshWorkflowTasks(ctx context.Context, in *RefreshWorkflowTasksRequest, opts ...grpc.CallOption) (*RefreshWorkflowTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RefreshWorkflowTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_RefreshWorkflowTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_RefreshWorkflowTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,8 +438,9 @@ func (c *adminServiceClient) RefreshWorkflowTasks(ctx context.Context, in *Refre
 }
 
 func (c *adminServiceClient) ResendReplicationTasks(ctx context.Context, in *ResendReplicationTasksRequest, opts ...grpc.CallOption) (*ResendReplicationTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ResendReplicationTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_ResendReplicationTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ResendReplicationTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -419,8 +448,9 @@ func (c *adminServiceClient) ResendReplicationTasks(ctx context.Context, in *Res
 }
 
 func (c *adminServiceClient) GetTaskQueueTasks(ctx context.Context, in *GetTaskQueueTasksRequest, opts ...grpc.CallOption) (*GetTaskQueueTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetTaskQueueTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetTaskQueueTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetTaskQueueTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -428,8 +458,9 @@ func (c *adminServiceClient) GetTaskQueueTasks(ctx context.Context, in *GetTaskQ
 }
 
 func (c *adminServiceClient) DeleteWorkflowExecution(ctx context.Context, in *DeleteWorkflowExecutionRequest, opts ...grpc.CallOption) (*DeleteWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, AdminService_DeleteWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_DeleteWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -437,11 +468,12 @@ func (c *adminServiceClient) DeleteWorkflowExecution(ctx context.Context, in *De
 }
 
 func (c *adminServiceClient) StreamWorkflowReplicationMessages(ctx context.Context, opts ...grpc.CallOption) (AdminService_StreamWorkflowReplicationMessagesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &AdminService_ServiceDesc.Streams[0], AdminService_StreamWorkflowReplicationMessages_FullMethodName, opts...)
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &AdminService_ServiceDesc.Streams[0], AdminService_StreamWorkflowReplicationMessages_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &adminServiceStreamWorkflowReplicationMessagesClient{stream}
+	x := &adminServiceStreamWorkflowReplicationMessagesClient{ClientStream: stream}
 	return x, nil
 }
 
@@ -468,8 +500,9 @@ func (x *adminServiceStreamWorkflowReplicationMessagesClient) Recv() (*StreamWor
 }
 
 func (c *adminServiceClient) GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*GetNamespaceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetNamespaceResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetNamespace_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetNamespace_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -477,8 +510,9 @@ func (c *adminServiceClient) GetNamespace(ctx context.Context, in *GetNamespaceR
 }
 
 func (c *adminServiceClient) GetDLQTasks(ctx context.Context, in *GetDLQTasksRequest, opts ...grpc.CallOption) (*GetDLQTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_GetDLQTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_GetDLQTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -486,8 +520,9 @@ func (c *adminServiceClient) GetDLQTasks(ctx context.Context, in *GetDLQTasksReq
 }
 
 func (c *adminServiceClient) PurgeDLQTasks(ctx context.Context, in *PurgeDLQTasksRequest, opts ...grpc.CallOption) (*PurgeDLQTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PurgeDLQTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_PurgeDLQTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_PurgeDLQTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -495,8 +530,9 @@ func (c *adminServiceClient) PurgeDLQTasks(ctx context.Context, in *PurgeDLQTask
 }
 
 func (c *adminServiceClient) MergeDLQTasks(ctx context.Context, in *MergeDLQTasksRequest, opts ...grpc.CallOption) (*MergeDLQTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MergeDLQTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_MergeDLQTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_MergeDLQTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -504,8 +540,9 @@ func (c *adminServiceClient) MergeDLQTasks(ctx context.Context, in *MergeDLQTask
 }
 
 func (c *adminServiceClient) DescribeDLQJob(ctx context.Context, in *DescribeDLQJobRequest, opts ...grpc.CallOption) (*DescribeDLQJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeDLQJobResponse)
-	err := c.cc.Invoke(ctx, AdminService_DescribeDLQJob_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_DescribeDLQJob_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -513,8 +550,9 @@ func (c *adminServiceClient) DescribeDLQJob(ctx context.Context, in *DescribeDLQ
 }
 
 func (c *adminServiceClient) CancelDLQJob(ctx context.Context, in *CancelDLQJobRequest, opts ...grpc.CallOption) (*CancelDLQJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CancelDLQJobResponse)
-	err := c.cc.Invoke(ctx, AdminService_CancelDLQJob_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_CancelDLQJob_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -522,8 +560,9 @@ func (c *adminServiceClient) CancelDLQJob(ctx context.Context, in *CancelDLQJobR
 }
 
 func (c *adminServiceClient) AddTasks(ctx context.Context, in *AddTasksRequest, opts ...grpc.CallOption) (*AddTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddTasksResponse)
-	err := c.cc.Invoke(ctx, AdminService_AddTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_AddTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -531,8 +570,9 @@ func (c *adminServiceClient) AddTasks(ctx context.Context, in *AddTasksRequest, 
 }
 
 func (c *adminServiceClient) ListQueues(ctx context.Context, in *ListQueuesRequest, opts ...grpc.CallOption) (*ListQueuesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListQueuesResponse)
-	err := c.cc.Invoke(ctx, AdminService_ListQueues_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminService_ListQueues_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -542,6 +582,8 @@ func (c *adminServiceClient) ListQueues(ctx context.Context, in *ListQueuesReque
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
+//
+// AdminService provides advanced APIs for debugging and analysis with admin privilege
 type AdminServiceServer interface {
 	// RebuildMutableState attempts to rebuild mutable state according to persisted history events.
 	// NOTE: this is experimental API
@@ -1279,7 +1321,7 @@ func _AdminService_DeleteWorkflowExecution_Handler(srv interface{}, ctx context.
 }
 
 func _AdminService_StreamWorkflowReplicationMessages_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(AdminServiceServer).StreamWorkflowReplicationMessages(&adminServiceStreamWorkflowReplicationMessagesServer{stream})
+	return srv.(AdminServiceServer).StreamWorkflowReplicationMessages(&adminServiceStreamWorkflowReplicationMessagesServer{ServerStream: stream})
 }
 
 type AdminService_StreamWorkflowReplicationMessagesServer interface {

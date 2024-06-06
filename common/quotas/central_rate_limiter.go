@@ -1,6 +1,9 @@
 package quotas
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 //type (
 //	// RequestRateLimiterFn returns generate a namespace specific rate limiter
@@ -33,6 +36,7 @@ type (
 	CentralRateLimiterImpl struct {
 		rateLimiter *DynamicRateLimiterImpl
 		epochFn     func() int
+		mutex       sync.Mutex
 	}
 )
 
@@ -50,6 +54,8 @@ func NewCentralRateLimiter(rateFn RateFn, epochFn func() int) CentralRateLimiter
 }
 
 func (c *CentralRateLimiterImpl) GetTokens(rps int) (int, time.Duration) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
 	tokensNeeded := rps * c.epochFn()
 	// Not allowing burst now
 	tokensAfterEpoch := int(c.rateLimiter.TokensAt(time.Now().Add(time.Duration(c.epochFn()) * time.Second)))

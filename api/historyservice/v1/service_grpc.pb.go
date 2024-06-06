@@ -38,8 +38,8 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-// Requires gRPC-Go v1.32.0 or later.
-const _ = grpc.SupportPackageIsVersion7
+// Requires gRPC-Go v1.62.0 or later.
+const _ = grpc.SupportPackageIsVersion8
 
 const (
 	HistoryService_StartWorkflowExecution_FullMethodName                 = "/temporal.server.api.historyservice.v1.HistoryService/StartWorkflowExecution"
@@ -109,6 +109,9 @@ const (
 // HistoryServiceClient is the client API for HistoryService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// HistoryService provides API to start a new long running workflow instance, as well as query and update the history
+// of workflow instances already created.
 type HistoryServiceClient interface {
 	// StartWorkflowExecution starts a new long running workflow instance.  It will create the instance with
 	// 'WorkflowExecutionStarted' event in history and also schedule the first WorkflowTask for the worker to produce the
@@ -321,8 +324,9 @@ func NewHistoryServiceClient(cc grpc.ClientConnInterface) HistoryServiceClient {
 }
 
 func (c *historyServiceClient) StartWorkflowExecution(ctx context.Context, in *StartWorkflowExecutionRequest, opts ...grpc.CallOption) (*StartWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(StartWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_StartWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_StartWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -330,8 +334,9 @@ func (c *historyServiceClient) StartWorkflowExecution(ctx context.Context, in *S
 }
 
 func (c *historyServiceClient) GetMutableState(ctx context.Context, in *GetMutableStateRequest, opts ...grpc.CallOption) (*GetMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetMutableStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -339,8 +344,9 @@ func (c *historyServiceClient) GetMutableState(ctx context.Context, in *GetMutab
 }
 
 func (c *historyServiceClient) PollMutableState(ctx context.Context, in *PollMutableStateRequest, opts ...grpc.CallOption) (*PollMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PollMutableStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_PollMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_PollMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -348,8 +354,9 @@ func (c *historyServiceClient) PollMutableState(ctx context.Context, in *PollMut
 }
 
 func (c *historyServiceClient) ResetStickyTaskQueue(ctx context.Context, in *ResetStickyTaskQueueRequest, opts ...grpc.CallOption) (*ResetStickyTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ResetStickyTaskQueueResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ResetStickyTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ResetStickyTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -357,8 +364,9 @@ func (c *historyServiceClient) ResetStickyTaskQueue(ctx context.Context, in *Res
 }
 
 func (c *historyServiceClient) RecordWorkflowTaskStarted(ctx context.Context, in *RecordWorkflowTaskStartedRequest, opts ...grpc.CallOption) (*RecordWorkflowTaskStartedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RecordWorkflowTaskStartedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RecordWorkflowTaskStarted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RecordWorkflowTaskStarted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -366,8 +374,9 @@ func (c *historyServiceClient) RecordWorkflowTaskStarted(ctx context.Context, in
 }
 
 func (c *historyServiceClient) RecordActivityTaskStarted(ctx context.Context, in *RecordActivityTaskStartedRequest, opts ...grpc.CallOption) (*RecordActivityTaskStartedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RecordActivityTaskStartedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RecordActivityTaskStarted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RecordActivityTaskStarted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -375,8 +384,9 @@ func (c *historyServiceClient) RecordActivityTaskStarted(ctx context.Context, in
 }
 
 func (c *historyServiceClient) RespondWorkflowTaskCompleted(ctx context.Context, in *RespondWorkflowTaskCompletedRequest, opts ...grpc.CallOption) (*RespondWorkflowTaskCompletedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondWorkflowTaskCompletedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RespondWorkflowTaskCompleted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RespondWorkflowTaskCompleted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -384,8 +394,9 @@ func (c *historyServiceClient) RespondWorkflowTaskCompleted(ctx context.Context,
 }
 
 func (c *historyServiceClient) RespondWorkflowTaskFailed(ctx context.Context, in *RespondWorkflowTaskFailedRequest, opts ...grpc.CallOption) (*RespondWorkflowTaskFailedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondWorkflowTaskFailedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RespondWorkflowTaskFailed_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RespondWorkflowTaskFailed_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -393,8 +404,9 @@ func (c *historyServiceClient) RespondWorkflowTaskFailed(ctx context.Context, in
 }
 
 func (c *historyServiceClient) IsWorkflowTaskValid(ctx context.Context, in *IsWorkflowTaskValidRequest, opts ...grpc.CallOption) (*IsWorkflowTaskValidResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(IsWorkflowTaskValidResponse)
-	err := c.cc.Invoke(ctx, HistoryService_IsWorkflowTaskValid_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_IsWorkflowTaskValid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -402,8 +414,9 @@ func (c *historyServiceClient) IsWorkflowTaskValid(ctx context.Context, in *IsWo
 }
 
 func (c *historyServiceClient) RecordActivityTaskHeartbeat(ctx context.Context, in *RecordActivityTaskHeartbeatRequest, opts ...grpc.CallOption) (*RecordActivityTaskHeartbeatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RecordActivityTaskHeartbeatResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RecordActivityTaskHeartbeat_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RecordActivityTaskHeartbeat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -411,8 +424,9 @@ func (c *historyServiceClient) RecordActivityTaskHeartbeat(ctx context.Context, 
 }
 
 func (c *historyServiceClient) RespondActivityTaskCompleted(ctx context.Context, in *RespondActivityTaskCompletedRequest, opts ...grpc.CallOption) (*RespondActivityTaskCompletedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondActivityTaskCompletedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskCompleted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskCompleted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -420,8 +434,9 @@ func (c *historyServiceClient) RespondActivityTaskCompleted(ctx context.Context,
 }
 
 func (c *historyServiceClient) RespondActivityTaskFailed(ctx context.Context, in *RespondActivityTaskFailedRequest, opts ...grpc.CallOption) (*RespondActivityTaskFailedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondActivityTaskFailedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskFailed_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskFailed_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -429,8 +444,9 @@ func (c *historyServiceClient) RespondActivityTaskFailed(ctx context.Context, in
 }
 
 func (c *historyServiceClient) RespondActivityTaskCanceled(ctx context.Context, in *RespondActivityTaskCanceledRequest, opts ...grpc.CallOption) (*RespondActivityTaskCanceledResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondActivityTaskCanceledResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskCanceled_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RespondActivityTaskCanceled_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -438,8 +454,9 @@ func (c *historyServiceClient) RespondActivityTaskCanceled(ctx context.Context, 
 }
 
 func (c *historyServiceClient) IsActivityTaskValid(ctx context.Context, in *IsActivityTaskValidRequest, opts ...grpc.CallOption) (*IsActivityTaskValidResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(IsActivityTaskValidResponse)
-	err := c.cc.Invoke(ctx, HistoryService_IsActivityTaskValid_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_IsActivityTaskValid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -447,8 +464,9 @@ func (c *historyServiceClient) IsActivityTaskValid(ctx context.Context, in *IsAc
 }
 
 func (c *historyServiceClient) SignalWorkflowExecution(ctx context.Context, in *SignalWorkflowExecutionRequest, opts ...grpc.CallOption) (*SignalWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SignalWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_SignalWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_SignalWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -456,8 +474,9 @@ func (c *historyServiceClient) SignalWorkflowExecution(ctx context.Context, in *
 }
 
 func (c *historyServiceClient) SignalWithStartWorkflowExecution(ctx context.Context, in *SignalWithStartWorkflowExecutionRequest, opts ...grpc.CallOption) (*SignalWithStartWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SignalWithStartWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_SignalWithStartWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_SignalWithStartWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -465,8 +484,9 @@ func (c *historyServiceClient) SignalWithStartWorkflowExecution(ctx context.Cont
 }
 
 func (c *historyServiceClient) RemoveSignalMutableState(ctx context.Context, in *RemoveSignalMutableStateRequest, opts ...grpc.CallOption) (*RemoveSignalMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveSignalMutableStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RemoveSignalMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RemoveSignalMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -474,8 +494,9 @@ func (c *historyServiceClient) RemoveSignalMutableState(ctx context.Context, in 
 }
 
 func (c *historyServiceClient) TerminateWorkflowExecution(ctx context.Context, in *TerminateWorkflowExecutionRequest, opts ...grpc.CallOption) (*TerminateWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TerminateWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_TerminateWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_TerminateWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -483,8 +504,9 @@ func (c *historyServiceClient) TerminateWorkflowExecution(ctx context.Context, i
 }
 
 func (c *historyServiceClient) DeleteWorkflowExecution(ctx context.Context, in *DeleteWorkflowExecutionRequest, opts ...grpc.CallOption) (*DeleteWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DeleteWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DeleteWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -492,8 +514,9 @@ func (c *historyServiceClient) DeleteWorkflowExecution(ctx context.Context, in *
 }
 
 func (c *historyServiceClient) ResetWorkflowExecution(ctx context.Context, in *ResetWorkflowExecutionRequest, opts ...grpc.CallOption) (*ResetWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ResetWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ResetWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ResetWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -501,8 +524,9 @@ func (c *historyServiceClient) ResetWorkflowExecution(ctx context.Context, in *R
 }
 
 func (c *historyServiceClient) RequestCancelWorkflowExecution(ctx context.Context, in *RequestCancelWorkflowExecutionRequest, opts ...grpc.CallOption) (*RequestCancelWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RequestCancelWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RequestCancelWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RequestCancelWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -510,8 +534,9 @@ func (c *historyServiceClient) RequestCancelWorkflowExecution(ctx context.Contex
 }
 
 func (c *historyServiceClient) ScheduleWorkflowTask(ctx context.Context, in *ScheduleWorkflowTaskRequest, opts ...grpc.CallOption) (*ScheduleWorkflowTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ScheduleWorkflowTaskResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ScheduleWorkflowTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ScheduleWorkflowTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -519,8 +544,9 @@ func (c *historyServiceClient) ScheduleWorkflowTask(ctx context.Context, in *Sch
 }
 
 func (c *historyServiceClient) VerifyFirstWorkflowTaskScheduled(ctx context.Context, in *VerifyFirstWorkflowTaskScheduledRequest, opts ...grpc.CallOption) (*VerifyFirstWorkflowTaskScheduledResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(VerifyFirstWorkflowTaskScheduledResponse)
-	err := c.cc.Invoke(ctx, HistoryService_VerifyFirstWorkflowTaskScheduled_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_VerifyFirstWorkflowTaskScheduled_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -528,8 +554,9 @@ func (c *historyServiceClient) VerifyFirstWorkflowTaskScheduled(ctx context.Cont
 }
 
 func (c *historyServiceClient) RecordChildExecutionCompleted(ctx context.Context, in *RecordChildExecutionCompletedRequest, opts ...grpc.CallOption) (*RecordChildExecutionCompletedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RecordChildExecutionCompletedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RecordChildExecutionCompleted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RecordChildExecutionCompleted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -537,8 +564,9 @@ func (c *historyServiceClient) RecordChildExecutionCompleted(ctx context.Context
 }
 
 func (c *historyServiceClient) VerifyChildExecutionCompletionRecorded(ctx context.Context, in *VerifyChildExecutionCompletionRecordedRequest, opts ...grpc.CallOption) (*VerifyChildExecutionCompletionRecordedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(VerifyChildExecutionCompletionRecordedResponse)
-	err := c.cc.Invoke(ctx, HistoryService_VerifyChildExecutionCompletionRecorded_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_VerifyChildExecutionCompletionRecorded_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -546,8 +574,9 @@ func (c *historyServiceClient) VerifyChildExecutionCompletionRecorded(ctx contex
 }
 
 func (c *historyServiceClient) DescribeWorkflowExecution(ctx context.Context, in *DescribeWorkflowExecutionRequest, opts ...grpc.CallOption) (*DescribeWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DescribeWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DescribeWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -555,8 +584,9 @@ func (c *historyServiceClient) DescribeWorkflowExecution(ctx context.Context, in
 }
 
 func (c *historyServiceClient) ReplicateEventsV2(ctx context.Context, in *ReplicateEventsV2Request, opts ...grpc.CallOption) (*ReplicateEventsV2Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReplicateEventsV2Response)
-	err := c.cc.Invoke(ctx, HistoryService_ReplicateEventsV2_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ReplicateEventsV2_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -564,8 +594,9 @@ func (c *historyServiceClient) ReplicateEventsV2(ctx context.Context, in *Replic
 }
 
 func (c *historyServiceClient) ReplicateWorkflowState(ctx context.Context, in *ReplicateWorkflowStateRequest, opts ...grpc.CallOption) (*ReplicateWorkflowStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReplicateWorkflowStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ReplicateWorkflowState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ReplicateWorkflowState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -573,8 +604,9 @@ func (c *historyServiceClient) ReplicateWorkflowState(ctx context.Context, in *R
 }
 
 func (c *historyServiceClient) SyncShardStatus(ctx context.Context, in *SyncShardStatusRequest, opts ...grpc.CallOption) (*SyncShardStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SyncShardStatusResponse)
-	err := c.cc.Invoke(ctx, HistoryService_SyncShardStatus_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_SyncShardStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -582,8 +614,9 @@ func (c *historyServiceClient) SyncShardStatus(ctx context.Context, in *SyncShar
 }
 
 func (c *historyServiceClient) SyncActivity(ctx context.Context, in *SyncActivityRequest, opts ...grpc.CallOption) (*SyncActivityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SyncActivityResponse)
-	err := c.cc.Invoke(ctx, HistoryService_SyncActivity_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_SyncActivity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -591,8 +624,9 @@ func (c *historyServiceClient) SyncActivity(ctx context.Context, in *SyncActivit
 }
 
 func (c *historyServiceClient) DescribeMutableState(ctx context.Context, in *DescribeMutableStateRequest, opts ...grpc.CallOption) (*DescribeMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeMutableStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DescribeMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DescribeMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -600,8 +634,9 @@ func (c *historyServiceClient) DescribeMutableState(ctx context.Context, in *Des
 }
 
 func (c *historyServiceClient) DescribeHistoryHost(ctx context.Context, in *DescribeHistoryHostRequest, opts ...grpc.CallOption) (*DescribeHistoryHostResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeHistoryHostResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DescribeHistoryHost_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DescribeHistoryHost_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -609,8 +644,9 @@ func (c *historyServiceClient) DescribeHistoryHost(ctx context.Context, in *Desc
 }
 
 func (c *historyServiceClient) CloseShard(ctx context.Context, in *CloseShardRequest, opts ...grpc.CallOption) (*CloseShardResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CloseShardResponse)
-	err := c.cc.Invoke(ctx, HistoryService_CloseShard_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_CloseShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -618,8 +654,9 @@ func (c *historyServiceClient) CloseShard(ctx context.Context, in *CloseShardReq
 }
 
 func (c *historyServiceClient) GetShard(ctx context.Context, in *GetShardRequest, opts ...grpc.CallOption) (*GetShardResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetShardResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetShard_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetShard_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -627,8 +664,9 @@ func (c *historyServiceClient) GetShard(ctx context.Context, in *GetShardRequest
 }
 
 func (c *historyServiceClient) RemoveTask(ctx context.Context, in *RemoveTaskRequest, opts ...grpc.CallOption) (*RemoveTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveTaskResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RemoveTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RemoveTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -636,8 +674,9 @@ func (c *historyServiceClient) RemoveTask(ctx context.Context, in *RemoveTaskReq
 }
 
 func (c *historyServiceClient) GetReplicationMessages(ctx context.Context, in *GetReplicationMessagesRequest, opts ...grpc.CallOption) (*GetReplicationMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetReplicationMessagesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetReplicationMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetReplicationMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -645,8 +684,9 @@ func (c *historyServiceClient) GetReplicationMessages(ctx context.Context, in *G
 }
 
 func (c *historyServiceClient) GetDLQReplicationMessages(ctx context.Context, in *GetDLQReplicationMessagesRequest, opts ...grpc.CallOption) (*GetDLQReplicationMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQReplicationMessagesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetDLQReplicationMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetDLQReplicationMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -654,8 +694,9 @@ func (c *historyServiceClient) GetDLQReplicationMessages(ctx context.Context, in
 }
 
 func (c *historyServiceClient) QueryWorkflow(ctx context.Context, in *QueryWorkflowRequest, opts ...grpc.CallOption) (*QueryWorkflowResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryWorkflowResponse)
-	err := c.cc.Invoke(ctx, HistoryService_QueryWorkflow_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_QueryWorkflow_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -663,8 +704,9 @@ func (c *historyServiceClient) QueryWorkflow(ctx context.Context, in *QueryWorkf
 }
 
 func (c *historyServiceClient) ReapplyEvents(ctx context.Context, in *ReapplyEventsRequest, opts ...grpc.CallOption) (*ReapplyEventsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReapplyEventsResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ReapplyEvents_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ReapplyEvents_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -672,8 +714,9 @@ func (c *historyServiceClient) ReapplyEvents(ctx context.Context, in *ReapplyEve
 }
 
 func (c *historyServiceClient) GetDLQMessages(ctx context.Context, in *GetDLQMessagesRequest, opts ...grpc.CallOption) (*GetDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -681,8 +724,9 @@ func (c *historyServiceClient) GetDLQMessages(ctx context.Context, in *GetDLQMes
 }
 
 func (c *historyServiceClient) PurgeDLQMessages(ctx context.Context, in *PurgeDLQMessagesRequest, opts ...grpc.CallOption) (*PurgeDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PurgeDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_PurgeDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_PurgeDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -690,8 +734,9 @@ func (c *historyServiceClient) PurgeDLQMessages(ctx context.Context, in *PurgeDL
 }
 
 func (c *historyServiceClient) MergeDLQMessages(ctx context.Context, in *MergeDLQMessagesRequest, opts ...grpc.CallOption) (*MergeDLQMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MergeDLQMessagesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_MergeDLQMessages_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_MergeDLQMessages_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -699,8 +744,9 @@ func (c *historyServiceClient) MergeDLQMessages(ctx context.Context, in *MergeDL
 }
 
 func (c *historyServiceClient) RefreshWorkflowTasks(ctx context.Context, in *RefreshWorkflowTasksRequest, opts ...grpc.CallOption) (*RefreshWorkflowTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RefreshWorkflowTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RefreshWorkflowTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RefreshWorkflowTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -708,8 +754,9 @@ func (c *historyServiceClient) RefreshWorkflowTasks(ctx context.Context, in *Ref
 }
 
 func (c *historyServiceClient) GenerateLastHistoryReplicationTasks(ctx context.Context, in *GenerateLastHistoryReplicationTasksRequest, opts ...grpc.CallOption) (*GenerateLastHistoryReplicationTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GenerateLastHistoryReplicationTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GenerateLastHistoryReplicationTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GenerateLastHistoryReplicationTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -717,8 +764,9 @@ func (c *historyServiceClient) GenerateLastHistoryReplicationTasks(ctx context.C
 }
 
 func (c *historyServiceClient) GetReplicationStatus(ctx context.Context, in *GetReplicationStatusRequest, opts ...grpc.CallOption) (*GetReplicationStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetReplicationStatusResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetReplicationStatus_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetReplicationStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -726,8 +774,9 @@ func (c *historyServiceClient) GetReplicationStatus(ctx context.Context, in *Get
 }
 
 func (c *historyServiceClient) RebuildMutableState(ctx context.Context, in *RebuildMutableStateRequest, opts ...grpc.CallOption) (*RebuildMutableStateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RebuildMutableStateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_RebuildMutableState_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_RebuildMutableState_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -735,8 +784,9 @@ func (c *historyServiceClient) RebuildMutableState(ctx context.Context, in *Rebu
 }
 
 func (c *historyServiceClient) ImportWorkflowExecution(ctx context.Context, in *ImportWorkflowExecutionRequest, opts ...grpc.CallOption) (*ImportWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ImportWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ImportWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ImportWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -744,8 +794,9 @@ func (c *historyServiceClient) ImportWorkflowExecution(ctx context.Context, in *
 }
 
 func (c *historyServiceClient) DeleteWorkflowVisibilityRecord(ctx context.Context, in *DeleteWorkflowVisibilityRecordRequest, opts ...grpc.CallOption) (*DeleteWorkflowVisibilityRecordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteWorkflowVisibilityRecordResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DeleteWorkflowVisibilityRecord_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DeleteWorkflowVisibilityRecord_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -753,8 +804,9 @@ func (c *historyServiceClient) DeleteWorkflowVisibilityRecord(ctx context.Contex
 }
 
 func (c *historyServiceClient) UpdateWorkflowExecution(ctx context.Context, in *UpdateWorkflowExecutionRequest, opts ...grpc.CallOption) (*UpdateWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_UpdateWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_UpdateWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -762,8 +814,9 @@ func (c *historyServiceClient) UpdateWorkflowExecution(ctx context.Context, in *
 }
 
 func (c *historyServiceClient) PollWorkflowExecutionUpdate(ctx context.Context, in *PollWorkflowExecutionUpdateRequest, opts ...grpc.CallOption) (*PollWorkflowExecutionUpdateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PollWorkflowExecutionUpdateResponse)
-	err := c.cc.Invoke(ctx, HistoryService_PollWorkflowExecutionUpdate_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_PollWorkflowExecutionUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -771,11 +824,12 @@ func (c *historyServiceClient) PollWorkflowExecutionUpdate(ctx context.Context, 
 }
 
 func (c *historyServiceClient) StreamWorkflowReplicationMessages(ctx context.Context, opts ...grpc.CallOption) (HistoryService_StreamWorkflowReplicationMessagesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HistoryService_ServiceDesc.Streams[0], HistoryService_StreamWorkflowReplicationMessages_FullMethodName, opts...)
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &HistoryService_ServiceDesc.Streams[0], HistoryService_StreamWorkflowReplicationMessages_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &historyServiceStreamWorkflowReplicationMessagesClient{stream}
+	x := &historyServiceStreamWorkflowReplicationMessagesClient{ClientStream: stream}
 	return x, nil
 }
 
@@ -802,8 +856,9 @@ func (x *historyServiceStreamWorkflowReplicationMessagesClient) Recv() (*StreamW
 }
 
 func (c *historyServiceClient) GetWorkflowExecutionHistory(ctx context.Context, in *GetWorkflowExecutionHistoryRequest, opts ...grpc.CallOption) (*GetWorkflowExecutionHistoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionHistoryResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionHistory_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionHistory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -811,8 +866,9 @@ func (c *historyServiceClient) GetWorkflowExecutionHistory(ctx context.Context, 
 }
 
 func (c *historyServiceClient) GetWorkflowExecutionHistoryReverse(ctx context.Context, in *GetWorkflowExecutionHistoryReverseRequest, opts ...grpc.CallOption) (*GetWorkflowExecutionHistoryReverseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionHistoryReverseResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionHistoryReverse_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionHistoryReverse_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -820,8 +876,9 @@ func (c *historyServiceClient) GetWorkflowExecutionHistoryReverse(ctx context.Co
 }
 
 func (c *historyServiceClient) GetWorkflowExecutionRawHistoryV2(ctx context.Context, in *GetWorkflowExecutionRawHistoryV2Request, opts ...grpc.CallOption) (*GetWorkflowExecutionRawHistoryV2Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionRawHistoryV2Response)
-	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionRawHistoryV2_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionRawHistoryV2_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -829,8 +886,9 @@ func (c *historyServiceClient) GetWorkflowExecutionRawHistoryV2(ctx context.Cont
 }
 
 func (c *historyServiceClient) GetWorkflowExecutionRawHistory(ctx context.Context, in *GetWorkflowExecutionRawHistoryRequest, opts ...grpc.CallOption) (*GetWorkflowExecutionRawHistoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkflowExecutionRawHistoryResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionRawHistory_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetWorkflowExecutionRawHistory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -838,8 +896,9 @@ func (c *historyServiceClient) GetWorkflowExecutionRawHistory(ctx context.Contex
 }
 
 func (c *historyServiceClient) ForceDeleteWorkflowExecution(ctx context.Context, in *ForceDeleteWorkflowExecutionRequest, opts ...grpc.CallOption) (*ForceDeleteWorkflowExecutionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ForceDeleteWorkflowExecutionResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ForceDeleteWorkflowExecution_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ForceDeleteWorkflowExecution_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -847,8 +906,9 @@ func (c *historyServiceClient) ForceDeleteWorkflowExecution(ctx context.Context,
 }
 
 func (c *historyServiceClient) GetDLQTasks(ctx context.Context, in *GetDLQTasksRequest, opts ...grpc.CallOption) (*GetDLQTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetDLQTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_GetDLQTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_GetDLQTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -856,8 +916,9 @@ func (c *historyServiceClient) GetDLQTasks(ctx context.Context, in *GetDLQTasksR
 }
 
 func (c *historyServiceClient) DeleteDLQTasks(ctx context.Context, in *DeleteDLQTasksRequest, opts ...grpc.CallOption) (*DeleteDLQTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteDLQTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_DeleteDLQTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_DeleteDLQTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -865,8 +926,9 @@ func (c *historyServiceClient) DeleteDLQTasks(ctx context.Context, in *DeleteDLQ
 }
 
 func (c *historyServiceClient) ListQueues(ctx context.Context, in *ListQueuesRequest, opts ...grpc.CallOption) (*ListQueuesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListQueuesResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ListQueues_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ListQueues_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -874,8 +936,9 @@ func (c *historyServiceClient) ListQueues(ctx context.Context, in *ListQueuesReq
 }
 
 func (c *historyServiceClient) AddTasks(ctx context.Context, in *AddTasksRequest, opts ...grpc.CallOption) (*AddTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_AddTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_AddTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -883,8 +946,9 @@ func (c *historyServiceClient) AddTasks(ctx context.Context, in *AddTasksRequest
 }
 
 func (c *historyServiceClient) ListTasks(ctx context.Context, in *ListTasksRequest, opts ...grpc.CallOption) (*ListTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListTasksResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ListTasks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ListTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -892,8 +956,9 @@ func (c *historyServiceClient) ListTasks(ctx context.Context, in *ListTasksReque
 }
 
 func (c *historyServiceClient) ReserveRateLimiterTokens(ctx context.Context, in *ReserveRateLimiterTokensRequest, opts ...grpc.CallOption) (*ReserveRateLimiterTokensResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReserveRateLimiterTokensResponse)
-	err := c.cc.Invoke(ctx, HistoryService_ReserveRateLimiterTokens_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, HistoryService_ReserveRateLimiterTokens_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -903,6 +968,9 @@ func (c *historyServiceClient) ReserveRateLimiterTokens(ctx context.Context, in 
 // HistoryServiceServer is the server API for HistoryService service.
 // All implementations must embed UnimplementedHistoryServiceServer
 // for forward compatibility
+//
+// HistoryService provides API to start a new long running workflow instance, as well as query and update the history
+// of workflow instances already created.
 type HistoryServiceServer interface {
 	// StartWorkflowExecution starts a new long running workflow instance.  It will create the instance with
 	// 'WorkflowExecutionStarted' event in history and also schedule the first WorkflowTask for the worker to produce the
@@ -2211,7 +2279,7 @@ func _HistoryService_PollWorkflowExecutionUpdate_Handler(srv interface{}, ctx co
 }
 
 func _HistoryService_StreamWorkflowReplicationMessages_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(HistoryServiceServer).StreamWorkflowReplicationMessages(&historyServiceStreamWorkflowReplicationMessagesServer{stream})
+	return srv.(HistoryServiceServer).StreamWorkflowReplicationMessages(&historyServiceStreamWorkflowReplicationMessagesServer{ServerStream: stream})
 }
 
 type HistoryService_StreamWorkflowReplicationMessagesServer interface {

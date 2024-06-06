@@ -38,8 +38,8 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-// Requires gRPC-Go v1.32.0 or later.
-const _ = grpc.SupportPackageIsVersion7
+// Requires gRPC-Go v1.62.0 or later.
+const _ = grpc.SupportPackageIsVersion8
 
 const (
 	MatchingService_PollWorkflowTaskQueue_FullMethodName                  = "/temporal.server.api.matchingservice.v1.MatchingService/PollWorkflowTaskQueue"
@@ -72,6 +72,12 @@ const (
 // MatchingServiceClient is the client API for MatchingService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// MatchingService API is exposed to provide support for polling from long running applications.
+// Such applications are expected to have a worker which regularly polls for WorkflowTask and ActivityTask.  For each
+// WorkflowTask, application is expected to process the history of events for that session and respond back with next
+// commands.  For each ActivityTask, application is expected to execute the actual logic for that task and respond back
+// with completion or failure.
 type MatchingServiceClient interface {
 	// PollWorkflowTaskQueue is called by frontend to process WorkflowTask from a specific task queue.  A
 	// WorkflowTask is dispatched to callers for active workflow executions, with pending workflow tasks.
@@ -183,8 +189,9 @@ func NewMatchingServiceClient(cc grpc.ClientConnInterface) MatchingServiceClient
 }
 
 func (c *matchingServiceClient) PollWorkflowTaskQueue(ctx context.Context, in *PollWorkflowTaskQueueRequest, opts ...grpc.CallOption) (*PollWorkflowTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PollWorkflowTaskQueueResponse)
-	err := c.cc.Invoke(ctx, MatchingService_PollWorkflowTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_PollWorkflowTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -192,8 +199,9 @@ func (c *matchingServiceClient) PollWorkflowTaskQueue(ctx context.Context, in *P
 }
 
 func (c *matchingServiceClient) PollActivityTaskQueue(ctx context.Context, in *PollActivityTaskQueueRequest, opts ...grpc.CallOption) (*PollActivityTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PollActivityTaskQueueResponse)
-	err := c.cc.Invoke(ctx, MatchingService_PollActivityTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_PollActivityTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,8 +209,9 @@ func (c *matchingServiceClient) PollActivityTaskQueue(ctx context.Context, in *P
 }
 
 func (c *matchingServiceClient) AddWorkflowTask(ctx context.Context, in *AddWorkflowTaskRequest, opts ...grpc.CallOption) (*AddWorkflowTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddWorkflowTaskResponse)
-	err := c.cc.Invoke(ctx, MatchingService_AddWorkflowTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_AddWorkflowTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -210,8 +219,9 @@ func (c *matchingServiceClient) AddWorkflowTask(ctx context.Context, in *AddWork
 }
 
 func (c *matchingServiceClient) AddActivityTask(ctx context.Context, in *AddActivityTaskRequest, opts ...grpc.CallOption) (*AddActivityTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddActivityTaskResponse)
-	err := c.cc.Invoke(ctx, MatchingService_AddActivityTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_AddActivityTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,8 +229,9 @@ func (c *matchingServiceClient) AddActivityTask(ctx context.Context, in *AddActi
 }
 
 func (c *matchingServiceClient) QueryWorkflow(ctx context.Context, in *QueryWorkflowRequest, opts ...grpc.CallOption) (*QueryWorkflowResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(QueryWorkflowResponse)
-	err := c.cc.Invoke(ctx, MatchingService_QueryWorkflow_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_QueryWorkflow_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -228,8 +239,9 @@ func (c *matchingServiceClient) QueryWorkflow(ctx context.Context, in *QueryWork
 }
 
 func (c *matchingServiceClient) RespondQueryTaskCompleted(ctx context.Context, in *RespondQueryTaskCompletedRequest, opts ...grpc.CallOption) (*RespondQueryTaskCompletedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondQueryTaskCompletedResponse)
-	err := c.cc.Invoke(ctx, MatchingService_RespondQueryTaskCompleted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_RespondQueryTaskCompleted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -237,8 +249,9 @@ func (c *matchingServiceClient) RespondQueryTaskCompleted(ctx context.Context, i
 }
 
 func (c *matchingServiceClient) DispatchNexusTask(ctx context.Context, in *DispatchNexusTaskRequest, opts ...grpc.CallOption) (*DispatchNexusTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DispatchNexusTaskResponse)
-	err := c.cc.Invoke(ctx, MatchingService_DispatchNexusTask_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_DispatchNexusTask_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -246,8 +259,9 @@ func (c *matchingServiceClient) DispatchNexusTask(ctx context.Context, in *Dispa
 }
 
 func (c *matchingServiceClient) PollNexusTaskQueue(ctx context.Context, in *PollNexusTaskQueueRequest, opts ...grpc.CallOption) (*PollNexusTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PollNexusTaskQueueResponse)
-	err := c.cc.Invoke(ctx, MatchingService_PollNexusTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_PollNexusTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -255,8 +269,9 @@ func (c *matchingServiceClient) PollNexusTaskQueue(ctx context.Context, in *Poll
 }
 
 func (c *matchingServiceClient) RespondNexusTaskCompleted(ctx context.Context, in *RespondNexusTaskCompletedRequest, opts ...grpc.CallOption) (*RespondNexusTaskCompletedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondNexusTaskCompletedResponse)
-	err := c.cc.Invoke(ctx, MatchingService_RespondNexusTaskCompleted_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_RespondNexusTaskCompleted_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -264,8 +279,9 @@ func (c *matchingServiceClient) RespondNexusTaskCompleted(ctx context.Context, i
 }
 
 func (c *matchingServiceClient) RespondNexusTaskFailed(ctx context.Context, in *RespondNexusTaskFailedRequest, opts ...grpc.CallOption) (*RespondNexusTaskFailedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RespondNexusTaskFailedResponse)
-	err := c.cc.Invoke(ctx, MatchingService_RespondNexusTaskFailed_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_RespondNexusTaskFailed_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -273,8 +289,9 @@ func (c *matchingServiceClient) RespondNexusTaskFailed(ctx context.Context, in *
 }
 
 func (c *matchingServiceClient) CancelOutstandingPoll(ctx context.Context, in *CancelOutstandingPollRequest, opts ...grpc.CallOption) (*CancelOutstandingPollResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CancelOutstandingPollResponse)
-	err := c.cc.Invoke(ctx, MatchingService_CancelOutstandingPoll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_CancelOutstandingPoll_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -282,8 +299,9 @@ func (c *matchingServiceClient) CancelOutstandingPoll(ctx context.Context, in *C
 }
 
 func (c *matchingServiceClient) DescribeTaskQueue(ctx context.Context, in *DescribeTaskQueueRequest, opts ...grpc.CallOption) (*DescribeTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DescribeTaskQueueResponse)
-	err := c.cc.Invoke(ctx, MatchingService_DescribeTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_DescribeTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -291,8 +309,9 @@ func (c *matchingServiceClient) DescribeTaskQueue(ctx context.Context, in *Descr
 }
 
 func (c *matchingServiceClient) ListTaskQueuePartitions(ctx context.Context, in *ListTaskQueuePartitionsRequest, opts ...grpc.CallOption) (*ListTaskQueuePartitionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListTaskQueuePartitionsResponse)
-	err := c.cc.Invoke(ctx, MatchingService_ListTaskQueuePartitions_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_ListTaskQueuePartitions_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -300,8 +319,9 @@ func (c *matchingServiceClient) ListTaskQueuePartitions(ctx context.Context, in 
 }
 
 func (c *matchingServiceClient) UpdateWorkerBuildIdCompatibility(ctx context.Context, in *UpdateWorkerBuildIdCompatibilityRequest, opts ...grpc.CallOption) (*UpdateWorkerBuildIdCompatibilityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateWorkerBuildIdCompatibilityResponse)
-	err := c.cc.Invoke(ctx, MatchingService_UpdateWorkerBuildIdCompatibility_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_UpdateWorkerBuildIdCompatibility_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -309,8 +329,9 @@ func (c *matchingServiceClient) UpdateWorkerBuildIdCompatibility(ctx context.Con
 }
 
 func (c *matchingServiceClient) GetWorkerBuildIdCompatibility(ctx context.Context, in *GetWorkerBuildIdCompatibilityRequest, opts ...grpc.CallOption) (*GetWorkerBuildIdCompatibilityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetWorkerBuildIdCompatibilityResponse)
-	err := c.cc.Invoke(ctx, MatchingService_GetWorkerBuildIdCompatibility_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_GetWorkerBuildIdCompatibility_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -318,8 +339,9 @@ func (c *matchingServiceClient) GetWorkerBuildIdCompatibility(ctx context.Contex
 }
 
 func (c *matchingServiceClient) GetTaskQueueUserData(ctx context.Context, in *GetTaskQueueUserDataRequest, opts ...grpc.CallOption) (*GetTaskQueueUserDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetTaskQueueUserDataResponse)
-	err := c.cc.Invoke(ctx, MatchingService_GetTaskQueueUserData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_GetTaskQueueUserData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -327,8 +349,9 @@ func (c *matchingServiceClient) GetTaskQueueUserData(ctx context.Context, in *Ge
 }
 
 func (c *matchingServiceClient) ApplyTaskQueueUserDataReplicationEvent(ctx context.Context, in *ApplyTaskQueueUserDataReplicationEventRequest, opts ...grpc.CallOption) (*ApplyTaskQueueUserDataReplicationEventResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ApplyTaskQueueUserDataReplicationEventResponse)
-	err := c.cc.Invoke(ctx, MatchingService_ApplyTaskQueueUserDataReplicationEvent_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_ApplyTaskQueueUserDataReplicationEvent_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -336,8 +359,9 @@ func (c *matchingServiceClient) ApplyTaskQueueUserDataReplicationEvent(ctx conte
 }
 
 func (c *matchingServiceClient) GetBuildIdTaskQueueMapping(ctx context.Context, in *GetBuildIdTaskQueueMappingRequest, opts ...grpc.CallOption) (*GetBuildIdTaskQueueMappingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetBuildIdTaskQueueMappingResponse)
-	err := c.cc.Invoke(ctx, MatchingService_GetBuildIdTaskQueueMapping_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_GetBuildIdTaskQueueMapping_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -345,8 +369,9 @@ func (c *matchingServiceClient) GetBuildIdTaskQueueMapping(ctx context.Context, 
 }
 
 func (c *matchingServiceClient) ForceUnloadTaskQueue(ctx context.Context, in *ForceUnloadTaskQueueRequest, opts ...grpc.CallOption) (*ForceUnloadTaskQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ForceUnloadTaskQueueResponse)
-	err := c.cc.Invoke(ctx, MatchingService_ForceUnloadTaskQueue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_ForceUnloadTaskQueue_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -354,8 +379,9 @@ func (c *matchingServiceClient) ForceUnloadTaskQueue(ctx context.Context, in *Fo
 }
 
 func (c *matchingServiceClient) UpdateTaskQueueUserData(ctx context.Context, in *UpdateTaskQueueUserDataRequest, opts ...grpc.CallOption) (*UpdateTaskQueueUserDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateTaskQueueUserDataResponse)
-	err := c.cc.Invoke(ctx, MatchingService_UpdateTaskQueueUserData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_UpdateTaskQueueUserData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -363,8 +389,9 @@ func (c *matchingServiceClient) UpdateTaskQueueUserData(ctx context.Context, in 
 }
 
 func (c *matchingServiceClient) ReplicateTaskQueueUserData(ctx context.Context, in *ReplicateTaskQueueUserDataRequest, opts ...grpc.CallOption) (*ReplicateTaskQueueUserDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ReplicateTaskQueueUserDataResponse)
-	err := c.cc.Invoke(ctx, MatchingService_ReplicateTaskQueueUserData_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_ReplicateTaskQueueUserData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -372,8 +399,9 @@ func (c *matchingServiceClient) ReplicateTaskQueueUserData(ctx context.Context, 
 }
 
 func (c *matchingServiceClient) CreateNexusIncomingService(ctx context.Context, in *CreateNexusIncomingServiceRequest, opts ...grpc.CallOption) (*CreateNexusIncomingServiceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateNexusIncomingServiceResponse)
-	err := c.cc.Invoke(ctx, MatchingService_CreateNexusIncomingService_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_CreateNexusIncomingService_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -381,8 +409,9 @@ func (c *matchingServiceClient) CreateNexusIncomingService(ctx context.Context, 
 }
 
 func (c *matchingServiceClient) UpdateNexusIncomingService(ctx context.Context, in *UpdateNexusIncomingServiceRequest, opts ...grpc.CallOption) (*UpdateNexusIncomingServiceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateNexusIncomingServiceResponse)
-	err := c.cc.Invoke(ctx, MatchingService_UpdateNexusIncomingService_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_UpdateNexusIncomingService_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -390,8 +419,9 @@ func (c *matchingServiceClient) UpdateNexusIncomingService(ctx context.Context, 
 }
 
 func (c *matchingServiceClient) DeleteNexusIncomingService(ctx context.Context, in *DeleteNexusIncomingServiceRequest, opts ...grpc.CallOption) (*DeleteNexusIncomingServiceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteNexusIncomingServiceResponse)
-	err := c.cc.Invoke(ctx, MatchingService_DeleteNexusIncomingService_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_DeleteNexusIncomingService_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -399,8 +429,9 @@ func (c *matchingServiceClient) DeleteNexusIncomingService(ctx context.Context, 
 }
 
 func (c *matchingServiceClient) ListNexusIncomingServices(ctx context.Context, in *ListNexusIncomingServicesRequest, opts ...grpc.CallOption) (*ListNexusIncomingServicesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListNexusIncomingServicesResponse)
-	err := c.cc.Invoke(ctx, MatchingService_ListNexusIncomingServices_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MatchingService_ListNexusIncomingServices_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,6 +441,12 @@ func (c *matchingServiceClient) ListNexusIncomingServices(ctx context.Context, i
 // MatchingServiceServer is the server API for MatchingService service.
 // All implementations must embed UnimplementedMatchingServiceServer
 // for forward compatibility
+//
+// MatchingService API is exposed to provide support for polling from long running applications.
+// Such applications are expected to have a worker which regularly polls for WorkflowTask and ActivityTask.  For each
+// WorkflowTask, application is expected to process the history of events for that session and respond back with next
+// commands.  For each ActivityTask, application is expected to execute the actual logic for that task and respond back
+// with completion or failure.
 type MatchingServiceServer interface {
 	// PollWorkflowTaskQueue is called by frontend to process WorkflowTask from a specific task queue.  A
 	// WorkflowTask is dispatched to callers for active workflow executions, with pending workflow tasks.
