@@ -11,7 +11,7 @@ import (
 
 type (
 	Controller interface {
-		GetNamespaceRateLimiter(ns string) quotas.RequestRateLimiter
+		GetNamespaceRateLimiter(ns string) quotas.CentralRateLimiter
 	}
 
 	ControllerImpl struct {
@@ -37,19 +37,21 @@ func ControllerProvider(
 	}
 }
 
-func (c *ControllerImpl) GetNamespaceRateLimiter(ns string) quotas.RequestRateLimiter {
+func (c *ControllerImpl) GetNamespaceRateLimiter(ns string) quotas.CentralRateLimiter {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if limiter, ok := c.rateLimiters.Load(ns); ok {
-		return limiter.(quotas.RequestRateLimiter)
+		return limiter.(quotas.CentralRateLimiter)
 	}
 	c.rateLimiters.Store(
 		ns,
-		quotas.NewRequestRateLimiterAdapter(
-			quotas.NewDefaultIncomingRateLimiter(func() float64 {
+		quotas.NewCentralRateLimiter(
+			func() float64 {
 				return float64(c.config.NamespaceAPS(ns))
-			}),
-		))
+			},
+			c.config.CentralRateLimiterEpochSeconds,
+		),
+	)
 	rl, _ := c.rateLimiters.Load(ns)
-	return rl.(quotas.RequestRateLimiter)
+	return rl.(quotas.CentralRateLimiter)
 }

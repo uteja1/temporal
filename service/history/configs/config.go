@@ -340,7 +340,8 @@ type Config struct {
 	FrontendAccessHistoryFraction dynamicconfig.FloatPropertyFn
 
 	// This should not be here.
-	NamespaceAPS dynamicconfig.IntPropertyFnWithNamespaceFilter
+	NamespaceAPS                   dynamicconfig.IntPropertyFnWithNamespaceFilter
+	CentralRateLimiterEpochSeconds dynamicconfig.IntPropertyFn
 }
 
 const (
@@ -617,8 +618,9 @@ func NewConfig(
 
 		SendRawWorkflowHistory: dc.GetBoolPropertyFnWithNamespaceFilter(dynamicconfig.SendRawWorkflowHistory, false),
 
-		FrontendAccessHistoryFraction: dc.GetFloat64Property(dynamicconfig.FrontendAccessHistoryFraction, 0.0),
-		NamespaceAPS:                  dc.GetIntPropertyFilteredByNamespace(dynamicconfig.NamespaceAPS, 10),
+		FrontendAccessHistoryFraction:  dc.GetFloat64Property(dynamicconfig.FrontendAccessHistoryFraction, 0.0),
+		NamespaceAPS:                   dc.GetIntPropertyFilteredByNamespace(dynamicconfig.NamespaceAPS, 10),
+		CentralRateLimiterEpochSeconds: dc.GetIntProperty(dynamicconfig.CentralRateLimiterEpochSeconds, 5),
 	}
 
 	return cfg

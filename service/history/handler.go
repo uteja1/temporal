@@ -30,17 +30,16 @@ import (
 	"math"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/pborman/uuid"
 	"go.opentelemetry.io/otel/trace"
 	commonpb "go.temporal.io/api/common/v1"
 	enumspb "go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/serviceerror"
-	"go.temporal.io/server/common/quotas"
 	"go.temporal.io/server/service/history/globalratelimiter"
 	"go.uber.org/fx"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"go.temporal.io/server/api/historyservice/v1"
 	namespacespb "go.temporal.io/server/api/namespace/v1"
@@ -2267,21 +2266,10 @@ func validateTaskToken(taskToken *tokenspb.Task) error {
 
 func (h *Handler) ReserveRateLimiterTokens(ctx context.Context, request *historyservice.ReserveRateLimiterTokensRequest) (
 	_ *historyservice.ReserveRateLimiterTokensResponse, retError error) {
-	//metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
-	//metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(1)
+	metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Rps))
+	metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(1)
 	limiter := h.rateLimiterController.GetNamespaceRateLimiter(request.Namespace)
-	allowed := limiter.Allow(time.Now(), quotas.Request{
-		API:           "",
-		Token:         int(request.Tokens),
-		Caller:        request.Namespace,
-		CallerType:    "",
-		CallerSegment: 0,
-		Initiation:    "",
-	})
-	if allowed {
-		//metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(request.Tokens))
-		return &historyservice.ReserveRateLimiterTokensResponse{Tokens: request.Tokens}, nil
-	}
-	//metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(0))
-	return &historyservice.ReserveRateLimiterTokensResponse{Tokens: 0}, nil
+	tokens, expiry := limiter.GetTokens(int(request.Rps))
+	metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.Namespace))).Record(float64(tokens))
+	return &historyservice.ReserveRateLimiterTokensResponse{Tokens: int32(tokens), Expiry: durationpb.New(expiry)}, nil
 }

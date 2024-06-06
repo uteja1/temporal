@@ -1063,4 +1063,5 @@ const (
 	// settings for controlling remote activity concurrency for delete namespace workflows.
 	WorkerDeleteNamespaceActivityLimitsConfig = "worker.deleteNamespaceActivityLimitsConfig"
 	NamespaceAPS                              = "saas.namespaceAPS"
+	CentralRateLimiterEpochSeconds            = "history.centralRateLimiterEpochSeconds"
 )

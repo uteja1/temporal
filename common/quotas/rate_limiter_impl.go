@@ -99,6 +99,10 @@ func (rl *RateLimiterImpl) Burst() int {
 	return rl.burst
 }
 
+func (rl *RateLimiterImpl) TokensAt(t time.Time) float64 {
+	return rl.rateLimiter.TokensAt(t)
+}
+
 func (rl *RateLimiterImpl) refreshInternalRateLimiterImpl(
 	newRate *float64,
 	newBurst *int,
