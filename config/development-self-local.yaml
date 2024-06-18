@@ -63,14 +63,25 @@ global:
       framework: "tally"
       timerType: "histogram"
       listenAddress: "127.0.0.1:8000"
-
+  tls:
+    frontend:
+        server:
+            requireClientAuth: false
+            certFile: /Users/haifengh/workspace/self-managed/s-cgs-uw2-j/temporal-identity/tls.crt
+            keyFile: /Users/haifengh/workspace/self-managed/s-cgs-uw2-j/temporal-identity/tls.key
+        client:
+            serverName: s-cgs-uw2-j
+            disableHostVerification: true
+            rootCaFiles: 
+              - /Users/haifengh/workspace/self-managed/s-cgs-uw2-j/temporal-trust-domain-ca/tls.crt
 services:
   frontend:
     rpc:
-      grpcPort: 9233
-      membershipPort: 9933
-      bindOnLocalHost: true
-      httpPort: 9243
+      grpcPort: 7233
+      membershipPort: 6933
+      # bindOnLocalHost: true
+      bindOnIP: "0.0.0.0"
+      httpPort: 7243
 
   matching:
     rpc:
@@ -80,8 +91,8 @@ services:
 
   history:
     rpc:
-      grpcPort: 9234
-      membershipPort: 9934
+      grpcPort: 7234
+      membershipPort: 6934
       bindOnLocalHost: true
 
   worker:
@@ -91,17 +102,16 @@ services:
       bindOnLocalHost: true
 
 clusterMetadata:
-  enableGlobalNamespace: false
-  failoverVersionIncrement: 10
-  masterClusterName: "proxy"
-  currentClusterName: "proxy"
+  enableGlobalNamespace: true
+  failoverVersionIncrement: 1000000
+  masterClusterName: "active"
+  currentClusterName: "active"
   clusterInformation:
-    proxy:
+    active:
       enabled: true
       initialFailoverVersion: 1
       rpcName: "frontend"
-      rpcAddress: "localhost:9233"
-      httpAddress: "localhost:9243"
+      rpcAddress: "localhost:7233"
 
 dcRedirectionPolicy:
   policy: "noop"

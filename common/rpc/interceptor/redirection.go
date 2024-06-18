@@ -27,13 +27,13 @@ package interceptor
 import (
 	"context"
 	"strconv"
-	"strings"
 	"time"
 
 	"go.temporal.io/api/workflowservice/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
+	"go.temporal.io/server/api/adminservice/v1"
 	"go.temporal.io/server/client"
 	"go.temporal.io/server/common/api"
 	"go.temporal.io/server/common/clock"
@@ -125,6 +125,9 @@ var (
 		"StopBatchOperation":     func() any { return &workflowservice.StopBatchOperationResponse{} },
 		"DescribeBatchOperation": func() any { return &workflowservice.DescribeBatchOperationResponse{} },
 		"ListBatchOperations":    func() any { return &workflowservice.ListBatchOperationsResponse{} },
+
+		// AdminService
+		"DescribeCluster": func() any { return &adminservice.DescribeClusterResponse{} },
 	}
 )
 
@@ -182,23 +185,27 @@ func (i *Redirection) Intercept(
 ) (_ any, retError error) {
 	defer log.CapturePanic(i.logger, &retError)
 
-	if !strings.HasPrefix(info.FullMethod, api.WorkflowServicePrefix) {
-		return handler(ctx, req)
-	}
-	if !i.RedirectionAllowed(ctx) {
-		return handler(ctx, req)
-	}
+	// if !strings.HasPrefix(info.FullMethod, api.WorkflowServicePrefix) {
+	// 	return handler(ctx, req)
+	// }
+	// if !i.RedirectionAllowed(ctx) {
+	// 	return handler(ctx, req)
+	// }
+	// if _, ok := localAPIResponses[methodName]; ok {
+	// 	return i.handleLocalAPIInvocation(ctx, req, handler, methodName)
+	// }
 
+	var resp any
 	methodName := api.MethodName(info.FullMethod)
-	if _, ok := localAPIResponses[methodName]; ok {
-		return i.handleLocalAPIInvocation(ctx, req, handler, methodName)
-	}
-	if raFn, ok := globalAPIResponses[methodName]; ok {
-		namespaceName, err := GetNamespaceName(i.namespaceCache, req)
+	if respCtorFn, ok := globalAPIResponses[methodName]; ok {
+		remoteClient, _, err := i.clientBean.GetRemoteFrontendClient("cluster-b")
 		if err != nil {
-			return nil, err
+			return resp, err
 		}
-		return i.handleRedirectAPIInvocation(ctx, req, info, handler, methodName, raFn, namespaceName)
+		resp = respCtorFn()
+		// ctx = metadata.AppendToOutgoingContext(ctx, DCRedirectionApiHeaderName, "true")
+		err = remoteClient.Invoke(ctx, info.FullMethod, req, resp)
+		return resp, err
 	}
 
 	// This should not happen unless new API is added without updating localAPIResponses and  globalAPIResponses maps.

@@ -1131,10 +1131,10 @@ func (adh *AdminHandler) AddOrUpdateRemoteCluster(
 		return nil, err
 	}
 
-	err = adh.validateRemoteClusterMetadata(resp)
-	if err != nil {
-		return nil, err
-	}
+	// err = adh.validateRemoteClusterMetadata(resp)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	var updateRequestVersion int64 = 0
 	clusterMetadataMrg := adh.clusterMetadataManager
