@@ -127,7 +127,11 @@ var (
 		"ListBatchOperations":    func() any { return &workflowservice.ListBatchOperationsResponse{} },
 
 		// AdminService
-		"DescribeCluster": func() any { return &adminservice.DescribeClusterResponse{} },
+		"DescribeCluster":                 func() any { return &adminservice.DescribeClusterResponse{} },
+		"GetNamespaceReplicationMessages": func() any { return &adminservice.GetNamespaceReplicationMessagesResponse{} },
+
+		// Local
+		// "ListClusters"
 	}
 )
 

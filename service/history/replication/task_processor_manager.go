@@ -139,7 +139,7 @@ func NewTaskProcessorManager(
 		metricsHandler: shard.GetMetricsHandler(),
 		dlqWriter:      dlqWriter,
 
-		enableFetcher:        !config.EnableReplicationStream(),
+		enableFetcher:        false, // !config.EnableReplicationStream()
 		taskProcessors:       make(map[string][]TaskProcessor),
 		taskExecutorProvider: taskExecutorProvider,
 		taskPollerManager:    newPollerManager(shard.GetShardID(), shard.GetClusterMetadata()),

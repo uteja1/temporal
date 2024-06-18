@@ -1656,19 +1656,37 @@ func (adh *AdminHandler) StreamWorkflowReplicationMessages(
 	if !ok {
 		return serviceerror.NewInvalidArgument("missing cluster & shard ID metadata")
 	}
-	_, serverClusterShardID, err := history.DecodeClusterShardMD(ctxMetadata)
+	clientClusterShardID, serverClusterShardID, err := history.DecodeClusterShardMD(ctxMetadata)
 	if err != nil {
 		return err
 	}
 
-	logger := log.With(adh.logger, tag.ShardID(serverClusterShardID.ShardID))
-	logger.Info("AdminStreamReplicationMessages started.")
+	// logger := log.With(adh.logger, tag.ShardID(serverClusterShardID.ShardID))
+	logger := adh.logger
+	logger.Info(fmt.Sprintf("AdminStreamReplicationMessages started. ShardID client: %v, server: %v", clientClusterShardID, serverClusterShardID))
 	defer logger.Info("AdminStreamReplicationMessages stopped.")
 
-	historyStreamCtx, cancel := context.WithCancel(clientCluster.Context())
+	ctx := clientCluster.Context()
+	ctx = metadata.NewOutgoingContext(ctx, history.EncodeClusterShardMD(
+		history.ClusterShardID{
+			ClusterID: clientClusterShardID.ClusterID,
+			ShardID:   clientClusterShardID.ShardID,
+		},
+		history.ClusterShardID{
+			ClusterID: serverClusterShardID.ClusterID,
+			ShardID:   serverClusterShardID.ShardID,
+		},
+	))
+	historyStreamCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	serverCluster, err := adh.historyClient.StreamWorkflowReplicationMessages(historyStreamCtx)
+	remoteClient, err := adh.clientBean.GetRemoteAdminClient("cluster-b")
+	if err != nil {
+		return err
+	}
+
+	// serverCluster, err := adh.historyClient.StreamWorkflowReplicationMessages(historyStreamCtx)
+	serverCluster, err := remoteClient.StreamWorkflowReplicationMessages(historyStreamCtx)
 	if err != nil {
 		return err
 	}
@@ -1692,11 +1710,7 @@ func (adh *AdminHandler) StreamWorkflowReplicationMessages(
 			}
 			switch attr := req.GetAttributes().(type) {
 			case *adminservice.StreamWorkflowReplicationMessagesRequest_SyncReplicationState:
-				if err = serverCluster.Send(&historyservice.StreamWorkflowReplicationMessagesRequest{
-					Attributes: &historyservice.StreamWorkflowReplicationMessagesRequest_SyncReplicationState{
-						SyncReplicationState: attr.SyncReplicationState,
-					},
-				}); err != nil {
+				if err = serverCluster.Send(req); err != nil {
 					logger.Info("AdminStreamReplicationMessages client -> server encountered error", tag.Error(err))
 					return
 				}
@@ -1718,12 +1732,8 @@ func (adh *AdminHandler) StreamWorkflowReplicationMessages(
 				return
 			}
 			switch attr := resp.GetAttributes().(type) {
-			case *historyservice.StreamWorkflowReplicationMessagesResponse_Messages:
-				if err = clientCluster.Send(&adminservice.StreamWorkflowReplicationMessagesResponse{
-					Attributes: &adminservice.StreamWorkflowReplicationMessagesResponse_Messages{
-						Messages: attr.Messages,
-					},
-				}); err != nil {
+			case *adminservice.StreamWorkflowReplicationMessagesResponse_Messages:
+				if err = clientCluster.Send(resp); err != nil {
 					if err != io.EOF {
 						logger.Info("AdminStreamReplicationMessages server -> client encountered error", tag.Error(err))
 

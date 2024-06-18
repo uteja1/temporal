@@ -62,7 +62,7 @@ global:
 #      framework: "opentelemetry"
       framework: "tally"
       timerType: "histogram"
-      listenAddress: "127.0.0.1:8000"
+      listenAddress: "127.0.0.1:8002"
 
 services:
   frontend:

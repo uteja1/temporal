@@ -250,7 +250,7 @@ func streamReceiverMonitorProvider(
 	return NewStreamReceiverMonitor(
 		processToolBox,
 		taskConverter,
-		processToolBox.Config.EnableReplicationStream(),
+		false, // processToolBox.Config.EnableReplicationStream(),
 	)
 }
 
