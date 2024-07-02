@@ -27,6 +27,7 @@
 package workflow
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -302,20 +303,33 @@ func (r *TaskGeneratorImpl) GenerateDirtySubStateMachineTasks(
 		if err != nil {
 			return err
 		}
-		for _, output := range pao.Outputs {
-			for _, task := range output.Tasks {
-				// since this method is called after transition history is updated for the current transition,
-				// we can safely call generateSubStateMachineTask which sets MutableStateVersionedTransition
-				// to the last versioned transition in StateMachineRef
-				if err := generateSubStateMachineTask(
-					r.mutableState,
-					stateMachineRegistry,
-					node,
-					pao.Path,
-					task,
-				); err != nil {
-					return err
-				}
+
+		taskRegenerator, err := hsm.MachineData[hsm.TaskRegenerator](node)
+		if err != nil {
+			if node.Parent == nil && errors.Is(err, hsm.ErrIncompatibleType) {
+				// root node is mutable state and doesn't implement TaskRegenerator interface
+				return nil
+			}
+			return err
+		}
+
+		tasks, err := taskRegenerator.RegenerateTasks(node)
+		if err != nil {
+			return err
+		}
+
+		for _, task := range tasks {
+			// since this method is called after transition history is updated for the current transition,
+			// we can safely call generateSubStateMachineTask which sets MutableStateVersionedTransition
+			// to the last versioned transition in StateMachineRef
+			if err := generateSubStateMachineTask(
+				r.mutableState,
+				stateMachineRegistry,
+				node,
+				pao.Path,
+				task,
+			); err != nil {
+				return err
 			}
 		}
 	}
