@@ -27,6 +27,7 @@ package history
 import (
 	"net"
 
+	"go.temporal.io/server/common/quotas"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -93,6 +94,7 @@ var Module = fx.Options(
 	fx.Provide(ServiceResolverProvider),
 	fx.Provide(EventNotifierProvider),
 	fx.Provide(HistoryEngineFactoryProvider),
+	fx.Provide(TokenVendorControllerProvider),
 	fx.Provide(HandlerProvider),
 	fx.Provide(ServiceProvider),
 	fx.Invoke(ServiceLifetimeHooks),
@@ -317,4 +319,8 @@ func EventNotifierProvider(
 
 func ServiceLifetimeHooks(lc fx.Lifecycle, svc *Service) {
 	lc.Append(fx.StartStopHook(svc.Start, svc.Stop))
+}
+
+func TokenVendorControllerProvider(config *configs.Config) quotas.TokenVendorController {
+	return quotas.NewTokenVendorController(config.DistributedRateLimiterTimeWindow())
 }

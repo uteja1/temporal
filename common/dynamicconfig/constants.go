@@ -2387,4 +2387,9 @@ WorkerActivitiesPerSecond, MaxConcurrentActivityTaskPollers.
 		1*time.Second,
 		`WorkflowIdReuseMinimalInterval is used for timing how soon users can create new workflow with the same workflow ID.`,
 	)
+	DistributedRateLimiterTimeWindow = NewGlobalIntSetting(
+		"system.distributedRateLimiterTimeWindow",
+		5,
+		`Time window for which distributed rate limiter allocates tokens`,
+	)
 )

@@ -37,8 +37,10 @@ import (
 	commonpb "go.temporal.io/api/common/v1"
 	enumspb "go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/serviceerror"
+	"go.temporal.io/server/common/quotas"
 	"go.uber.org/fx"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"go.temporal.io/server/api/historyservice/v1"
 	namespacespb "go.temporal.io/server/api/namespace/v1"
@@ -107,6 +109,7 @@ type (
 		tracer                       trace.Tracer
 		taskQueueManager             persistence.HistoryTaskQueueManager
 		taskCategoryRegistry         tasks.TaskCategoryRegistry
+		tokenVendorController        quotas.TokenVendorController
 
 		replicationTaskFetcherFactory    replication.TaskFetcherFactory
 		replicationTaskConverterProvider replication.SourceTaskConverterProvider
@@ -136,6 +139,7 @@ type (
 		TracerProvider               trace.TracerProvider
 		TaskQueueManager             persistence.HistoryTaskQueueManager
 		TaskCategoryRegistry         tasks.TaskCategoryRegistry
+		TokenVendorController        quotas.TokenVendorController
 
 		ReplicationTaskFetcherFactory   replication.TaskFetcherFactory
 		ReplicationTaskConverterFactory replication.SourceTaskConverterProvider
@@ -2285,6 +2289,23 @@ func (h *Handler) ListTasks(
 	}
 
 	return resp, nil
+}
+
+func (h *Handler) GetRateLimiterToken(
+	ctx context.Context,
+	request *historyservice.GetRateLimiterTokenRequest,
+) (_ *historyservice.GetRateLimiterTokenResponse, retError error) {
+	tokenVendor := h.tokenVendorController.GetOrCreateTokenVendor(
+		request.RateLimiterConfig.RateLimiterName,
+		request.RateLimiterConfig.GetRate(),
+		request.RateLimiterConfig.GetBurstRatio(),
+		int(request.RateLimiterConfig.GetPriorityCount()),
+	)
+	tokens, expiry := tokenVendor.GetTokens(request.PriorityRequestRps)
+	return &historyservice.GetRateLimiterTokenResponse{
+		Tokens: int32(tokens),
+		Expiry: durationpb.New(expiry),
+	}, nil
 }
 
 func (h *Handler) CompleteNexusOperation(ctx context.Context, request *historyservice.CompleteNexusOperationRequest) (_ *historyservice.CompleteNexusOperationResponse, retErr error) {

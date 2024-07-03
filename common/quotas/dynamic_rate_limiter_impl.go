@@ -147,6 +147,10 @@ func (d *DynamicRateLimiterImpl) Burst() int {
 	return d.rateLimiter.Burst()
 }
 
+func (d *DynamicRateLimiterImpl) TokensAt(t time.Time) int {
+	return d.rateLimiter.TokensAt(t)
+}
+
 func (d *DynamicRateLimiterImpl) Refresh() {
 	d.rateLimiter.SetRateBurst(d.rateBurstFn.Rate(), d.rateBurstFn.Burst())
 }

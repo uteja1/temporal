@@ -257,6 +257,20 @@ func (c *metricClient) GetMutableState(
 	return c.client.GetMutableState(ctx, request, opts...)
 }
 
+func (c *metricClient) GetRateLimiterToken(
+	ctx context.Context,
+	request *historyservice.GetRateLimiterTokenRequest,
+	opts ...grpc.CallOption,
+) (_ *historyservice.GetRateLimiterTokenResponse, retError error) {
+
+	metricsHandler, startTime := c.startMetricsRecording(ctx, "HistoryClientGetRateLimiterToken")
+	defer func() {
+		c.finishMetricsRecording(metricsHandler, startTime, retError)
+	}()
+
+	return c.client.GetRateLimiterToken(ctx, request, opts...)
+}
+
 func (c *metricClient) GetReplicationMessages(
 	ctx context.Context,
 	request *historyservice.GetReplicationMessagesRequest,

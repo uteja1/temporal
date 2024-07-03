@@ -354,6 +354,8 @@ type Config struct {
 	WorkflowIdReuseMinimalInterval dynamicconfig.DurationPropertyFn
 
 	UseExperimentalHsmScheduler dynamicconfig.BoolPropertyFnWithNamespaceFilter
+
+	DistributedRateLimiterTimeWindow dynamicconfig.IntPropertyFn
 }
 
 // NewConfig returns new service config with default values
@@ -641,7 +643,8 @@ func NewConfig(
 		SendRawWorkflowHistory:         dynamicconfig.SendRawWorkflowHistory.Get(dc),
 		WorkflowIdReuseMinimalInterval: dynamicconfig.WorkflowIdReuseMinimalInterval.Get(dc),
 
-		UseExperimentalHsmScheduler: schedulerhsm.UseExperimentalHsmScheduler.Get(dc),
+		UseExperimentalHsmScheduler:      schedulerhsm.UseExperimentalHsmScheduler.Get(dc),
+		DistributedRateLimiterTimeWindow: dynamicconfig.DistributedRateLimiterTimeWindow.Get(dc),
 	}
 
 	return cfg

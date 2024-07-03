@@ -916,3 +916,21 @@ message CompleteNexusOperationRequest {
 
 message CompleteNexusOperationResponse {
 }
+
+message RateLimiterConfig {
+    string rate_limiter_name = 1;
+    double rate = 2;
+    double burst_ratio = 3;
+    int32 priority_count = 4;
+}
+
+message GetRateLimiterTokenRequest {
+    RateLimiterConfig rate_limiter_config = 1;
+    map<int32, float> priority_request_rps = 2;
+    float token_rate = 3;
+}
+
+message GetRateLimiterTokenResponse {
+    int32 tokens = 1;
+    google.protobuf.Duration expiry = 2;
+}

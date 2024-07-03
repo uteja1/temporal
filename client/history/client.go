@@ -323,6 +323,14 @@ func (c *clientImpl) ListTasks(
 	return response, nil
 }
 
+func (c *clientImpl) GetRateLimiterToken(
+	ctx context.Context,
+	in *historyservice.GetRateLimiterTokenRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetRateLimiterTokenResponse, error) {
+	return nil, nil
+}
+
 // getAnyClient returns an arbitrary client by looking up a client by a sequentially increasing shard ID. This is useful
 // for history APIs that are shard-agnostic (e.g. namespace or DLQ v2 APIs).
 func (c *clientImpl) getAnyClient(apiName string) (historyservice.HistoryServiceClient, error) {

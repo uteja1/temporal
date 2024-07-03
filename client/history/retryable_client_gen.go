@@ -275,6 +275,21 @@ func (c *retryableClient) GetMutableState(
 	return resp, err
 }
 
+func (c *retryableClient) GetRateLimiterToken(
+	ctx context.Context,
+	request *historyservice.GetRateLimiterTokenRequest,
+	opts ...grpc.CallOption,
+) (*historyservice.GetRateLimiterTokenResponse, error) {
+	var resp *historyservice.GetRateLimiterTokenResponse
+	op := func(ctx context.Context) error {
+		var err error
+		resp, err = c.client.GetRateLimiterToken(ctx, request, opts...)
+		return err
+	}
+	err := backoff.ThrottleRetryContext(ctx, op, c.policy, c.isRetryable)
+	return resp, err
+}
+
 func (c *retryableClient) GetReplicationMessages(
 	ctx context.Context,
 	request *historyservice.GetReplicationMessagesRequest,

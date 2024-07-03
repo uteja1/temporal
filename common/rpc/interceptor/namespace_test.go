@@ -82,6 +82,7 @@ var (
 		"ListTasks":                 {},
 		// NamespaceId is in the completion token for this request.
 		"CompleteNexusOperation": {},
+		"GetRateLimiterToken":    {},
 	}
 )
 

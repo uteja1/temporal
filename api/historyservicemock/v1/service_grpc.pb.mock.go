@@ -381,6 +381,26 @@ func (mr *MockHistoryServiceClientMockRecorder) GetMutableState(ctx, in interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMutableState", reflect.TypeOf((*MockHistoryServiceClient)(nil).GetMutableState), varargs...)
 }
 
+// GetRateLimiterToken mocks base method.
+func (m *MockHistoryServiceClient) GetRateLimiterToken(ctx context.Context, in *historyservice.GetRateLimiterTokenRequest, opts ...grpc.CallOption) (*historyservice.GetRateLimiterTokenResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{ctx, in}
+	for _, a := range opts {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetRateLimiterToken", varargs...)
+	ret0, _ := ret[0].(*historyservice.GetRateLimiterTokenResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRateLimiterToken indicates an expected call of GetRateLimiterToken.
+func (mr *MockHistoryServiceClientMockRecorder) GetRateLimiterToken(ctx, in interface{}, opts ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{ctx, in}, opts...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRateLimiterToken", reflect.TypeOf((*MockHistoryServiceClient)(nil).GetRateLimiterToken), varargs...)
+}
+
 // GetReplicationMessages mocks base method.
 func (m *MockHistoryServiceClient) GetReplicationMessages(ctx context.Context, in *historyservice.GetReplicationMessagesRequest, opts ...grpc.CallOption) (*historyservice.GetReplicationMessagesResponse, error) {
 	m.ctrl.T.Helper()
@@ -1719,6 +1739,21 @@ func (m *MockHistoryServiceServer) GetMutableState(arg0 context.Context, arg1 *h
 func (mr *MockHistoryServiceServerMockRecorder) GetMutableState(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMutableState", reflect.TypeOf((*MockHistoryServiceServer)(nil).GetMutableState), arg0, arg1)
+}
+
+// GetRateLimiterToken mocks base method.
+func (m *MockHistoryServiceServer) GetRateLimiterToken(arg0 context.Context, arg1 *historyservice.GetRateLimiterTokenRequest) (*historyservice.GetRateLimiterTokenResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRateLimiterToken", arg0, arg1)
+	ret0, _ := ret[0].(*historyservice.GetRateLimiterTokenResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRateLimiterToken indicates an expected call of GetRateLimiterToken.
+func (mr *MockHistoryServiceServerMockRecorder) GetRateLimiterToken(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRateLimiterToken", reflect.TypeOf((*MockHistoryServiceServer)(nil).GetRateLimiterToken), arg0, arg1)
 }
 
 // GetReplicationMessages mocks base method.

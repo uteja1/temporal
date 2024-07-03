@@ -4875,3 +4875,114 @@ func (this *CompleteNexusOperationResponse) Equal(that interface{}) bool {
 
 	return proto.Equal(this, that1)
 }
+
+// Marshal an object of type RateLimiterConfig to the protobuf v3 wire format
+func (val *RateLimiterConfig) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type RateLimiterConfig from the protobuf v3 wire format
+func (val *RateLimiterConfig) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *RateLimiterConfig) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two RateLimiterConfig values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *RateLimiterConfig) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *RateLimiterConfig
+	switch t := that.(type) {
+	case *RateLimiterConfig:
+		that1 = t
+	case RateLimiterConfig:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
+
+// Marshal an object of type GetRateLimiterTokenRequest to the protobuf v3 wire format
+func (val *GetRateLimiterTokenRequest) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type GetRateLimiterTokenRequest from the protobuf v3 wire format
+func (val *GetRateLimiterTokenRequest) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *GetRateLimiterTokenRequest) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two GetRateLimiterTokenRequest values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *GetRateLimiterTokenRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *GetRateLimiterTokenRequest
+	switch t := that.(type) {
+	case *GetRateLimiterTokenRequest:
+		that1 = t
+	case GetRateLimiterTokenRequest:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
+
+// Marshal an object of type GetRateLimiterTokenResponse to the protobuf v3 wire format
+func (val *GetRateLimiterTokenResponse) Marshal() ([]byte, error) {
+	return proto.Marshal(val)
+}
+
+// Unmarshal an object of type GetRateLimiterTokenResponse from the protobuf v3 wire format
+func (val *GetRateLimiterTokenResponse) Unmarshal(buf []byte) error {
+	return proto.Unmarshal(buf, val)
+}
+
+// Size returns the size of the object, in bytes, once serialized
+func (val *GetRateLimiterTokenResponse) Size() int {
+	return proto.Size(val)
+}
+
+// Equal returns whether two GetRateLimiterTokenResponse values are equivalent by recursively
+// comparing the message's fields.
+// For more information see the documentation for
+// https://pkg.go.dev/google.golang.org/protobuf/proto#Equal
+func (this *GetRateLimiterTokenResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	var that1 *GetRateLimiterTokenResponse
+	switch t := that.(type) {
+	case *GetRateLimiterTokenResponse:
+		that1 = t
+	case GetRateLimiterTokenResponse:
+		that1 = &t
+	default:
+		return false
+	}
+
+	return proto.Equal(this, that1)
+}
