@@ -17,7 +17,10 @@ type (
 )
 
 func NewTokenVendorController(tw int) TokenVendorController {
-	return &TokenVendorControllerImpl{timeWindow: tw}
+	return &TokenVendorControllerImpl{
+		tokenVendorMap: make(map[string]TokenVendor),
+		timeWindow:     tw,
+	}
 }
 
 func (c *TokenVendorControllerImpl) GetOrCreateTokenVendor(
