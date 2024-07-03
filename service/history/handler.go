@@ -2295,13 +2295,21 @@ func (h *Handler) GetRateLimiterToken(
 	ctx context.Context,
 	request *historyservice.GetRateLimiterTokenRequest,
 ) (_ *historyservice.GetRateLimiterTokenResponse, retError error) {
+	h.logger.Info(fmt.Sprintf("PPV: requested token vendor for %v", request.RateLimiterConfig.RateLimiterName))
 	tokenVendor := h.tokenVendorController.GetOrCreateTokenVendor(
 		request.RateLimiterConfig.RateLimiterName,
 		request.RateLimiterConfig.GetRate(),
 		request.RateLimiterConfig.GetBurstRatio(),
 		int(request.RateLimiterConfig.GetPriorityCount()),
 	)
+	for priority, rps := range request.PriorityRequestRps {
+		metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName), metrics.PriorityTag(int(priority)))).Record(float64(rps))
+		h.logger.Info(fmt.Sprintf("PPV: request: name: %v priority %v rps %v", request.RateLimiterConfig.RateLimiterName, priority, rps))
+	}
+	metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(1)
 	tokens, expiry := tokenVendor.GetTokens(request.PriorityRequestRps)
+	metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(float64(tokens))
+	h.logger.Info(fmt.Sprintf("PPV: allocation: name: %v tokens %v", request.RateLimiterConfig.RateLimiterName, tokens))
 	return &historyservice.GetRateLimiterTokenResponse{
 		Tokens: int32(tokens),
 		Expiry: durationpb.New(expiry),

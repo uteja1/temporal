@@ -655,6 +655,9 @@ var (
 		"utf8_validation_errors",
 		WithDescription("Number of times the service encountered a proto message with invalid UTF-8 in a string field"),
 	)
+	RLCapacityRequested = NewGaugeDef("rl_capacity_requested")
+	RLCapacityAllocated = NewGaugeDef("rl_capacity_allocated")
+	RLRequests          = NewCounterDef("rl_requests")
 
 	// Frontend
 	AddSearchAttributesWorkflowSuccessCount  = NewCounterDef("add_search_attributes_workflow_success")

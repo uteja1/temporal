@@ -34,6 +34,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/dgryski/go-farm"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -328,7 +329,19 @@ func (c *clientImpl) GetRateLimiterToken(
 	in *historyservice.GetRateLimiterTokenRequest,
 	opts ...grpc.CallOption,
 ) (*historyservice.GetRateLimiterTokenResponse, error) {
-	return nil, nil
+	shardID := c.shardIDFromRateLimiterName(in.RateLimiterConfig.RateLimiterName)
+	var response *historyservice.GetRateLimiterTokenResponse
+	op := func(ctx context.Context, client historyservice.HistoryServiceClient) error {
+		var err error
+		ctx, cancel := c.createContext(ctx)
+		defer cancel()
+		response, err = client.GetRateLimiterToken(ctx, in, opts...)
+		return err
+	}
+	if err := c.executeWithRedirect(ctx, shardID, op); err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
 // getAnyClient returns an arbitrary client by looking up a client by a sequentially increasing shard ID. This is useful
@@ -352,6 +365,12 @@ func (c *clientImpl) createContext(parent context.Context) (context.Context, con
 
 func (c *clientImpl) shardIDFromWorkflowID(namespaceID, workflowID string) int32 {
 	return common.WorkflowIDToHistoryShard(namespaceID, workflowID, c.numberOfShards)
+}
+
+func (c *clientImpl) shardIDFromRateLimiterName(name string) int32 {
+	idBytes := []byte(name)
+	hash := farm.Fingerprint32(idBytes)
+	return int32(hash%uint32(c.numberOfShards)) + 1 // ShardID starts with 1
 }
 
 func checkShardID(shardID int32) error {

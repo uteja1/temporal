@@ -927,7 +927,6 @@ message RateLimiterConfig {
 message GetRateLimiterTokenRequest {
     RateLimiterConfig rate_limiter_config = 1;
     map<int32, float> priority_request_rps = 2;
-    float token_rate = 3;
 }
 
 message GetRateLimiterTokenResponse {

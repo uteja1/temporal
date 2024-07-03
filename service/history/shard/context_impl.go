@@ -1532,7 +1532,7 @@ func (s *ContextImpl) ioSemaphoreAcquire(
 		priority = locks.PriorityLow
 	}
 
-	handler := s.metricsHandler.WithTags(metrics.OperationTag(metrics.ShardInfoScope), metrics.PriorityTag(priority))
+	handler := s.metricsHandler.WithTags(metrics.OperationTag(metrics.ShardInfoScope), metrics.PriorityTag(int(priority)))
 	metrics.SemaphoreRequests.With(handler).Record(1)
 	startTime := time.Now().UTC()
 	defer func() {

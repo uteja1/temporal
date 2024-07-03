@@ -30,8 +30,6 @@ import (
 	"strings"
 
 	enumspb "go.temporal.io/api/enums/v1"
-	"go.temporal.io/server/common/locks"
-
 	enumsspb "go.temporal.io/server/api/enums/v1"
 
 	"go.temporal.io/server/common/primitives"
@@ -338,7 +336,7 @@ func CacheTypeTag(value string) Tag {
 	return &tagImpl{key: CacheTypeTagName, value: value}
 }
 
-func PriorityTag(value locks.Priority) Tag {
+func PriorityTag(value int) Tag {
 	return &tagImpl{key: PriorityTagName, value: strconv.Itoa(int(value))}
 }
 
