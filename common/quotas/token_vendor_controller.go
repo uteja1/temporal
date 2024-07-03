@@ -31,6 +31,7 @@ func (c *TokenVendorControllerImpl) GetOrCreateTokenVendor(
 		c.lock.RUnlock()
 		return tv
 	}
+	c.lock.RUnlock()
 
 	c.lock.Lock()
 	defer c.lock.Unlock()
