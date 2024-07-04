@@ -52,5 +52,5 @@ func (tv *TokenVendorImpl) GetTokens(priorityRps map[int32]float32) (int, time.D
 		_ = tv.rl.ReserveP(windowEnd, t, p)
 		tokens += t
 	}
-	return tokens, time.Duration(tv.timeWindow) * time.Second
+	return tokens, time.Duration(tv.timeWindow/2) * time.Second
 }
