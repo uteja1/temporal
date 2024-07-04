@@ -103,7 +103,7 @@ func (rl *RateLimiterImpl) TokensAt(t time.Time) int {
 	rl.Lock()
 	defer rl.Unlock()
 
-	return rl.TokensAt(t)
+	return rl.ClockedRateLimiter.TokensAt(t)
 }
 
 func (rl *RateLimiterImpl) refreshInternalRateLimiterImpl(
