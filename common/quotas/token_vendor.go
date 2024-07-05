@@ -27,7 +27,7 @@ func NewTokenVendor(priorities int, rate float64, burstRatio float64, timeWindow
 					return rate
 				},
 				func() int {
-					return int(rate * float64(timeWindow))
+					return int(rate * float64(timeWindow) * burstRatio)
 				}),
 			defaultRefreshInterval)
 
