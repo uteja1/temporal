@@ -8,38 +8,48 @@ import (
 type (
 	TokenVendor interface {
 		GetTokens(priorityRps map[int32]float32) (int, time.Duration)
+		Update(rate float64, burstRatio float64)
 	}
 
 	TokenVendorImpl struct {
 		rl         *PriorityRateLimiter2Impl
 		timeWindow int
 		priorities int
+		rate       float64
+		burstRatio float64
 		lock       sync.Mutex
 	}
 )
 
 func NewTokenVendor(priorities int, rate float64, burstRatio float64, timeWindow int) TokenVendor {
+	tv := &TokenVendorImpl{
+		priorities: priorities,
+		timeWindow: timeWindow,
+		rate:       rate,
+		burstRatio: burstRatio,
+	}
 	rateLimiters := make(map[int]RateLimiter)
 	for i := 0; i < priorities; i++ {
 		rateLimiters[i] = NewDynamicRateLimiter(
 			NewRateBurst(
 				func() float64 {
-					return rate
+					return tv.rate
 				},
 				func() int {
-					return int(rate * float64(timeWindow) * burstRatio)
+					return int(tv.rate * float64(tv.timeWindow) * tv.burstRatio)
 				}),
 			defaultRefreshInterval)
 
 	}
-	rl := NewPriorityRateLimiter2(func(req Request) int {
+	tv.rl = NewPriorityRateLimiter2(func(req Request) int {
 		return req.Priority
 	}, rateLimiters)
-	return &TokenVendorImpl{
-		rl:         rl,
-		priorities: priorities,
-		timeWindow: timeWindow,
-	}
+	return tv
+}
+
+func (tv *TokenVendorImpl) Update(rate float64, burstRatio float64) {
+	tv.rate = rate
+	tv.burstRatio = burstRatio
 }
 
 func (tv *TokenVendorImpl) GetTokens(priorityRps map[int32]float32) (int, time.Duration) {

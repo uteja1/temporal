@@ -39,5 +39,6 @@ func (c *TokenVendorControllerImpl) GetOrCreateTokenVendor(
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	c.tokenVendorMap[name] = NewTokenVendor(priorities, rateFn, burstRatioFn, c.timeWindow)
+	c.tokenVendorMap[name].Update(rateFn, burstRatioFn)
 	return c.tokenVendorMap[name]
 }
