@@ -1125,6 +1125,7 @@ func (s *ContextImpl) getRangeIDLocked() int64 {
 	return s.shardInfo.GetRangeId()
 }
 
+// errorByState takes the stateLock, confirms that the shard state is contextStateAcquired, then unlocks
 func (s *ContextImpl) errorByState() error {
 	s.stateLock.Lock()
 	defer s.stateLock.Unlock()
