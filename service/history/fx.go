@@ -25,12 +25,8 @@
 package history
 
 import (
-	"net"
-
 	"go.temporal.io/server/common/quotas"
 	"go.uber.org/fx"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health"
 
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
@@ -106,26 +102,19 @@ var Module = fx.Options(
 )
 
 func ServiceProvider(
-	grpcServerOptions []grpc.ServerOption,
-	serviceConfig *configs.Config,
-	visibilityMgr manager.VisibilityManager,
-	handler *Handler,
-	logger log.SnTaggedLogger,
-	grpcListener net.Listener,
-	membershipMonitor membership.Monitor,
-	metricsHandler metrics.Handler,
-	healthServer *health.Server,
+	args ServiceArgs,
 ) *Service {
 	return NewService(
-		grpcServerOptions,
-		serviceConfig,
-		visibilityMgr,
-		handler,
-		logger,
-		grpcListener,
-		membershipMonitor,
-		metricsHandler,
-		healthServer,
+		args.GrpcServerOptions,
+		args.ServiceConfig,
+		args.VisibilityMgr,
+		args.Handler,
+		args.Logger,
+		args.GrpcListener,
+		args.MembershipMonitor,
+		args.MetricsHandler,
+		args.HealthServer,
+		args.HandlerRegistrationHooks,
 	)
 }
 

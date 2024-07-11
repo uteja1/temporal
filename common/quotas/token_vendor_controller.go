@@ -25,8 +25,8 @@ func NewTokenVendorController(tw int) TokenVendorController {
 
 func (c *TokenVendorControllerImpl) GetOrCreateTokenVendor(
 	name string,
-	rateFn float64,
-	burstRatioFn float64,
+	rate float64,
+	burstRatio float64,
 	priorities int,
 ) TokenVendor {
 	c.lock.RLock()
@@ -38,7 +38,7 @@ func (c *TokenVendorControllerImpl) GetOrCreateTokenVendor(
 
 	c.lock.Lock()
 	defer c.lock.Unlock()
-	c.tokenVendorMap[name] = NewTokenVendor(priorities, rateFn, burstRatioFn, c.timeWindow)
-	c.tokenVendorMap[name].Update(rateFn, burstRatioFn)
+	c.tokenVendorMap[name] = NewTokenVendor(priorities, rate, burstRatio, c.timeWindow)
+	c.tokenVendorMap[name].Update(rate, burstRatio)
 	return c.tokenVendorMap[name]
 }

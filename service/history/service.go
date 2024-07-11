@@ -28,6 +28,7 @@ import (
 	"net"
 	"time"
 
+	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
@@ -48,12 +49,28 @@ type (
 		visibilityManager manager.VisibilityManager
 		config            *configs.Config
 
-		server            *grpc.Server
-		logger            log.Logger
-		grpcListener      net.Listener
-		membershipMonitor membership.Monitor
-		metricsHandler    metrics.Handler
-		healthServer      *health.Server
+		server                   *grpc.Server
+		logger                   log.Logger
+		grpcListener             net.Listener
+		membershipMonitor        membership.Monitor
+		metricsHandler           metrics.Handler
+		healthServer             *health.Server
+		handlerRegistrationHooks []func(s grpc.ServiceRegistrar)
+	}
+
+	ServiceArgs struct {
+		fx.In
+
+		GrpcServerOptions        []grpc.ServerOption
+		ServiceConfig            *configs.Config
+		VisibilityMgr            manager.VisibilityManager
+		Handler                  *Handler
+		Logger                   log.SnTaggedLogger
+		GrpcListener             net.Listener
+		MembershipMonitor        membership.Monitor
+		MetricsHandler           metrics.Handler
+		HealthServer             *health.Server
+		HandlerRegistrationHooks []func(s grpc.ServiceRegistrar) `optional:"true"`
 	}
 )
 
@@ -67,17 +84,19 @@ func NewService(
 	membershipMonitor membership.Monitor,
 	metricsHandler metrics.Handler,
 	healthServer *health.Server,
+	handlerRegistrationHooks []func(s grpc.ServiceRegistrar),
 ) *Service {
 	return &Service{
-		server:            grpc.NewServer(grpcServerOptions...),
-		handler:           handler,
-		visibilityManager: visibilityMgr,
-		config:            serviceConfig,
-		logger:            logger,
-		grpcListener:      grpcListener,
-		membershipMonitor: membershipMonitor,
-		metricsHandler:    metricsHandler,
-		healthServer:      healthServer,
+		server:                   grpc.NewServer(grpcServerOptions...),
+		handler:                  handler,
+		visibilityManager:        visibilityMgr,
+		config:                   serviceConfig,
+		logger:                   logger,
+		grpcListener:             grpcListener,
+		membershipMonitor:        membershipMonitor,
+		metricsHandler:           metricsHandler,
+		healthServer:             healthServer,
+		handlerRegistrationHooks: handlerRegistrationHooks,
 	}
 }
 
@@ -90,6 +109,12 @@ func (s *Service) Start() {
 	s.handler.Start()
 
 	historyservice.RegisterHistoryServiceServer(s.server, s.handler)
+
+	for _, hook := range s.handlerRegistrationHooks {
+		s.logger.Info("PPV REGISTERING HANDLER")
+		hook(s.server)
+	}
+
 	healthpb.RegisterHealthServer(s.server, s.healthServer)
 	s.healthServer.SetServingStatus(serviceName, healthpb.HealthCheckResponse_SERVING)
 

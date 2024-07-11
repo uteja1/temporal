@@ -34,14 +34,12 @@ import (
 	"github.com/nexus-rpc/sdk-go/nexus"
 	"github.com/pborman/uuid"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/fx"
+	"google.golang.org/grpc/metadata"
+
 	commonpb "go.temporal.io/api/common/v1"
 	enumspb "go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/serviceerror"
-	"go.temporal.io/server/common/quotas"
-	"go.uber.org/fx"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/protobuf/types/known/durationpb"
-
 	"go.temporal.io/server/api/historyservice/v1"
 	namespacespb "go.temporal.io/server/api/namespace/v1"
 	replicationspb "go.temporal.io/server/api/replication/v1"
@@ -63,6 +61,7 @@ import (
 	"go.temporal.io/server/common/persistence/serialization"
 	"go.temporal.io/server/common/persistence/visibility/manager"
 	"go.temporal.io/server/common/primitives/timestamp"
+	"go.temporal.io/server/common/quotas"
 	"go.temporal.io/server/common/searchattribute"
 	serviceerrors "go.temporal.io/server/common/serviceerror"
 	"go.temporal.io/server/components/nexusoperations"
@@ -2295,25 +2294,26 @@ func (h *Handler) GetRateLimiterToken(
 	ctx context.Context,
 	request *historyservice.GetRateLimiterTokenRequest,
 ) (_ *historyservice.GetRateLimiterTokenResponse, retError error) {
-	h.logger.Info(fmt.Sprintf("PPV: requested token vendor for %v", request.RateLimiterConfig.RateLimiterName))
-	tokenVendor := h.tokenVendorController.GetOrCreateTokenVendor(
-		request.RateLimiterConfig.RateLimiterName,
-		request.RateLimiterConfig.GetRate(),
-		request.RateLimiterConfig.GetBurstRatio(),
-		int(request.RateLimiterConfig.GetPriorityCount()),
-	)
-	for priority, rps := range request.PriorityRequestRps {
-		metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName), metrics.PriorityTag(int(priority)))).Record(float64(rps))
-		h.logger.Info(fmt.Sprintf("PPV: request: name: %v priority %v rps %v", request.RateLimiterConfig.RateLimiterName, priority, rps))
-	}
-	metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(1)
-	tokens, expiry := tokenVendor.GetTokens(request.PriorityRequestRps)
-	metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(float64(tokens))
-	h.logger.Info(fmt.Sprintf("PPV: allocation: name: %v tokens %v", request.RateLimiterConfig.RateLimiterName, tokens))
-	return &historyservice.GetRateLimiterTokenResponse{
-		Tokens: int32(tokens),
-		Expiry: durationpb.New(expiry),
-	}, nil
+	//h.logger.Info(fmt.Sprintf("PPV: requested token vendor for %v", request.RateLimiterConfig.RateLimiterName))
+	//tokenVendor := h.tokenVendorController.GetOrCreateTokenVendor(
+	//	request.RateLimiterConfig.RateLimiterName,
+	//	request.RateLimiterConfig.GetRate(),
+	//	request.RateLimiterConfig.GetBurstRatio(),
+	//	int(request.RateLimiterConfig.GetPriorityCount()),
+	//)
+	//for priority, rps := range request.PriorityRequestRps {
+	//	metrics.RLCapacityRequested.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName), metrics.PriorityTag(int(priority)))).Record(float64(rps))
+	//	h.logger.Info(fmt.Sprintf("PPV: request: name: %v priority %v rps %v", request.RateLimiterConfig.RateLimiterName, priority, rps))
+	//}
+	//metrics.RLRequests.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(1)
+	//tokens, expiry := tokenVendor.GetTokens(request.PriorityRequestRps)
+	//metrics.RLCapacityAllocated.With(h.metricsHandler.WithTags(metrics.NamespaceTag(request.RateLimiterConfig.RateLimiterName))).Record(float64(tokens))
+	//h.logger.Info(fmt.Sprintf("PPV: allocation: name: %v tokens %v", request.RateLimiterConfig.RateLimiterName, tokens))
+	//return &historyservice.GetRateLimiterTokenResponse{
+	//	Tokens: int32(tokens),
+	//	Expiry: durationpb.New(expiry),
+	//}, nil
+	panic("history service rate limiter api called")
 }
 
 func (h *Handler) CompleteNexusOperation(ctx context.Context, request *historyservice.CompleteNexusOperationRequest) (_ *historyservice.CompleteNexusOperationResponse, retErr error) {
