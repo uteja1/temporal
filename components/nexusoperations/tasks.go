@@ -48,12 +48,10 @@ func (TimeoutTask) Type() string {
 	return TaskTypeTimeout
 }
 
-// Deadline implements hsm.Task.
 func (t TimeoutTask) Deadline() time.Time {
 	return t.deadline
 }
 
-// Destination implements hsm.Task.
 func (TimeoutTask) Destination() string {
 	return ""
 }

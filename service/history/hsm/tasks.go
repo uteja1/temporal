@@ -52,10 +52,12 @@ type Task interface {
 	// A deadline for firing this task.
 	// This represents a lower bound and actual execution may get delayed if the system is overloaded or for various
 	// other reasons.
-	// Return [NoDeadline] to schedule this task immediately.
+	// Return [Immediate] to schedule this task immediately.
 	Deadline() time.Time
 	// The destination of this task, used to group tasks into a per namespace-and-destination scheduler.
-	// Tasks may leave
+	// Tasks may return an empty string if the task is delivered internally within the system.
+	// If a destination is set, a task will be scheduled on the outbound queue.
+	// Currently Destination and Deadline are mutually exclusive.
 	Destination() string
 	// Whether this task is automatically invalidated if the machine transitioned since generating it.
 	Concurrent() bool
