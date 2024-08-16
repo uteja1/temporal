@@ -444,6 +444,7 @@ func (s *StreamSenderImpl) sendLive(
 		select {
 		case <-newTaskNotificationChan:
 			endExclusiveWatermark := s.shardContext.GetQueueExclusiveHighReadWatermark(tasks.CategoryReplication).TaskID
+			s.logger.Info(fmt.Sprintf("new task notification received. beginInclusiveWatermark: %v, endExclusiveWatermark: %v", beginInclusiveWatermark, endExclusiveWatermark))
 			if err := s.sendTasks(
 				priority,
 				beginInclusiveWatermark,

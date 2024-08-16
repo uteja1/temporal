@@ -159,7 +159,7 @@ func (p *ackMgrImpl) NotifyNewTasks(
 	}
 
 	defer p.broadcast()
-
+	p.logger.Info("NotifyNewTasks, maxTaskID", tag.TaskID(maxTaskID), tag.SourceShardID(p.shardContext.GetShardID()))
 	p.Lock()
 	defer p.Unlock()
 	if p.maxTaskID == nil || *p.maxTaskID < maxTaskID {
@@ -495,7 +495,7 @@ func (p *ackMgrImpl) UnsubscribeNotification(subscriberID string) {
 func (p *ackMgrImpl) broadcast() {
 	p.subscriberLock.Lock()
 	defer p.subscriberLock.Unlock()
-
+	p.logger.Info("AckMgr broadcast", tag.SourceShardID(p.shardContext.GetShardID()))
 	for _, channel := range p.subscribers {
 		select {
 		case channel <- struct{}{}:
