@@ -26,6 +26,8 @@ package interceptor
 
 import (
 	"context"
+	"fmt"
+	reflect "reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -249,10 +251,14 @@ func (i *Redirection) handleRedirectAPIInvocation(
 			}
 			resp = respCtorFn()
 			ctx = metadata.AppendToOutgoingContext(ctx, DCRedirectionApiHeaderName, "true")
+			setNamespaceBasedOnCluster(req, targetDC)
 			err = remoteClient.Invoke(ctx, info.FullMethod, req, resp)
 			if err != nil {
 				return err
 			}
+
+			// Modify the namespace in the response?
+			setNamespaceBasedOnCluster(resp, i.currentClusterName)
 		}
 		return err
 	})
@@ -292,4 +298,43 @@ func (i *Redirection) RedirectionAllowed(
 		return true
 	}
 	return allowed
+}
+
+func setNamespaceBasedOnCluster(req any, targetCluster string) (string, string, error) {
+	val := reflect.ValueOf(req)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	if val.Kind() != reflect.Struct {
+		return "", "", fmt.Errorf("expected a struct but got %s", val.Kind())
+	}
+
+	// Find and set the 'Namespace' field if it exists
+	field := val.FieldByName("Namespace")
+	if !field.IsValid() {
+		// some requests don't have the namespace field.
+		return "", "", nil
+	}
+	if field.Kind() != reflect.String {
+		return "", "", fmt.Errorf("field 'Namespace' is not a string")
+	}
+
+	old := field.String()
+	if old == "temporal-system" {
+		return "", "", nil
+	}
+	new := old
+	switch targetCluster {
+	case "cluster-a":
+		new = strings.TrimSuffix(new, ".cloud")
+	case "cluster-b":
+		if !strings.HasSuffix(new, ".cloud") {
+			new += ".cloud"
+		}
+	}
+
+	// Set the value of the 'Namespace' field
+	field.SetString(new)
+	return old, new, nil
 }
