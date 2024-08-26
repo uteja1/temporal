@@ -259,6 +259,7 @@ func (i *Redirection) handleRedirectAPIInvocation(
 					tag.NewStringTag("method", methodName),
 					tag.NewErrorTag("error", err),
 					tag.NewAnyTag("req", req),
+					tag.NewAnyTag("resp", resp),
 				)
 				return err
 			}
@@ -307,56 +308,76 @@ func (i *Redirection) RedirectionAllowed(
 	return allowed
 }
 
-func setNamespaceRecursive(value reflect.Value, targetCluster string) (bool, error) {
+func setNamespaceRecursive(val reflect.Value, cluster string, depth int) (bool, error) {
+	if depth > 20 {
+		// TODO: Was getting some stack overflow error. Maybe a circular pointer?
+		// Ignoring unexported proto fields helps.
+		return false, fmt.Errorf("setNamespaceRecursive max depth reached (circular pointers in type?)")
+	}
+
 	var changed bool
 
-	// Iterate over all fields in the struct
-	for i := 0; i < value.NumField(); i++ {
-		field := value.Field(i)
-		fieldType := value.Type().Field(i)
+	switch val.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		c, err := setNamespaceRecursive(val.Elem(), cluster, depth+1)
+		changed = changed || c
+		if err != nil {
+			return changed, err
+		}
+	case reflect.Struct:
+		for i := 0; i < val.NumField(); i++ {
+			field := val.Field(i)
 
-		// Check if the field is a struct
-		if field.Kind() == reflect.Struct {
-			// Recursively search in nested struct
-			if c, err := setNamespaceRecursive(field, targetCluster); err != nil {
-				return changed || c, err
-			} else {
-				changed = c
+			fieldType := val.Type().Field(i)
+			if !fieldType.IsExported() {
+				continue
 			}
-		} else {
-			// Different requests/responses may have namespace in different field names.
-			for _, nsFieldName := range []string{
-				"Namespace",
-				"WorkflowNamespace", // PollActivityTaskQueueResponse
-			} {
-				if fieldType.Name != nsFieldName {
-					continue
-				}
-				if field.Kind() != reflect.String {
-					// invalid type
-					continue
-				}
 
-				old := field.String()
-				if old == "temporal-system" {
-					continue
+			if field.Kind() != reflect.String {
+				c, err := setNamespaceRecursive(field, cluster, depth+1)
+				changed = changed || c
+				if err != nil {
+					return changed, err
 				}
+			} else {
+				for _, nsFieldName := range []string{
+					"Namespace",
+					"WorkflowNamespace", // PollActivityTaskQueueResponse
+				} {
+					if fieldType.Name != nsFieldName {
+						continue
+					}
+					// Different requests/responses may have namespace in different field names.
+					old := field.String()
+					if old == "temporal-system" {
+						continue
+					}
 
-				new := old
-				switch targetCluster {
-				case "cluster-a":
-					new = strings.TrimSuffix(new, ".cloud")
-				case "cluster-b":
-					if !strings.HasSuffix(new, ".cloud") {
-						new += ".cloud"
+					new := old
+					switch cluster {
+					case "cluster-a":
+						new = strings.TrimSuffix(new, ".cloud")
+					case "cluster-b":
+						if !strings.HasSuffix(new, ".cloud") {
+							new += ".cloud"
+						}
+					}
+
+					// Set the value of the namespace field
+					field.SetString(new)
+					if old != new {
+						changed = true
 					}
 				}
-
-				// Set the value of the namespace field
-				field.SetString(new)
-				if old != new {
-					changed = true
-				}
+			}
+		}
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < val.Len(); i++ {
+			el := val.Index(i)
+			c, err := setNamespaceRecursive(el, cluster, depth+1)
+			changed = changed || c
+			if err != nil {
+				return changed, err
 			}
 		}
 	}
@@ -365,15 +386,7 @@ func setNamespaceRecursive(value reflect.Value, targetCluster string) (bool, err
 
 func setNamespaceBasedOnCluster(req any, targetCluster string) (bool, error) {
 	val := reflect.ValueOf(req)
-	if val.Kind() == reflect.Ptr {
-		val = val.Elem()
-	}
-
-	if val.Kind() != reflect.Struct {
-		return false, fmt.Errorf("expected a struct but got %s", val.Kind())
-	}
-
-	return setNamespaceRecursive(val, targetCluster)
+	return setNamespaceRecursive(val, targetCluster, 0)
 }
 
 func logSetNamespaceBasedOnClusterResult(prefix string, logger log.Logger, changed bool, err error, methodName string, obj any) {
@@ -385,9 +398,8 @@ func logSetNamespaceBasedOnClusterResult(prefix string, logger log.Logger, chang
 		tag.NewStringTag("method", methodName),
 		tag.NewAnyTag("obj", obj),
 	)
-
 	if err != nil {
-		logger.Error(withPrefix("namespace translation failed"), tag.NewErrorTag("error", err))
+		logger.Error(withPrefix("namespace translation error"), tag.NewErrorTag("error", err))
 	} else if changed {
 		logger.Info(withPrefix("namespace translation applied"))
 	} else {

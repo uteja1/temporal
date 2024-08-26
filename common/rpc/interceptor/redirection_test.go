@@ -26,6 +26,7 @@ package interceptor
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -33,6 +34,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"go.temporal.io/api/command/v1"
+	"go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/serviceerror"
 	"go.temporal.io/api/workflowservice/v1"
 	"google.golang.org/grpc"
@@ -390,4 +393,144 @@ func (s *mockClientConnInterface) NewStream(
 	_ ...grpc.CallOption,
 ) (grpc.ClientStream, error) {
 	panic("implement me")
+}
+
+func TestSetNamespaceBasedOnCluster(t *testing.T) {
+	source := "cluster-a"
+	target := "cluster-b"
+	type (
+		StructWithNamespaceField struct {
+			Namespace string
+		}
+		StructWithWorkflowNamespaceField struct {
+			WorkflowNamespace string
+		}
+		StructWithNestedNamespaceField struct {
+			Other  string
+			Nested StructWithNamespaceField
+		}
+		StructWithListOfNestedNamespaceField struct {
+			Other  string
+			Nested []StructWithNamespaceField
+		}
+		StructWithListOfNestedPtrs struct {
+			Other  string
+			Nested []*StructWithNamespaceField
+		}
+	)
+
+	cases := []struct {
+		name string
+
+		makeType func(namespace string) any
+	}{
+		{
+			name: "Namespace field",
+			makeType: func(ns string) any {
+				return &StructWithNamespaceField{
+					Namespace: ns,
+				}
+			},
+		},
+		{
+			name: "WorkflowNamespace field",
+			makeType: func(ns string) any {
+				return &StructWithWorkflowNamespaceField{
+					WorkflowNamespace: ns,
+				}
+			},
+		},
+		{
+			name: "Nested Namespace field",
+			makeType: func(ns string) any {
+				return &StructWithNestedNamespaceField{
+					Other: "do not change",
+					Nested: StructWithNamespaceField{
+						Namespace: ns,
+					},
+				}
+			},
+		},
+		{
+			name: "List of structs",
+			makeType: func(ns string) any {
+				return &StructWithListOfNestedNamespaceField{
+					Other: "do not change",
+					Nested: []StructWithNamespaceField{
+						{
+							Namespace: ns,
+						},
+					},
+				}
+			},
+		},
+		{
+			name: "List of ptrs",
+			makeType: func(ns string) any {
+				return &StructWithListOfNestedPtrs{
+					Other: "do not change",
+					Nested: []*StructWithNamespaceField{
+						{
+							Namespace: ns,
+						},
+					},
+				}
+			},
+		},
+		{
+			name: "RespondWorkflowTaskCompletedRequest",
+			makeType: func(ns string) any {
+				return &workflowservice.RespondWorkflowTaskCompletedRequest{
+					TaskToken: []byte{},
+					Commands: []*command.Command{
+						{
+							CommandType: enums.COMMAND_TYPE_SIGNAL_EXTERNAL_WORKFLOW_EXECUTION,
+							Attributes: &command.Command_SignalExternalWorkflowExecutionCommandAttributes{
+								SignalExternalWorkflowExecutionCommandAttributes: &command.SignalExternalWorkflowExecutionCommandAttributes{
+									Namespace:  ns,
+									SignalName: "do-not-change",
+								},
+							},
+						},
+						{
+							CommandType: enums.COMMAND_TYPE_START_CHILD_WORKFLOW_EXECUTION,
+							Attributes: &command.Command_StartChildWorkflowExecutionCommandAttributes{
+								StartChildWorkflowExecutionCommandAttributes: &command.StartChildWorkflowExecutionCommandAttributes{
+									Namespace:  ns,
+									WorkflowId: "do-not-change",
+								},
+							},
+						},
+					},
+					Identity:  "do-not-change",
+					Namespace: ns,
+				}
+
+			},
+		},
+	}
+
+	for _, c := range cases {
+		for _, perms := range [][]string{
+			{"source unchanged", source, "orig", "orig"},
+			{"source changed", source, "orig.cloud", "orig"},
+			{"target unchanged", target, "orig.cloud", "orig.cloud"},
+			{"target changed", target, "orig", "orig.cloud"},
+		} {
+			name := fmt.Sprintf("%s on %s", c.name, perms[0])
+			targetCluster := perms[1]
+			input := c.makeType(perms[2])
+			exp := c.makeType(perms[3])
+
+			t.Run(name, func(t *testing.T) {
+				expChanged := !reflect.DeepEqual(input, exp)
+
+				changed, err := setNamespaceBasedOnCluster(input, targetCluster)
+				require.NoError(t, err)
+				require.Equal(t, exp, input)
+				require.Equal(t, expChanged, changed)
+
+			})
+		}
+	}
 }
