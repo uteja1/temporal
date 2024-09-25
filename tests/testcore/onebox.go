@@ -344,9 +344,9 @@ func (c *TemporalImpl) FrontendHTTPAddress() string {
 
 func (c *TemporalImpl) FrontendHTTPHostPort() (string, int) {
 	if host, port, err := net.SplitHostPort(c.FrontendGRPCAddress()); err != nil {
-		panic(fmt.Errorf("Invalid gRPC frontend address: %w.", err))
+		panic(fmt.Errorf("invalid gRPC frontend address: %w", err))
 	} else if portNum, err := strconv.Atoi(port); err != nil {
-		panic(fmt.Errorf("Invalid gRPC frontend port: %w.", err))
+		panic(fmt.Errorf("invalid gRPC frontend port: %w", err))
 	} else {
 		return host, portNum + 10
 	}
